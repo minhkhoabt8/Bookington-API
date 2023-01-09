@@ -16,6 +16,7 @@ namespace Bokkington_Api.Controllers
             _accountService = accountService;
         }
 
+
         /// <summary>
         /// Get All Account
         /// </summary>
@@ -28,6 +29,7 @@ namespace Bokkington_Api.Controllers
             return ResponseFactory.Ok(accounts);
         }
 
+
         /// <summary>
         /// Create a new account
         /// </summary>
@@ -39,6 +41,5 @@ namespace Bokkington_Api.Controllers
             var createdTag = await _accountService.CreateAsync(dto);
             return ResponseFactory.Created(createdTag);
         }
-
     }
 }
