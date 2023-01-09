@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Bokkington_Api.Entities;
+namespace Bookington.Core.Entities;
 
 public partial class Comment
 {
@@ -11,7 +11,7 @@ public partial class Comment
 
     public string? RefCourt { get; set; }
 
-    public string? Contents { get; set; }
+    public string? Content { get; set; }
 
     public double? Rating { get; set; }
 
@@ -20,4 +20,6 @@ public partial class Comment
     public bool? IsActive { get; set; }
 
     public virtual Account? CommentWriter { get; set; }
+
+    public virtual Court? RefCourtNavigation { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Bokkington_Api.Entities;
+namespace Bookington.Core.Entities;
 
 public partial class Role
 {

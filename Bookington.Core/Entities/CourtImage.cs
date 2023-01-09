@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Bokkington_Api.Entities;
+namespace Bookington.Core.Entities;
 
 public partial class CourtImage
 {
@@ -9,5 +9,7 @@ public partial class CourtImage
 
     public string? CourtId { get; set; }
 
-    public byte[]? Image { get; set; }
+    public byte[]? ImageBinary { get; set; }
+
+    public virtual Court? Court { get; set; }
 }

@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Enums\" />
-    <Folder Include="Events\" />
-    <Folder Include="Exceptions\" />
+    <Folder Include="Configurations\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="EventHandlers\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Mapper\" />
+    <Folder Include="MessageConsumers\" />
+    <Folder Include="UOW\" />
+    <Folder Include="Services\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +29,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bookington.Core\Bookington.Core.csproj" />
   </ItemGroup>
 
 </Project>

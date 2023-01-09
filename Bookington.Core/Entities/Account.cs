@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Bokkington_Api.Entities;
+namespace Bookington.Core.Entities;
 
 public partial class Account
 {
@@ -19,9 +19,15 @@ public partial class Account
 
     public bool? IsActive { get; set; }
 
+    public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
+
     public virtual ICollection<Comment> Comments { get; } = new List<Comment>();
+
+    public virtual ICollection<Court> Courts { get; } = new List<Court>();
 
     public virtual ICollection<Report> Reports { get; } = new List<Report>();
 
     public virtual Role? Role { get; set; }
+
+    public virtual ICollection<Voucher> Vouchers { get; } = new List<Voucher>();
 }
