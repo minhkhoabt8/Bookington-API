@@ -1,7 +1,7 @@
 ﻿using Bookington.Infrastructure.DTOs.ApiResponse;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Bookington.Infrastructure.DTOs.ApiResponse;
 
@@ -78,9 +78,8 @@ public class ApiBadRequestResponse : ApiResponse
     {
         Errors = modelState.ToDictionary(e => e.Key, e => e.Value!.Errors.Select(error => error.ErrorMessage).ToList());
     }
-
     public ApiBadRequestResponse(IEnumerable<ValidationResult> validationResults, string message) : base(400, true,
-        message)
+       message)
     {
         Errors = validationResults.GroupBy(r => r.MemberNames.Single())
             .ToDictionary(e => e.Key, e => e.Select(r => r.ErrorMessage!).ToList());

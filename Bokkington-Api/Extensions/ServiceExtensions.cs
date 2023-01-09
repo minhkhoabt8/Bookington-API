@@ -5,6 +5,7 @@ using Bookington.Infrastructure.Repositories.Interfaces;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
+using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 
-namespace Bokkington_Api.Extensions
+namespace Bookington_Api.Extensions
 {
     public static class ServiceExtensions
     {
@@ -119,6 +120,10 @@ namespace Bokkington_Api.Extensions
         public static void ConfigureApiOptions(this IServiceCollection services)
         {
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+        }
+        public static void AddServiceFilters(this IServiceCollection services)
+        {
+            services.AddScoped<AutoValidateModelState>();
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SharedLib.ResponseWrapper;
 
-namespace Bokkington_Api.Controllers
+namespace Bookington_Api.Controllers
 {
     [Route("bookington/accounts")]
     [ApiController]
@@ -36,6 +36,7 @@ namespace Bokkington_Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AccountReadDTO>))]
         public async Task<IActionResult> CreateAsync(AccountWriteDTO dto)
         {
             var createdTag = await _accountService.CreateAsync(dto);

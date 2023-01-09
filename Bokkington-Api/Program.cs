@@ -1,4 +1,5 @@
-using Bokkington_Api.Extensions;
+using Bookington_Api.Extensions;
+using Bookington_Api.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,15 +15,13 @@ builder.Services.AddRepositories();
 builder.Services.AddUOW();
 builder.Services.AddAutoMapper();
 builder.Services.AddEvents();
+builder.Services.AddServiceFilters();
 
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureApiOptions();
 builder.Services.AddJWTAuthentication(builder.Configuration);
 builder.Services.AddDbContext(builder.Configuration);
 builder.Services.AddSwaggerGen();
-
-
-
 
 
 var app = builder.Build();
@@ -33,6 +32,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
