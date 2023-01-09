@@ -13,7 +13,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 
-namespace Bokkington_Api.Extensions
+namespace Bookington_Api.Extensions
 {
     public static class ServiceExtensions
     {

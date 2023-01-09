@@ -1,4 +1,4 @@
-using Bokkington_Api.Extensions;
+using Bookington_Api.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);

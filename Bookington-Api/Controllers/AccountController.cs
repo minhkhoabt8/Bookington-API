@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.ResponseWrapper;
 
-namespace Bokkington_Api.Controllers
+namespace Bookington_Api.Controllers
 {
     [Route("bookington/accounts")]
     [ApiController]

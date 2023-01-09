@@ -10,16 +10,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Bokkington-Api/Bokkington-Api.csproj", "Bokkington-Api/"]
-RUN dotnet restore "Bokkington-Api/Bokkington-Api.csproj"
+COPY ["Bookington-Api/Bookington-Api.csproj", "Bookington-Api/"]
+RUN dotnet restore "Bookington-Api/Bookington-Api.csproj"
 COPY . .
-WORKDIR "/src/Bokkington-Api"
-RUN dotnet build "Bokkington-Api.csproj" -c Release -o /app/build
+WORKDIR "/src/Bookington-Api"
+RUN dotnet build "Bookington-Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Bokkington-Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Bookington-Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Bokkington-Api.dll"]
+ENTRYPOINT ["dotnet", "Bookington-Api.dll"]
