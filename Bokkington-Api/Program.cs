@@ -20,7 +20,7 @@ builder.Services.ConfigureApiOptions();
 builder.Services.AddJWTAuthentication(builder.Configuration);
 builder.Services.AddDbContext(builder.Configuration);
 builder.Services.AddSwaggerGen();
-builder.Services.AddMemoryCache();
+
 
 
 

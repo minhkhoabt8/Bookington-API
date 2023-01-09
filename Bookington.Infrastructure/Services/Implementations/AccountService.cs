@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Azure;
+using Bookington.Core.Entities;
+using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
@@ -26,6 +29,19 @@ namespace Bookington.Infrastructure.Services.Implementations
             var accounts = await _unitOfWork.AccountRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<AccountReadDTO>>(accounts);
         }
+
+        public async Task<AccountReadDTO> CreateAsync(AccountWriteDTO dto)
+        {
+            //check account phone exist
+            var existAccount = await _unitOfWork.AccountRepository.FindAccountByPhoneNumber(dto.Phone);
+            if (existAccount != null) throw new UniqueConstraintException<Account>(nameof(Account.Phone), dto.Phone);
+            //auto mapper
+            var account = _mapper.Map<Account>(dto);
+            await _unitOfWork.AccountRepository.AddAsync(account);
+            await _unitOfWork.CommitAsync();
+            return _mapper.Map<AccountReadDTO>(account);
+        }
+
 
     }
 }

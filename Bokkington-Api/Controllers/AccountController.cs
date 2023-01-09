@@ -27,5 +27,18 @@ namespace Bokkington_Api.Controllers
             var accounts = await _accountService.GetAllAsync();
             return ResponseFactory.Ok(accounts);
         }
+
+        /// <summary>
+        /// Create a new account
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync(AccountWriteDTO dto)
+        {
+            var createdTag = await _accountService.CreateAsync(dto);
+            return ResponseFactory.Created(createdTag);
+        }
+
     }
 }

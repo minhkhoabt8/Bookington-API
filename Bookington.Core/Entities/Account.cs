@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookington.Core.Entities;
 
 public partial class Account
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    public int? RoleId { get; set; }
+    public int? RoleId { get; set; } = 3;
 
     public string? Phone { get; set; }
 
     public string? FullName { get; set; }
 
-    public DateTime? CreateAt { get; set; }
+    public DateTime? CreateAt { get; set; } = DateTime.Now;
 
-    public bool? IsConfirmed { get; set; }
+    public bool? IsConfirmed { get; set; } = false;
 
-    public bool? IsActive { get; set; }
+    public bool? IsActive { get; set; } = false;
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 
