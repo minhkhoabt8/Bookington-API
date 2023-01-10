@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Court
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string? OwnerId { get; set; }
 
@@ -19,9 +19,9 @@ public partial class Court
 
     public TimeSpan? CloseAt { get; set; }
 
-    public DateTime? CreateAt { get; set; }
+    public DateTime? CreateAt { get; set; } = DateTime.Now;
 
-    public bool? IsActive { get; set; }
+    public bool? IsActive { get; set; } = false;
 
     public bool? IsDeleted { get; set; }
 

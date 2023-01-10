@@ -98,13 +98,20 @@ namespace Bookington_Api.Extensions
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ICourtService, CourtService>();
         }
         //Register Repository
         public static void AddRepositories(this IServiceCollection services)
         {
             //AddScoped method registers the service with a scoped lifetime, the lifetime of a single request.
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<ICourtRepository, CourtRepository>();
         }
+
+
+
+
+
         public static void AddUOW(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork,UnitOfWork>();

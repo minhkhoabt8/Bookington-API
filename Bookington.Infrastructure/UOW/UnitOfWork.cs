@@ -24,6 +24,7 @@ namespace Bookington.Infrastructure.UOW
 
         //Register Repository to Uint Of Work
         public IAccountRepository AccountRepository => GetSingletonRepository<IAccountRepository>();
+        public ICourtRepository CourtRepository => GetSingletonRepository<ICourtRepository>();
 
 
 
