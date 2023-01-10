@@ -47,7 +47,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<CourtReadDTO>>(courts);
         }
 
-        public async Task<CourtReadDTO> GetByIdAsync(int id)
+        public async Task<CourtReadDTO> GetByIdAsync(string id)
         {
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id);
 

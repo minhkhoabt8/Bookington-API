@@ -37,7 +37,7 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourtReadDTO))]
-        public async Task<IActionResult> GetDetailsAsync(int id)
+        public async Task<IActionResult> GetDetailsAsync(string id)
         {
             var tag = await _courtService.GetByIdAsync(id);
             return ResponseFactory.Ok(tag);
