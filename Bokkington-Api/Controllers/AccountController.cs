@@ -1,6 +1,7 @@
 ﻿using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,15 +43,6 @@ namespace Bookington_Api.Controllers
             var createdTag = await _accountService.CreateAsync(dto);
             return ResponseFactory.Created(createdTag);
         }
-
-        [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountLoginOutputDTO>))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> Login(AccountLoginInputDTO input)
-        {
-            var result = await _accountService.LoginWithPhoneNumber(input);
-
-            return ResponseFactory.Ok(result);
-        }
+        
     }
 }

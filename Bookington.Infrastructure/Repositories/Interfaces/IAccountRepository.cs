@@ -11,6 +11,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<Account>
     {
         Task<Account?> FindAccountByPhoneNumber(string phoneNumber);
-        Task<Account?> GetUserUsernameAndPass(AccountLoginInputDTO account);
+        Task<Account?> LoginByPhone(AccountLoginInputDTO account);
     }
 }

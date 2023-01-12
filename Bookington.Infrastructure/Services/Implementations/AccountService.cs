@@ -1,17 +1,11 @@
 ﻿using AutoMapper;
-using Bookington.Core.Data;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -21,12 +15,14 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private IConfiguration _configuration;
+        private readonly ITokenService _tokenService;
 
-        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, IConfiguration configuration)
+        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, IConfiguration configuration, ITokenService tokenService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _configuration = configuration;
+            _tokenService = tokenService;
         }
         public async Task<IEnumerable<AccountReadDTO>> GetAllAsync()
         {
@@ -48,19 +44,21 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<AccountLoginOutputDTO> LoginWithPhoneNumber(AccountLoginInputDTO dto)
         {
-            //var existAccount = await _unitOfWork.AccountRepository.GetUserUsernameAndPass(dto);
+            var existAccount = await _unitOfWork.AccountRepository.LoginByPhone(dto);
 
-
-            //var accessToken = GetAccessToken(existAccount);
-            //return new AccountLoginOutputDTO
-            //{
-            //    SysToken = accessToken.Access_token,
-            //    SysTokenExpires = accessToken.Expires_in,
-            //};
-            throw new NotImplementedException();
+            if (existAccount == null) throw new EntityNotFoundException("User Name Or Password Incorrect");
+            //create new Token and return 
+            return new AccountLoginOutputDTO
+            {
+                UserID = existAccount.Id,
+                PhoneNumber = existAccount.Phone,
+                FullName = existAccount.FullName,
+                SysToken = await _tokenService.GenerateTokenAsync(existAccount),
+                SysTokenExpires = 120
+                //Role = existAccount.Role.RoleName
+            };
         }
 
-        
 
     }
 }

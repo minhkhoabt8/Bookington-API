@@ -18,9 +18,9 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
             return _context.Accounts.FirstOrDefaultAsync(a => a.Phone == phoneNumber);
         }
-        public Task<Account?> GetUserUsernameAndPass(AccountLoginInputDTO login)
+        public Task<Account?> LoginByPhone(AccountLoginInputDTO login)
         {
-            return  _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone);
+            return  _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone && a.Password==login.Password);
         }
 
     }

@@ -99,6 +99,7 @@ namespace Bookington_Api.Extensions
         {
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICourtService, CourtService>();
+            services.AddScoped<ITokenService, TokenService>();
         }
         //Register Repository
         public static void AddRepositories(this IServiceCollection services)
