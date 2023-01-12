@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Bookington_Api.Filters;
-
 public class AutoValidateModelState : IActionFilter
 {
     public void OnActionExecuted(ActionExecutedContext context)

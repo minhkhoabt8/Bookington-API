@@ -2,12 +2,11 @@
 using Bookington.Core.Entities;
 using Bookington.Infrastructure.Repositories.Interfaces;
 
-
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
-    public class CourtRepository : GenericRepository<Court, BookingtonDbContext>, ICourtRepository
+    public class RoleRepository : GenericRepository<Role, BookingtonDbContext>, IRoleRepository
     {
-        public CourtRepository(BookingtonDbContext context) : base(context)
+        public RoleRepository(BookingtonDbContext context) : base(context)
         {
         }
     }

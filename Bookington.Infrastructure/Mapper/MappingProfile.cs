@@ -3,6 +3,7 @@ using Bookington.Core.Entities;
 using Bookington.Infrastructure.DTOs;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.Court;
+using Bookington.Infrastructure.DTOs.Role;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,10 @@ namespace Bookington.Infrastructure.Mapper
             // Court
             CreateMap<Court, CourtReadDTO>();
             CreateMap<CourtWriteDTO, Court>();
+            //Role
+            CreateMap<Role, RoleReadDTO>();
+            CreateMap<RoleWriteDTO, Role>();
+
         }
     }
 }

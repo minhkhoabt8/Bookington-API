@@ -5,7 +5,7 @@ using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace SharedLib.Infrastructure.Repositories.Implementations;
+namespace Bookington.Infrastructure.Repositories.Implementations;
 
 public class GenericRepository<TEntity, TContext> :
     IGetAllAsync<TEntity>,

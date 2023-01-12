@@ -13,6 +13,8 @@ namespace Bookington.Infrastructure.UOW
 
         public ICourtRepository CourtRepository { get; }
 
+        public IRoleRepository RoleRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

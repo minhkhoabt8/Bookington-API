@@ -16,8 +16,14 @@ using System.Text;
 
 namespace Bookington_Api.Extensions
 {
+    ///<Summary>
+    ///DB Context Extension
+    ///</Summary>
     public static class ServiceExtensions
     {
+        ///<Summary>
+        ///Add DB Context
+        ///</Summary>
         public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
 
@@ -28,6 +34,9 @@ namespace Bookington_Api.Extensions
                 );
             });
         }
+        ///<Summary>
+        ///Add Swagger UI
+        ///</Summary>
         public static void ConfigureSwagger(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
@@ -73,7 +82,9 @@ namespace Bookington_Api.Extensions
             });
             });
         }
-
+        ///<Summary>
+        ///Add Jwt Authentication
+        ///</Summary>
         public static void AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -93,42 +104,57 @@ namespace Bookington_Api.Extensions
                 };
             });
         }
-
-        //Regiister Service
+        ///<Summary>
+        /// Reggister Service
+        ///</Summary>
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICourtService, CourtService>();
             services.AddScoped<ITokenService, TokenService>();
         }
-        //Register Repository
+
+        ///<Summary>
+        ///Register Repository
+        ///</Summary>
         public static void AddRepositories(this IServiceCollection services)
         {
             //AddScoped method registers the service with a scoped lifetime, the lifetime of a single request.
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ICourtRepository, CourtRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
         }
-
-
-
-
-
+        ///<Summary>
+        ///Register Unit Of Work
+        ///</Summary>
         public static void AddUOW(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork,UnitOfWork>();
         }
+        ///<Summary>
+        ///Add Auto Mapper
+        ///</Summary>
         public static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
         }
+        ///<Summary>
+        ///Add Event
+        ///</Summary>
         public static void AddEvents(this IServiceCollection services)
         {
             //Add event
         }
+        ///<Summary>
+        ///Add Api Config
+        ///</Summary>
         public static void ConfigureApiOptions(this IServiceCollection services)
         {
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
         }
+        ///<Summary>
+        ///Add Service Filter
+        ///</Summary>
         public static void AddServiceFilters(this IServiceCollection services)
         {
             services.AddScoped<AutoValidateModelState>();

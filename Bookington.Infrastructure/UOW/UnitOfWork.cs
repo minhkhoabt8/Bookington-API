@@ -22,11 +22,10 @@ namespace Bookington.Infrastructure.UOW
             return _context.SaveChangesAsync();
         }
 
-        //Register Repository to Uint Of Work
+        //Register Repository to Unit Of Work
         public IAccountRepository AccountRepository => GetSingletonRepository<IAccountRepository>();
         public ICourtRepository CourtRepository => GetSingletonRepository<ICourtRepository>();
-
-
+        public IRoleRepository RoleRepository => GetSingletonRepository<IRoleRepository>();
 
 
 

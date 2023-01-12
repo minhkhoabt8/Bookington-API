@@ -24,8 +24,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             {
                 new(ClaimTypes.NameIdentifier,account.Id.ToString()),
                 new(ClaimTypes.MobilePhone, account.Phone),
-                new(ClaimTypes.Name, account.FullName)
-                //new(ClaimTypes.Role,account.Role.RoleName)
+                new(ClaimTypes.Name, account.FullName),
+                //new(ClaimTypes.Role,)
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -37,7 +37,6 @@ namespace Bookington.Infrastructure.Services.Implementations
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return Task.FromResult(tokenHandler.WriteToken(token));
-
         }
     }
 }

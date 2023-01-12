@@ -4,7 +4,6 @@ using Bookington.Core.Entities;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using SharedLib.Infrastructure.Repositories.Implementations;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
