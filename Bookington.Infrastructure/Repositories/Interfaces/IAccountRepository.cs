@@ -1,5 +1,7 @@
 ﻿using Azure;
 using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.Account;
+
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
     public interface IAccountRepository : 
@@ -9,5 +11,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<Account>
     {
         Task<Account?> FindAccountByPhoneNumber(string phoneNumber);
+        Task<Account?> GetUserUsernameAndPass(AccountLoginInputDTO account);
     }
 }

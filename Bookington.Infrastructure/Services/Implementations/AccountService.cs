@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
-using Azure;
+using Bookington.Core.Data;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -18,11 +20,13 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private IConfiguration _configuration;
 
-        public AccountService(IMapper mapper, IUnitOfWork unitOfWork)
+        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
         public async Task<IEnumerable<AccountReadDTO>> GetAllAsync()
         {
@@ -42,6 +46,20 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<AccountReadDTO>(account);
         }
 
+        //public async Task<AccountLoginOutputDTO> LoginWithPhoneNumber(AccountLoginInputDTO dto)
+        //{
+        //    var existAccount = await _unitOfWork.AccountRepository.GetUserUsernameAndPass(dto);
+
+
+        //    var accessToken = GetAccessToken(existAccount);
+        //    return new AccountLoginOutputDTO
+        //    {
+        //        SysToken = accessToken.Access_token,
+        //        SysTokenExpires = accessToken.Expires_in,
+        //    };
+        //}
+
+        
 
     }
 }

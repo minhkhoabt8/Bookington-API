@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Bookington.Core.Data;
 using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -17,7 +18,10 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
             return _context.Accounts.FirstOrDefaultAsync(a => a.Phone == phoneNumber);
         }
-
+        public Task<Account?> GetUserUsernameAndPass(AccountLoginInputDTO login)
+        {
+            return  _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone);
+        }
 
     }
 }
