@@ -18,6 +18,8 @@ public partial class BookingtonDbContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
+    public virtual DbSet<AccountOtp> AccountOtps { get; set; }
+
     public virtual DbSet<Booking> Bookings { get; set; }
 
     public virtual DbSet<Comment> Comments { get; set; }
@@ -46,13 +48,19 @@ public partial class BookingtonDbContext : DbContext
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=(local);Database=BookingtonDB;User Id=khoalnm;Password=admin;TrustServerCertificate=True");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__accounts__3213E83F6FD15E99");
+            entity.HasKey(e => e.Id).HasName("PK__accounts__3213E83FF46FA5FD");
 
             entity.ToTable("accounts");
+
+            entity.HasIndex(e => e.Phone, "UQ__accounts__B43B145F7F883CB5").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasMaxLength(40)
@@ -65,7 +73,10 @@ public partial class BookingtonDbContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("full_name");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.IsConfirmed).HasColumnName("is_confirmed");
+            entity.Property(e => e.Password)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("password");
             entity.Property(e => e.Phone)
                 .HasMaxLength(10)
                 .IsUnicode(false)
@@ -74,12 +85,41 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__accounts__role_i__267ABA7A");
+                .HasConstraintName("FK__accounts__role_i__276EDEB3");
+        });
+
+        modelBuilder.Entity<AccountOtp>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__account___3213E83FB02E2E92");
+
+            entity.ToTable("account_otps");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("create_at");
+            entity.Property(e => e.IsConfirmed).HasColumnName("is_confirmed");
+            entity.Property(e => e.Otp)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .HasColumnName("otp");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("phone");
+
+            entity.HasOne(d => d.PhoneNavigation).WithMany(p => p.AccountOtps)
+                .HasPrincipalKey(p => p.Phone)
+                .HasForeignKey(d => d.Phone)
+                .HasConstraintName("FK__account_o__phone__2A4B4B5E");
         });
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__bookings__3213E83F85237411");
+            entity.HasKey(e => e.Id).HasName("PK__bookings__3213E83F77E10ED4");
 
             entity.ToTable("bookings");
 
@@ -110,21 +150,21 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.BookByNavigation).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.BookBy)
-                .HasConstraintName("FK__bookings__book_b__4CA06362");
+                .HasConstraintName("FK__bookings__book_b__5070F446");
 
             entity.HasOne(d => d.RefSlotNavigation).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.RefSlot)
-                .HasConstraintName("FK__bookings__ref_sl__4BAC3F29");
+                .HasConstraintName("FK__bookings__ref_sl__4F7CD00D");
 
             entity.HasOne(d => d.VoucherCodeNavigation).WithMany(p => p.Bookings)
                 .HasPrincipalKey(p => p.VoucherCode)
                 .HasForeignKey(d => d.VoucherCode)
-                .HasConstraintName("FK__bookings__vouche__4D94879B");
+                .HasConstraintName("FK__bookings__vouche__5165187F");
         });
 
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__comments__3213E83F93EC1A00");
+            entity.HasKey(e => e.Id).HasName("PK__comments__3213E83F14EC6B71");
 
             entity.ToTable("comments");
 
@@ -151,16 +191,16 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.CommentWriter).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.CommentWriterId)
-                .HasConstraintName("FK__comments__commen__34C8D9D1");
+                .HasConstraintName("FK__comments__commen__38996AB5");
 
             entity.HasOne(d => d.RefCourtNavigation).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.RefCourt)
-                .HasConstraintName("FK__comments__ref_co__35BCFE0A");
+                .HasConstraintName("FK__comments__ref_co__398D8EEE");
         });
 
         modelBuilder.Entity<Court>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__courts__3213E83F624A1B4C");
+            entity.HasKey(e => e.Id).HasName("PK__courts__3213E83F3FDD9262");
 
             entity.ToTable("courts");
 
@@ -189,16 +229,16 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.District).WithMany(p => p.Courts)
                 .HasForeignKey(d => d.DistrictId)
-                .HasConstraintName("FK__courts__district__2F10007B");
+                .HasConstraintName("FK__courts__district__32E0915F");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.Courts)
                 .HasForeignKey(d => d.OwnerId)
-                .HasConstraintName("FK__courts__owner_id__2E1BDC42");
+                .HasConstraintName("FK__courts__owner_id__31EC6D26");
         });
 
         modelBuilder.Entity<CourtImage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__court_im__3213E83F89DED088");
+            entity.HasKey(e => e.Id).HasName("PK__court_im__3213E83F7AB43B57");
 
             entity.ToTable("court_images");
 
@@ -213,12 +253,12 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.Court).WithMany(p => p.CourtImages)
                 .HasForeignKey(d => d.CourtId)
-                .HasConstraintName("FK__court_ima__court__31EC6D26");
+                .HasConstraintName("FK__court_ima__court__35BCFE0A");
         });
 
         modelBuilder.Entity<CourtType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__court_ty__3213E83F78EAFB02");
+            entity.HasKey(e => e.Id).HasName("PK__court_ty__3213E83F858496CD");
 
             entity.ToTable("court_types");
 
@@ -232,7 +272,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<District>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__district__3213E83F37D2778E");
+            entity.HasKey(e => e.Id).HasName("PK__district__3213E83F393D5ADD");
 
             entity.ToTable("districts");
 
@@ -246,12 +286,12 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.Province).WithMany(p => p.Districts)
                 .HasForeignKey(d => d.ProvinceId)
-                .HasConstraintName("FK__districts__provi__2B3F6F97");
+                .HasConstraintName("FK__districts__provi__2F10007B");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83FA956F20D");
+            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83F8029852E");
 
             entity.ToTable("orders");
 
@@ -270,12 +310,12 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.BookingRefNavigation).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.BookingRef)
-                .HasConstraintName("FK__orders__booking___5070F446");
+                .HasConstraintName("FK__orders__booking___5441852A");
         });
 
         modelBuilder.Entity<Province>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__province__3213E83FC73BA5EC");
+            entity.HasKey(e => e.Id).HasName("PK__province__3213E83FDFC026C7");
 
             entity.ToTable("provinces");
 
@@ -289,7 +329,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Report>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__reports__3213E83F1AB187A1");
+            entity.HasKey(e => e.Id).HasName("PK__reports__3213E83F9D9B7027");
 
             entity.ToTable("reports");
 
@@ -308,16 +348,16 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.Reporter).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.ReporterId)
-                .HasConstraintName("FK__reports__reporte__3B75D760");
+                .HasConstraintName("FK__reports__reporte__3F466844");
 
             entity.HasOne(d => d.Type).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.TypeId)
-                .HasConstraintName("FK__reports__type_id__3A81B327");
+                .HasConstraintName("FK__reports__type_id__3E52440B");
         });
 
         modelBuilder.Entity<ReportType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__report_t__3213E83F0427123E");
+            entity.HasKey(e => e.Id).HasName("PK__report_t__3213E83F4890452E");
 
             entity.ToTable("report_types");
 
@@ -331,7 +371,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__roles__3213E83F59CB7009");
+            entity.HasKey(e => e.Id).HasName("PK__roles__3213E83F52DAE39F");
 
             entity.ToTable("roles");
 
@@ -346,7 +386,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Slot>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__slots__3213E83FFD788983");
+            entity.HasKey(e => e.Id).HasName("PK__slots__3213E83F87D70A4E");
 
             entity.ToTable("slots");
 
@@ -364,12 +404,12 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.RefSubCourtNavigation).WithMany(p => p.Slots)
                 .HasForeignKey(d => d.RefSubCourt)
-                .HasConstraintName("FK__slots__ref_sub_c__440B1D61");
+                .HasConstraintName("FK__slots__ref_sub_c__47DBAE45");
         });
 
         modelBuilder.Entity<SubCourt>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__sub_cour__3213E83F41A47DE2");
+            entity.HasKey(e => e.Id).HasName("PK__sub_cour__3213E83F5EE76077");
 
             entity.ToTable("sub_courts");
 
@@ -390,20 +430,20 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.CourtType).WithMany(p => p.SubCourts)
                 .HasForeignKey(d => d.CourtTypeId)
-                .HasConstraintName("FK__sub_court__court__412EB0B6");
+                .HasConstraintName("FK__sub_court__court__44FF419A");
 
             entity.HasOne(d => d.ParentCourt).WithMany(p => p.SubCourts)
                 .HasForeignKey(d => d.ParentCourtId)
-                .HasConstraintName("FK__sub_court__paren__403A8C7D");
+                .HasConstraintName("FK__sub_court__paren__440B1D61");
         });
 
         modelBuilder.Entity<Voucher>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__vouchers__3213E83F4F3F0063");
+            entity.HasKey(e => e.Id).HasName("PK__vouchers__3213E83F0A4E665C");
 
             entity.ToTable("vouchers");
 
-            entity.HasIndex(e => e.VoucherCode, "UQ__vouchers__2173106953AA8CF3").IsUnique();
+            entity.HasIndex(e => e.VoucherCode, "UQ__vouchers__2173106971035309").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasMaxLength(40)
@@ -443,11 +483,11 @@ public partial class BookingtonDbContext : DbContext
 
             entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.Vouchers)
                 .HasForeignKey(d => d.CreateBy)
-                .HasConstraintName("FK__vouchers__create__47DBAE45");
+                .HasConstraintName("FK__vouchers__create__4BAC3F29");
 
             entity.HasOne(d => d.RefCourtNavigation).WithMany(p => p.Vouchers)
                 .HasForeignKey(d => d.RefCourt)
-                .HasConstraintName("FK__vouchers__ref_co__48CFD27E");
+                .HasConstraintName("FK__vouchers__ref_co__4CA06362");
         });
 
         OnModelCreatingPartial(modelBuilder);
