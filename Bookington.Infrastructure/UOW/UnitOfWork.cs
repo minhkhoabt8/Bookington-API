@@ -26,12 +26,11 @@ namespace Bookington.Infrastructure.UOW
         public IAccountRepository AccountRepository => GetSingletonRepository<IAccountRepository>();
         public ICourtRepository CourtRepository => GetSingletonRepository<ICourtRepository>();
         public IRoleRepository RoleRepository => GetSingletonRepository<IRoleRepository>();
-
-
-
-
-
-
+        public IBookingRepository BookingRepository => GetSingletonRepository<IBookingRepository>();
+        public ISubCourtRepository SubCourtRepository => GetSingletonRepository<ISubCourtRepository>();
+        public ISlotRepository SlotRepository => GetSingletonRepository<ISlotRepository>();
+        public IVoucherRepository VoucherRepository => GetSingletonRepository<IVoucherRepository>();
+        public ICommentRepository CommentRepository => GetSingletonRepository<ICommentRepository>();
         private T GetSingletonRepository<T>()
         {
             if (!_singletonRepositories.ContainsKey(typeof(T).Name))

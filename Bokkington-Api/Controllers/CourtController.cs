@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington_Api.Controllers
 {
+    /// <summary> 
+    /// Court Controller
+    /// </summary>
     [Route("bookington/courts")]
     [ApiController]
     public class CourtController : ControllerBase
     {
         private readonly ICourtService _courtService;
 
+        /// <summary>        
+        /// </summary>
         public CourtController(ICourtService courtService)
         {
             _courtService = courtService;

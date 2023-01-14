@@ -4,6 +4,10 @@ using Bookington.Infrastructure.DTOs;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.DTOs.Role;
+using Bookington.Infrastructure.DTOs.Booking;
+using Bookington.Infrastructure.DTOs.SubCourt;
+using Bookington.Infrastructure.DTOs.Slot;
+using Bookington.Infrastructure.DTOs.Voucher;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +26,26 @@ namespace Bookington.Infrastructure.Mapper
             // Court
             CreateMap<Court, CourtReadDTO>();
             CreateMap<CourtWriteDTO, Court>();
-            //Role
+            // Sub Court
+            CreateMap<SubCourt, SubCourtReadDTO>();
+            CreateMap<SubCourtWriteDTO, SubCourt>();
+            // Role
             CreateMap<Role, RoleReadDTO>();
             CreateMap<RoleWriteDTO, Role>();
-
+            // Booking
+            CreateMap<Booking, BookingReadDTO>();
+            CreateMap<BookingWriteDTO, Booking>();
+            CreateMap<Booking, CourtBookingHistoryReadDTO>()
+            .ForMember(des => des.TimeSlot, act => act.MapFrom(src => src.RefSlotNavigation.StartTime.ToString() + " - " + src.RefSlotNavigation.EndTime.ToString()))
+            .ForMember(des => des.Customer, act => act.MapFrom(src => src.BookByNavigation.FullName))
+            .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone))
+            .ForMember(des => des.VoucherDiscount, act => act.MapFrom(src => src.VoucherCodeNavigation.Discount));
+            // Slot
+            CreateMap<Slot, SlotReadDTO>();
+            CreateMap<SlotWriteDTO, Slot>();
+            // Voucher
+            CreateMap<Voucher, VoucherReadDTO>();
+            CreateMap<VoucherWriteDTO, Voucher>();
         }
     }
 }

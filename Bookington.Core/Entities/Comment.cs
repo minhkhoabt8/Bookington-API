@@ -15,9 +15,9 @@ public partial class Comment
 
     public double? Rating { get; set; }
 
-    public DateTime? CreateAt { get; set; }
+    public DateTime CreateAt { get; set; } = DateTime.Now;
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public virtual Account? CommentWriter { get; set; }
 

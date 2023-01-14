@@ -7,11 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington_Api.Controllers
 {
+    /// <summary>
+    /// Account Controller
+    /// </summary>
     [Route("bookington/accounts")]
     [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+
+        /// <summary>        
+        /// </summary>
         public AccountController(IAccountService accountService)
         {
             _accountService = accountService;

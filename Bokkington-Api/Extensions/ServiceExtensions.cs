@@ -112,6 +112,9 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICourtService, CourtService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<ISubCourtService, SubCourtService>();
+            services.AddScoped<ICommentService, CommentService>();
         }
 
         ///<Summary>
@@ -123,6 +126,11 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ICourtRepository, CourtRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
+            services.AddScoped<ISubCourtRepository, SubCourtRepository>();
+            services.AddScoped<ISlotRepository, SlotRepository>();
+            services.AddScoped<IVoucherRepository, VoucherRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work

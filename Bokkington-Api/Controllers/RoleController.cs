@@ -7,11 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington_Api.Controllers
 {
+    /// <summary> 
+    /// Role Controller
+    /// </summary>
     [ApiController]
     [Route("auth/roles")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
+        /// <summary>        
+        /// </summary>
         public RoleController(IRoleService roleService)
         {
             _roleService = roleService;

@@ -15,6 +15,15 @@ namespace Bookington.Infrastructure.UOW
 
         public IRoleRepository RoleRepository { get; }
 
+        public IBookingRepository BookingRepository { get; }
+
+        public ISubCourtRepository SubCourtRepository { get; }
+
+        public ISlotRepository SlotRepository { get; }
+
+        public IVoucherRepository VoucherRepository { get; }
+
+        public ICommentRepository CommentRepository { get; }
         Task<int> CommitAsync();
     }
 }

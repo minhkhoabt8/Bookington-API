@@ -6,11 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington_Api.Controllers
 {
+    /// <summary> 
+    /// Auth Controller
+    /// </summary>
     [ApiController]
     [Route("auth")]
     public class AuthController : Controller
     {
         private readonly IAccountService _accountService;
+        /// <summary>        
+        /// </summary>
         public AuthController(IAccountService accountService)
         {
             _accountService = accountService;
