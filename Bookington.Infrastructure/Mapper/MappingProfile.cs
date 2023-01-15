@@ -26,8 +26,8 @@ namespace Bookington.Infrastructure.Mapper
             // Court
             CreateMap<Court, CourtReadDTO>();
             CreateMap<CourtWriteDTO, Court>()
-                .ForMember(x => x.OpenAt,opt => opt.MapFrom(src => (src.OpenAt).Hours + src.OpenAt.Minutes))
-                .ForMember(x => x.CloseAt, opt => opt.MapFrom(src => (src.CloseAt).Hours + src.OpenAt.Minutes));
+                .ForMember(dest => dest.OpenAt,options => options.MapFrom(src => TimeSpan.Parse(src.OpenAt.ToString())))
+                .ForMember(dest => dest.CloseAt, options => options.MapFrom(src => TimeSpan.Parse(src.CloseAt.ToString())));
             // Sub Court
             CreateMap<SubCourt, SubCourtReadDTO>();
             CreateMap<SubCourtWriteDTO, SubCourt>();

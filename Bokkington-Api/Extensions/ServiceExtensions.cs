@@ -110,6 +110,7 @@ namespace Bookington_Api.Extensions
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICourtService, CourtService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IBookingService, BookingService>();

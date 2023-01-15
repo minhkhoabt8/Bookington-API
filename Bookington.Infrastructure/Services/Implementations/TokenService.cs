@@ -5,27 +5,31 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Bookington.Infrastructure.UOW;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration, IUnitOfWork unitOfWork)
         {
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
         }
 
         public Task<string> GenerateTokenAsync(Account account)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
+            var userRole =  _unitOfWork.RoleRepository.FindAsync(account.RoleId);
             var claims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier,account.Id.ToString()),
                 new(ClaimTypes.MobilePhone, account.Phone),
                 new(ClaimTypes.Name, account.FullName),
-                //new(ClaimTypes.Role,)
+                new(ClaimTypes.Role,userRole.Result.RoleName )
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor

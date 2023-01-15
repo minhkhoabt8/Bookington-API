@@ -11,17 +11,15 @@ namespace Bookington.Infrastructure.DTOs.Court
     {
         public string OwnerId { get; set; }
 
-        public int DistrictId { get; set; }
+        public string DistrictId { get; set; }
 
         public string Name { get; set; }
 
         public string Address { get; set; }
 
-        [DataType(DataType.Time)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
-        public TimeSpan OpenAt { get; set; }
-        [DataType(DataType.Time)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
-        public TimeSpan CloseAt { get; set; }
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
+        public string OpenAt { get; set; }
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
+        public string CloseAt { get; set; }
     }
 }

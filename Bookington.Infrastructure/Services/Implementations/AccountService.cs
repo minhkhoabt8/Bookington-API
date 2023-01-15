@@ -47,15 +47,17 @@ namespace Bookington.Infrastructure.Services.Implementations
             var existAccount = await _unitOfWork.AccountRepository.LoginByPhone(dto);
 
             if (existAccount == null) throw new EntityNotFoundException("User Name Or Password Incorrect");
+
+            var role = await _unitOfWork.RoleRepository.FindAsync(existAccount.RoleId);
             //create new Token and return 
             return new AccountLoginOutputDTO
             {
                 UserID = existAccount.Id,
                 PhoneNumber = existAccount.Phone,
                 FullName = existAccount.FullName,
+                Role = role.RoleName,
                 SysToken = await _tokenService.GenerateTokenAsync(existAccount),
                 SysTokenExpires = 120
-                //Role = existAccount.Role.RoleName
             };
         }
 

@@ -30,7 +30,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AccountReadDTO>))]
-        public async Task<Microsoft.AspNetCore.Mvc.IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
             var accounts = await _accountService.GetAllAsync();
             return ResponseFactory.Ok(accounts);
@@ -44,7 +44,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AccountReadDTO>))]
-        public async Task<Microsoft.AspNetCore.Mvc.IActionResult> CreateAsync(AccountWriteDTO dto)
+        public async Task<IActionResult> CreateAsync(AccountWriteDTO dto)
         {
             var createdTag = await _accountService.CreateAsync(dto);
             return ResponseFactory.Created(createdTag);
