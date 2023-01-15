@@ -7,7 +7,7 @@ public partial class Report
 {
     public string Id { get; set; } = null!;
 
-    public int? TypeId { get; set; }
+    public string? TypeId { get; set; }
 
     public string? ReporterId { get; set; }
 

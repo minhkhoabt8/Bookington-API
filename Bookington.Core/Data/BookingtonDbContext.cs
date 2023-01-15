@@ -48,15 +48,19 @@ public partial class BookingtonDbContext : DbContext
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("server =(local); database = BookingtonDB;uid=khoalnm;pwd=admin;TrustServerCertificate=True");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__accounts__3213E83FF46FA5FD");
+            entity.HasKey(e => e.Id).HasName("PK__accounts__3213E83FF5709F56");
 
             entity.ToTable("accounts");
 
-            entity.HasIndex(e => e.Phone, "UQ__accounts__B43B145F7F883CB5").IsUnique();
+            entity.HasIndex(e => e.Phone, "UQ__accounts__B43B145FD77CC679").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasMaxLength(40)
@@ -77,7 +81,10 @@ public partial class BookingtonDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("phone");
-            entity.Property(e => e.RoleId).HasColumnName("role_id");
+            entity.Property(e => e.RoleId)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("role_id");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
@@ -86,7 +93,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<AccountOtp>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__account___3213E83FB02E2E92");
+            entity.HasKey(e => e.Id).HasName("PK__account___3213E83FB8BA0A90");
 
             entity.ToTable("account_otps");
 
@@ -115,7 +122,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__bookings__3213E83F77E10ED4");
+            entity.HasKey(e => e.Id).HasName("PK__bookings__3213E83F676B3501");
 
             entity.ToTable("bookings");
 
@@ -134,6 +141,9 @@ public partial class BookingtonDbContext : DbContext
             entity.Property(e => e.IsPaid).HasColumnName("is_paid");
             entity.Property(e => e.IsRefunded).HasColumnName("is_refunded");
             entity.Property(e => e.OriginalPrice).HasColumnName("original_price");
+            entity.Property(e => e.PlayDate)
+                .HasColumnType("date")
+                .HasColumnName("play_date");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.RefSlot)
                 .HasMaxLength(40)
@@ -160,7 +170,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__comments__3213E83F14EC6B71");
+            entity.HasKey(e => e.Id).HasName("PK__comments__3213E83FAE32E7DD");
 
             entity.ToTable("comments");
 
@@ -196,7 +206,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Court>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__courts__3213E83F3FDD9262");
+            entity.HasKey(e => e.Id).HasName("PK__courts__3213E83FE65F1934");
 
             entity.ToTable("courts");
 
@@ -211,7 +221,10 @@ public partial class BookingtonDbContext : DbContext
             entity.Property(e => e.CreateAt)
                 .HasColumnType("datetime")
                 .HasColumnName("create_at");
-            entity.Property(e => e.DistrictId).HasColumnName("district_id");
+            entity.Property(e => e.DistrictId)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("district_id");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
@@ -234,12 +247,13 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<CourtImage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__court_im__3213E83F7AB43B57");
+            entity.HasKey(e => e.Id).HasName("PK__court_im__3213E83F913444EA");
 
             entity.ToTable("court_images");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .HasMaxLength(40)
+                .IsUnicode(false)
                 .HasColumnName("id");
             entity.Property(e => e.CourtId)
                 .HasMaxLength(40)
@@ -254,12 +268,13 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<CourtType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__court_ty__3213E83F858496CD");
+            entity.HasKey(e => e.Id).HasName("PK__court_ty__3213E83F8DBB2345");
 
             entity.ToTable("court_types");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .HasMaxLength(40)
+                .IsUnicode(false)
                 .HasColumnName("id");
             entity.Property(e => e.Content)
                 .HasMaxLength(50)
@@ -268,17 +283,21 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<District>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__district__3213E83F393D5ADD");
+            entity.HasKey(e => e.Id).HasName("PK__district__3213E83F8E6816C0");
 
             entity.ToTable("districts");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .HasMaxLength(40)
+                .IsUnicode(false)
                 .HasColumnName("id");
             entity.Property(e => e.DistrictName)
                 .HasMaxLength(50)
                 .HasColumnName("district_name");
-            entity.Property(e => e.ProvinceId).HasColumnName("province_id");
+            entity.Property(e => e.ProvinceId)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("province_id");
 
             entity.HasOne(d => d.Province).WithMany(p => p.Districts)
                 .HasForeignKey(d => d.ProvinceId)
@@ -287,7 +306,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83F8029852E");
+            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83F053626C9");
 
             entity.ToTable("orders");
 
@@ -311,12 +330,13 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Province>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__province__3213E83FDFC026C7");
+            entity.HasKey(e => e.Id).HasName("PK__province__3213E83FC1A9A32B");
 
             entity.ToTable("provinces");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .HasMaxLength(40)
+                .IsUnicode(false)
                 .HasColumnName("id");
             entity.Property(e => e.ProvinceName)
                 .HasMaxLength(50)
@@ -325,7 +345,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Report>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__reports__3213E83F9D9B7027");
+            entity.HasKey(e => e.Id).HasName("PK__reports__3213E83F045CD47C");
 
             entity.ToTable("reports");
 
@@ -340,7 +360,10 @@ public partial class BookingtonDbContext : DbContext
                 .HasMaxLength(40)
                 .IsUnicode(false)
                 .HasColumnName("reporter_id");
-            entity.Property(e => e.TypeId).HasColumnName("type_id");
+            entity.Property(e => e.TypeId)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("type_id");
 
             entity.HasOne(d => d.Reporter).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.ReporterId)
@@ -353,12 +376,13 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<ReportType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__report_t__3213E83F4890452E");
+            entity.HasKey(e => e.Id).HasName("PK__report_t__3213E83F619490CB");
 
             entity.ToTable("report_types");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .HasMaxLength(40)
+                .IsUnicode(false)
                 .HasColumnName("id");
             entity.Property(e => e.ReportName)
                 .HasMaxLength(50)
@@ -367,12 +391,13 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__roles__3213E83F52DAE39F");
+            entity.HasKey(e => e.Id).HasName("PK__roles__3213E83F6F8F059E");
 
             entity.ToTable("roles");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .HasMaxLength(40)
+                .IsUnicode(false)
                 .HasColumnName("id");
             entity.Property(e => e.RoleName)
                 .HasMaxLength(10)
@@ -382,7 +407,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Slot>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__slots__3213E83F87D70A4E");
+            entity.HasKey(e => e.Id).HasName("PK__slots__3213E83FF2214998");
 
             entity.ToTable("slots");
 
@@ -392,6 +417,7 @@ public partial class BookingtonDbContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.EndTime).HasColumnName("end_time");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.RefSubCourt)
                 .HasMaxLength(40)
                 .IsUnicode(false)
@@ -405,7 +431,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<SubCourt>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__sub_cour__3213E83F5EE76077");
+            entity.HasKey(e => e.Id).HasName("PK__sub_cour__3213E83F94A8E165");
 
             entity.ToTable("sub_courts");
 
@@ -413,12 +439,18 @@ public partial class BookingtonDbContext : DbContext
                 .HasMaxLength(40)
                 .IsUnicode(false)
                 .HasColumnName("id");
-            entity.Property(e => e.CourtTypeId).HasColumnName("court_type_id");
+            entity.Property(e => e.CourtTypeId)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("court_type_id");
             entity.Property(e => e.CreateAt)
                 .HasColumnType("datetime")
                 .HasColumnName("create_at");
             entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("name");
             entity.Property(e => e.ParentCourtId)
                 .HasMaxLength(40)
                 .IsUnicode(false)
@@ -435,11 +467,11 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Voucher>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__vouchers__3213E83F0A4E665C");
+            entity.HasKey(e => e.Id).HasName("PK__vouchers__3213E83FF28789B3");
 
             entity.ToTable("vouchers");
 
-            entity.HasIndex(e => e.VoucherCode, "UQ__vouchers__2173106971035309").IsUnique();
+            entity.HasIndex(e => e.VoucherCode, "UQ__vouchers__21731069BBE0480B").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasMaxLength(40)

@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Voucher
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string? CreateBy { get; set; }
 

@@ -7,9 +7,11 @@ public partial class SubCourt
 {
     public string Id { get; set; } = null!;
 
+    public string? Name { get; set; }
+
     public string? ParentCourtId { get; set; }
 
-    public int? CourtTypeId { get; set; }
+    public string? CourtTypeId { get; set; }
 
     public DateTime? CreateAt { get; set; }
 

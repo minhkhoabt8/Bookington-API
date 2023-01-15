@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Province
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = null!;
 
     public string? ProvinceName { get; set; }
 

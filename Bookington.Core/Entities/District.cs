@@ -5,9 +5,9 @@ namespace Bookington.Core.Entities;
 
 public partial class District
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = null!;
 
-    public int? ProvinceId { get; set; }
+    public string? ProvinceId { get; set; }
 
     public string? DistrictName { get; set; }
 

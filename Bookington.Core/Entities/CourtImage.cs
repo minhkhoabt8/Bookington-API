@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class CourtImage
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = null!;
 
     public string? CourtId { get; set; }
 
