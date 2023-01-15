@@ -12,6 +12,7 @@ namespace Bookington.Infrastructure.UOW
         public IAccountRepository AccountRepository { get; }
 
         public ICourtRepository CourtRepository { get; }
+        public IOtpRepository OtpRepository { get; }
 
         public IRoleRepository RoleRepository { get; }
 

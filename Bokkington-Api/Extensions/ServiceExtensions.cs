@@ -132,6 +132,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ISlotRepository, SlotRepository>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IOtpRepository, OtpRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work

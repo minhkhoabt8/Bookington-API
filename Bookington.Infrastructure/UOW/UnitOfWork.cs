@@ -24,6 +24,7 @@ namespace Bookington.Infrastructure.UOW
 
         //Register Repository to Unit Of Work
         public IAccountRepository AccountRepository => GetSingletonRepository<IAccountRepository>();
+        public IOtpRepository OtpRepository => GetSingletonRepository<IOtpRepository>();
         public ICourtRepository CourtRepository => GetSingletonRepository<ICourtRepository>();
         public IRoleRepository RoleRepository => GetSingletonRepository<IRoleRepository>();
         public IBookingRepository BookingRepository => GetSingletonRepository<IBookingRepository>();
@@ -31,6 +32,8 @@ namespace Bookington.Infrastructure.UOW
         public ISlotRepository SlotRepository => GetSingletonRepository<ISlotRepository>();
         public IVoucherRepository VoucherRepository => GetSingletonRepository<IVoucherRepository>();
         public ICommentRepository CommentRepository => GetSingletonRepository<ICommentRepository>();
+
+
         private T GetSingletonRepository<T>()
         {
             if (!_singletonRepositories.ContainsKey(typeof(T).Name))

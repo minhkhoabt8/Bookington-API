@@ -16,10 +16,7 @@ namespace Bookington.Infrastructure.DTOs.Account
 
         public string? FullName { get; set; }
 
-
-        public bool? IsConfirmed { get; set; }
-
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class AccountLoginInputDTO
@@ -33,17 +30,12 @@ namespace Bookington.Infrastructure.DTOs.Account
         public string UserID { get; set; }
         public string PhoneNumber { get; set; }
         public string FullName { get; set; }
+        public string Role { get; set; }
         public string SysToken { get; set; }
         public int SysTokenExpires { get; set; }
-        public string Role { get; set; }
     }
 
-    public class OTP
-    {
-        public string Id { get; set; }
-        public string Value { get; set; }
-        public DateTime ExpiredTime { get; set; }
-    }
+    
 
     public class ConfirmUserDTO
     {

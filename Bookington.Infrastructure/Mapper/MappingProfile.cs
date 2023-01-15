@@ -23,6 +23,9 @@ namespace Bookington.Infrastructure.Mapper
             // Account
             CreateMap<Account, AccountReadDTO>();
             CreateMap<AccountWriteDTO, Account>();
+            //Otp
+            CreateMap<OtpDTO, AccountOtp>();
+              
             // Court
             CreateMap<Court, CourtReadDTO>();
             CreateMap<CourtWriteDTO, Court>()

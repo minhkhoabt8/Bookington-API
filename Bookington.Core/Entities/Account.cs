@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Account
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } =Guid.NewGuid().ToString();
 
     public string? RoleId { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Account
 
     public DateTime? CreateAt { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool? IsActive { get; set; } = true;
 
     public virtual ICollection<AccountOtp> AccountOtps { get; } = new List<AccountOtp>();
 
