@@ -17,8 +17,6 @@ builder.Services.AddAutoMapper();
 builder.Services.AddEvents();
 builder.Services.AddServiceFilters();
 
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureApiOptions();
 builder.Services.AddJWTAuthentication(builder.Configuration);
@@ -39,6 +37,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
+
+//app.UseAuthentication();
 
 app.UseAuthorization();
 

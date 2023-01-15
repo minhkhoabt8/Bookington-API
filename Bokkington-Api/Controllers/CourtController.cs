@@ -28,6 +28,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourtReadDTO>))]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -41,6 +42,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         /// <param name="id"></param>
         [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourtReadDTO))]
         public async Task<IActionResult> GetDetailsAsync(string id)
         {
@@ -55,6 +57,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> CreateAsync(CourtWriteDTO dto)
         {
             var createdTag = await _courtService.CreateAsync(dto);
@@ -70,6 +73,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpPut("{id:int}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> UpdateAsync(int id, CourtWriteDTO dto)
         {
             var updatedTag = await _courtService.UpdateAsync(id, dto);
@@ -82,6 +86,7 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             await _courtService.DeleteAsync(id);

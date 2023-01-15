@@ -49,7 +49,9 @@ namespace Bookington.Infrastructure.Services.Implementations
             var account = _mapper.Map<Account>(dto);
 
             await _unitOfWork.AccountRepository.AddAsync(account);
+
             account.RoleId = "1";
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<AccountReadDTO>(account);

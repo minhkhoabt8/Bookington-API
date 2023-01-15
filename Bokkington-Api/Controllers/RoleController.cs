@@ -27,6 +27,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<RoleReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetAllRoles()
         {
             var roleItems = await _roleService.GetAllAsync();
@@ -57,6 +58,7 @@ namespace Bookington_Api.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<RoleReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> CreateRole(RoleWriteDTO writeDTO)
         {
             var createdRoleDTO = await _roleService.CreateAsync(writeDTO);
@@ -77,6 +79,7 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<RoleReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> UpdateRole(int id, RoleWriteDTO writeDTO)
         {
             var roleDTO = await _roleService.UpdateAsync(id, writeDTO);
@@ -91,6 +94,7 @@ namespace Bookington_Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> DeleteRole(int id)
         {
             await _roleService.DeleteAsync(id);
@@ -106,6 +110,7 @@ namespace Bookington_Api.Controllers
         [HttpPut("/auth/accounts/{accountID:guid}/roles")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> AssignRolesToAccount(Guid accountID, int roleIDs)
         {
             //await _roleService.AssignRolesToAccount(accountID, roleIDs);

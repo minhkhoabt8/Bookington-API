@@ -26,8 +26,6 @@ namespace Bookington_Api.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountLoginOutputDTO>))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ServiceFilter(typeof(AutoValidateModelState))]
         public async Task<IActionResult> Login(AccountLoginInputDTO input)
         {
