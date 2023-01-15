@@ -16,9 +16,12 @@ namespace Bookington.Infrastructure.DTOs.Court
         public string Name { get; set; }
 
         public string Address { get; set; }
-        [DisplayFormat(DataFormatString = "{hh\\:mm}", ApplyFormatInEditMode = true)]
+
+        [DataType(DataType.Time)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
         public TimeSpan OpenAt { get; set; }
-        [DisplayFormat(DataFormatString = "{hh\\:mm}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Time)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:H:mm}")]
         public TimeSpan CloseAt { get; set; }
     }
 }
