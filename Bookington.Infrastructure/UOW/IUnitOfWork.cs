@@ -24,6 +24,9 @@ namespace Bookington.Infrastructure.UOW
         public IVoucherRepository VoucherRepository { get; }
 
         public ICommentRepository CommentRepository { get; }
+
+        public IReportRepository ReportRepository { get; }
+        public IReportTypeRepository ReportTypeRepository { get; }
         Task<int> CommitAsync();
     }
 }

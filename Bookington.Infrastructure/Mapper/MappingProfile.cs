@@ -8,12 +8,14 @@ using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.DTOs.SubCourt;
 using Bookington.Infrastructure.DTOs.Slot;
 using Bookington.Infrastructure.DTOs.Voucher;
+using Bookington.Infrastructure.DTOs.ReportType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bookington.Infrastructure.DTOs.Comment;
+using Bookington.Infrastructure.DTOs.Report;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -52,6 +54,12 @@ namespace Bookington.Infrastructure.Mapper
             // Comment
             CreateMap<Comment, CommentReadDTO>();
             CreateMap<CommentWriteDTO, Comment>();
+            // Report
+            CreateMap<Report, ReportReadDTO>();
+            CreateMap<ReportWriteDTO, Report>();
+            // Report Type
+            CreateMap<ReportType, ReportTypeReadDTO>();
+            CreateMap<ReportTypeWriteDTO, ReportType>();
         }
     }
 }

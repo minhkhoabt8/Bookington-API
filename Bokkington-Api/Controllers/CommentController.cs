@@ -33,8 +33,8 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CommentReadDTO>))]
         public async Task<IActionResult> GetAllAsync()
         {
-            var tags = await _commentService.GetAllAsync();
-            return ResponseFactory.Ok(tags);
+            var comments = await _commentService.GetAllAsync();
+            return ResponseFactory.Ok(comments);
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CommentReadDTO))]
         public async Task<IActionResult> GetDetailsAsync(string id)
         {
-            var tag = await _commentService.GetByIdAsync(id);
-            return ResponseFactory.Ok(tag);
+            var comment = await _commentService.GetByIdAsync(id);
+            return ResponseFactory.Ok(comment);
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace Bookington_Api.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         public async Task<IActionResult> CreateAsync(CommentWriteDTO dto)
         {
-            var createdTag = await _commentService.CreateAsync(dto);
-            return ResponseFactory.Created(createdTag);
+            var newComment = await _commentService.CreateAsync(dto);
+            return ResponseFactory.Created(newComment);
         }
 
 
@@ -74,8 +74,8 @@ namespace Bookington_Api.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         public async Task<IActionResult> UpdateAsync(string id, CommentWriteDTO dto)
         {
-            var updatedTag = await _commentService.UpdateAsync(id, dto);
-            return ResponseFactory.Ok(updatedTag);
+            var updatedComment = await _commentService.UpdateAsync(id, dto);
+            return ResponseFactory.Ok(updatedComment);
         }
 
         /// <summary>
