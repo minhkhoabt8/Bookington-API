@@ -11,9 +11,10 @@ namespace Bookington.Infrastructure.Services.Interfaces
     {
         Task<IEnumerable<BookingReadDTO>> GetAllAsync();
         Task<BookingReadDTO> CreateAsync(BookingWriteDTO dto);
+        Task<BookingReadDTO> DebugCreateAsync(DebugBookingWriteDTO dto);
         Task<BookingReadDTO> UpdateAsync(string id, BookingWriteDTO dto);
         Task DeleteAsync(string id);
         Task<BookingReadDTO> GetByIdAsync(string id);
-        Task<IEnumerable<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(string courtId);
+        Task<IEnumerable<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(string courtId);        
     }
 }

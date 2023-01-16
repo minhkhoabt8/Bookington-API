@@ -14,7 +14,8 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<Booking>,
         IDelete<Booking>
     {
-        Task<IEnumerable<Booking>> GetBookingsOfSubCourt(string subCourtId, bool trackChanges = false);
+        //Task<IEnumerable<Booking>> GetBookingsOfSubCourt(string subCourtId, bool trackChanges = false);
         Task<IEnumerable<Booking>> GetBookingsOfSubCourts(List<string> subCourtIds, bool trackChanges = false);
+        Task<bool> IsCustomerAvailableForCommenting(string userId, bool trackChanges = false);        
     }
 }

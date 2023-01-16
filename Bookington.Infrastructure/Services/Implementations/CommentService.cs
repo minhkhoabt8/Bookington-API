@@ -27,6 +27,23 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var comment = _mapper.Map<Comment>(dto);
 
+            // Check if this is valid account
+            var existAccount = await _unitOfWork.AccountRepository.FindAsync(dto.CommentWriterId);
+
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(dto.CommentWriterId);            
+
+            // Check if this is a valid court
+            var existCourt = await _unitOfWork.CourtRepository.FindAsync(dto.RefCourt);
+
+            if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(dto.RefCourt);
+            // null or false will throw exception
+            else if (!existCourt.IsActive ?? true) throw new Exception("Court " + existCourt.Name + "is unavailable right now!");
+
+            if (!await _unitOfWork.BookingRepository.IsCustomerAvailableForCommenting(dto.CommentWriterId))
+            {
+                throw new Exception("Customer hasn't played at this court yet to comment on it!");
+            }
+
             await _unitOfWork.CommentRepository.AddAsync(comment);
 
             await _unitOfWork.CommitAsync();
@@ -72,6 +89,11 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<CommentReadDTO>(existComment);
+        }
+
+        public async Task<bool> IsCustomerAvailableForCommenting(string userId)
+        {
+            return await _unitOfWork.BookingRepository.IsCustomerAvailableForCommenting(userId);
         }
     }
 }

@@ -1,90 +1,92 @@
 ﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Comment;
 using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Bookington_Api.Controllers
 {
     /// <summary> 
-    /// Court Controller
+    /// Comment Controller
     /// </summary>
-    [Route("bookington/courts")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class CourtController : ControllerBase
+    public class CommentController : ControllerBase
     {
-        private readonly ICourtService _courtService;
+        private readonly ICommentService _commentService;
 
         /// <summary>        
         /// </summary>
-        public CourtController(ICourtService courtService)
+        public CommentController(ICommentService commentService)
         {
-            _courtService = courtService;
+            _commentService = commentService;
         }
 
         /// <summary>
-        /// Get All Court
+        /// Get All Comments
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourtReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CommentReadDTO>))]
         public async Task<IActionResult> GetAllAsync()
         {
-            var tags = await _courtService.GetAllAsync();
+            var tags = await _commentService.GetAllAsync();
             return ResponseFactory.Ok(tags);
         }
 
         /// <summary>
-        /// Get a Court details
+        /// Get A Comment Details
         /// </summary>
         /// <returns></returns>
         /// <param name="id"></param>
-        [HttpGet("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourtReadDTO))]
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CommentReadDTO))]
         public async Task<IActionResult> GetDetailsAsync(string id)
         {
-            var tag = await _courtService.GetByIdAsync(id);
+            var tag = await _commentService.GetByIdAsync(id);
             return ResponseFactory.Ok(tag);
         }
 
         /// <summary>
-        /// Create a new court
+        /// Create A New Comment
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
         [ServiceFilter(typeof(AutoValidateModelState))]
-        public async Task<IActionResult> CreateAsync(CourtWriteDTO dto)
+        public async Task<IActionResult> CreateAsync(CommentWriteDTO dto)
         {
-            var createdTag = await _courtService.CreateAsync(dto);
+            var createdTag = await _commentService.CreateAsync(dto);
             return ResponseFactory.Created(createdTag);
         }
 
 
         /// <summary>
-        /// Update a court
+        /// Update A Comment
         /// </summary>
         /// <param name="id"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
-        public async Task<IActionResult> UpdateAsync(int id, CourtWriteDTO dto)
+        public async Task<IActionResult> UpdateAsync(string id, CommentWriteDTO dto)
         {
-            var updatedTag = await _courtService.UpdateAsync(id, dto);
+            var updatedTag = await _commentService.UpdateAsync(id, dto);
             return ResponseFactory.Ok(updatedTag);
         }
 
         /// <summary>
-        /// Delete a court
+        /// Delete A Comment
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
         {
-            await _courtService.DeleteAsync(id);
+            await _commentService.DeleteAsync(id);
             return ResponseFactory.NoContent();
         }
     }

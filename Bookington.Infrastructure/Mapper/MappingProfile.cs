@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bookington.Infrastructure.DTOs.Comment;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -40,12 +41,17 @@ namespace Bookington.Infrastructure.Mapper
             .ForMember(des => des.Customer, act => act.MapFrom(src => src.BookByNavigation.FullName))
             .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone))
             .ForMember(des => des.VoucherDiscount, act => act.MapFrom(src => src.VoucherCodeNavigation.Discount));
+            /*Debug Booking*/            
+            CreateMap<DebugBookingWriteDTO, Booking>();
             // Slot
             CreateMap<Slot, SlotReadDTO>();
             CreateMap<SlotWriteDTO, Slot>();
             // Voucher
             CreateMap<Voucher, VoucherReadDTO>();
             CreateMap<VoucherWriteDTO, Voucher>();
+            // Comment
+            CreateMap<Comment, CommentReadDTO>();
+            CreateMap<CommentWriteDTO, Comment>();
         }
     }
 }

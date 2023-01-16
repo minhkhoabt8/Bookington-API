@@ -61,6 +61,19 @@ namespace Bookington_Api.Controllers
             return ResponseFactory.Created(newBooking);
         }
 
+        /// <summary>
+        /// Create a new Booking (Debug)
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("debugCreate")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        public async Task<IActionResult> DebugCreateAsync(DebugBookingWriteDTO dto)
+        {
+            var newBooking = await _bookingService.DebugCreateAsync(dto);
+            return ResponseFactory.Created(newBooking);
+        }
+
 
         /// <summary>
         /// Update a Booking
@@ -99,6 +112,6 @@ namespace Bookington_Api.Controllers
         {
             var bookings = await _bookingService.GetBookingsOfCourt(courtId);
             return ResponseFactory.Ok(bookings);
-        }
+        }       
     }
 }

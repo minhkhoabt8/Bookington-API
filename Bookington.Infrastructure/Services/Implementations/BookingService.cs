@@ -66,6 +66,18 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<BookingReadDTO>(newBooking);
         }
 
+        // Create disregards validation
+        public async Task<BookingReadDTO> DebugCreateAsync(DebugBookingWriteDTO dto)
+        {
+            var newBooking = _mapper.Map<Booking>(dto);
+
+            await _unitOfWork.BookingRepository.AddAsync(newBooking);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<BookingReadDTO>(newBooking);
+        }
+
         public async Task DeleteAsync(string id)
         {
             var existBooking = await _unitOfWork.BookingRepository.FindAsync(id);
@@ -155,6 +167,11 @@ namespace Bookington.Infrastructure.Services.Implementations
             var result = _mapper.Map<IEnumerable<CourtBookingHistoryReadDTO>>(bookings);
 
             return result;
+        }
+
+        public async Task<bool> IsCustomerAvailableForCommenting(string userId)
+        {
+            return await _unitOfWork.BookingRepository.IsCustomerAvailableForCommenting(userId);
         }
     }
 }
