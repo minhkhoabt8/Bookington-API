@@ -42,12 +42,12 @@ namespace Bookington_Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<RoleReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> GetRole(int id)
+        public async Task<IActionResult> GetRole(string id)
         {
-            //var roleItems = await _roleService.GetByIdAsync(id);
+            var roleItems = await _roleService.GetByIdAsync(id);
 
-            //return ResponseFactory.Ok(roleItems);
-            throw new NotImplementedException();
+            return ResponseFactory.Ok(roleItems);
+            
         }
         /// <summary>
         /// Create new role

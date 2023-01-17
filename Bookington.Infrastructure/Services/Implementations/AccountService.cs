@@ -2,6 +2,7 @@
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.Extensions.Configuration;
@@ -96,6 +97,39 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             await _unitOfWork.CommitAsync();
 
+        }
+
+        public async Task<AccountReadDTO> UpdateAsync(int id, AccountWriteDTO dto)
+        {
+            var existAccount = await _unitOfWork.RoleRepository.FindAsync(id);
+
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Court>(id);
+
+            _mapper.Map(dto, existAccount);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<AccountReadDTO>(existAccount);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
+
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
+
+            _unitOfWork.AccountRepository.Delete(existAccount);
+
+            await _unitOfWork.CommitAsync();
+        }
+
+        public async Task<AccountReadDTO> GetByIdAsync(string id)
+        {
+            var existAccount = await _unitOfWork.CourtRepository.FindAsync(id);
+
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
+
+            return _mapper.Map<AccountReadDTO>(existAccount);
         }
     }
 }

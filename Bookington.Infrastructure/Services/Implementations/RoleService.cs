@@ -55,7 +55,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<RoleReadDTO> GetByIdAsync(string id)
         {
-            var existRole = await _unitOfWork.CourtRepository.FindAsync(id);
+            var existRole = await _unitOfWork.RoleRepository.FindAsync(id);
 
             if (existRole == null) throw new EntityWithIDNotFoundException<Role>(id);
 

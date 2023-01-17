@@ -1,5 +1,7 @@
 ﻿using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Role;
+using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
@@ -71,6 +73,40 @@ namespace Bookington_Api.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Update account
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="writeDTO"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> UpdateAccount(int id, AccountWriteDTO writeDTO)
+        {
 
+            var roleDTO = await _accountService.UpdateAsync(id, writeDTO);
+
+            return ResponseFactory.Ok(roleDTO);
+        }
+
+        /// <summary>
+        /// Delete account
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> DeleteRole(int id)
+        {
+            await _accountService.DeleteAsync(id);
+
+            return ResponseFactory.NoContent();
+        }
     }
 }

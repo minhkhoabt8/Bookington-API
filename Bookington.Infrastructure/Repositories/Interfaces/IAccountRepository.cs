@@ -8,7 +8,8 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IGetAllAsync<Account>,
         IAddAsync<Account>,
         IUpdate<Account>,
-        IFindAsync<Account>
+        IFindAsync<Account>,
+        IDelete<Account>
     {
         Task<Account?> FindAccountByPhoneNumberAsync(string phoneNumber);
         Task<Account?> LoginByPhoneAsync(AccountLoginInputDTO account);
