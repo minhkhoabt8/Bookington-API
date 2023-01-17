@@ -4,11 +4,7 @@ using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Comment;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Bookington.Infrastructure.Services.Implementations
 {

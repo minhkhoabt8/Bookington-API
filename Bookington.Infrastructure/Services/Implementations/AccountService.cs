@@ -44,7 +44,13 @@ namespace Bookington.Infrastructure.Services.Implementations
             accountOtp.Phone = dto.Phone;
 
             await _unitOfWork.OtpRepository.AddAsync(accountOtp);
-            
+
+            //Call Send SMS Service
+
+            SmsSpeedService smsApi = new SmsSpeedService();
+
+            await smsApi.sendSmsAsync(dto.Phone, accountOtp.Otp);
+
             //auto mapper
             var account = _mapper.Map<Account>(dto);
 
@@ -72,10 +78,8 @@ namespace Bookington.Infrastructure.Services.Implementations
                 FullName = existAccount.FullName,
                 Role = role.RoleName,
                 SysToken = await _tokenService.GenerateTokenAsync(existAccount),
-                SysTokenExpires = 120
+                SysTokenExpires = 1200
             };
         }
-
-
     }
 }

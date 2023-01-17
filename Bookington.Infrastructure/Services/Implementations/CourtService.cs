@@ -5,6 +5,7 @@ using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 
+
 namespace Bookington.Infrastructure.Services.Implementations
 {
     public class CourtService : ICourtService
@@ -16,6 +17,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            
         }
 
         public async Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto)
@@ -58,7 +60,12 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<CourtReadDTO> UpdateAsync(int id, CourtWriteDTO dto)
         {
+
+         
+
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id);
+
+           
 
             if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(id);
 

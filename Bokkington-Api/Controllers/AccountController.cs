@@ -11,6 +11,7 @@ namespace Bookington_Api.Controllers
     /// <summary>
     /// Account Controller
     /// </summary>
+    /// 
     [Route("bookington/accounts")]
     [ApiController]
     public class AccountController : ControllerBase
