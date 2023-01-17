@@ -1,4 +1,5 @@
 ﻿using Bookington.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
 {
     public interface IOtpRepository : IAddAsync<AccountOtp>
     {
-        
+        Task<AccountOtp?> VerifyAccountAsync(string phoneNumber, string otp);
     }
 }

@@ -15,9 +15,9 @@ public partial class Account
 
     public string? FullName { get; set; }
 
-    public DateTime? CreateAt { get; set; }
+    public DateTime? CreateAt { get; set; } = DateTime.Now;
 
-    public bool? IsActive { get; set; } = true;
+    public bool? IsActive { get; set; } = false;
 
     public virtual ICollection<AccountOtp> AccountOtps { get; } = new List<AccountOtp>();
 

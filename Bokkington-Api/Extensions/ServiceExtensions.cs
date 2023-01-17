@@ -116,6 +116,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<ISubCourtService, SubCourtService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ISmsService, SmsSpeedService>();
         }
 
         ///<Summary>

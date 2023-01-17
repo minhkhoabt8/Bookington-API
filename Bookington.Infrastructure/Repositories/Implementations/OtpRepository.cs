@@ -1,6 +1,7 @@
 ﻿using Bookington.Core.Data;
 using Bookington.Core.Entities;
 using Bookington.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
@@ -8,6 +9,10 @@ namespace Bookington.Infrastructure.Repositories.Implementations
     {
         public OtpRepository(BookingtonDbContext context) : base(context)
         {
+        }
+        public async Task<AccountOtp?> VerifyAccountAsync(string phoneNumber, string otp)
+        {
+            return await _context.AccountOtps.FirstOrDefaultAsync(a=>a.Phone==phoneNumber&& a.Otp==otp);
         }
     }
 }

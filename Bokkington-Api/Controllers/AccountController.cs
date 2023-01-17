@@ -5,6 +5,7 @@ using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bookington_Api.Controllers
 {
@@ -45,7 +46,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("signUp")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AccountReadDTO>))]
         public async Task<IActionResult> CreateAsync(AccountWriteDTO dto)
@@ -53,6 +54,23 @@ namespace Bookington_Api.Controllers
             var createdTag = await _accountService.CreateAsync(dto);
             return ResponseFactory.Created(createdTag);
         }
-        
+
+
+        /// <summary>
+        /// Verify Account
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="otp"></param>
+        /// <returns></returns>
+        [HttpPut("verify")]
+        public async Task<IActionResult> VerifyAccount([Required] string phoneNumber, [Required] string otp)
+        {
+
+            await _accountService.VerifyAccount(phoneNumber, otp);
+
+            return NoContent();
+        }
+
+
     }
 }

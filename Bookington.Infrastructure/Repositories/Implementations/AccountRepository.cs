@@ -13,13 +13,13 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
 
-        public Task<Account?> FindAccountByPhoneNumber(string phoneNumber)
+        public async Task<Account?> FindAccountByPhoneNumberAsync(string phoneNumber)
         {
-            return _context.Accounts.FirstOrDefaultAsync(a => a.Phone == phoneNumber);
+            return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == phoneNumber);
         }
-        public Task<Account?> LoginByPhone(AccountLoginInputDTO login)
+        public async Task<Account?> LoginByPhoneAsync(AccountLoginInputDTO login)
         {
-            return  _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone && a.Password==login.Password);
+            return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone && a.Password==login.Password);
         }
 
     }

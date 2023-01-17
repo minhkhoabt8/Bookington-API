@@ -10,7 +10,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IUpdate<Account>,
         IFindAsync<Account>
     {
-        Task<Account?> FindAccountByPhoneNumber(string phoneNumber);
-        Task<Account?> LoginByPhone(AccountLoginInputDTO account);
+        Task<Account?> FindAccountByPhoneNumberAsync(string phoneNumber);
+        Task<Account?> LoginByPhoneAsync(AccountLoginInputDTO account);
     }
 }

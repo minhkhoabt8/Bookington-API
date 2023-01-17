@@ -40,7 +40,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         /// <param name="id"></param>
-        [HttpGet]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BookingReadDTO))]
         public async Task<IActionResult> GetDetailsAsync(string id)
         {
