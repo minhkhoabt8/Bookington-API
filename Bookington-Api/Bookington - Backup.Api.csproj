@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Bokkington_Api</RootNamespace>
+    <RootNamespace>Bookington_Api</RootNamespace>
     <UserSecretsId>63f0b255-d857-4335-96ca-052b66cbd4ee</UserSecretsId>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
   </PropertyGroup>
