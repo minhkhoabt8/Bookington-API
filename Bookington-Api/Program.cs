@@ -1,6 +1,6 @@
+
 using Bookington_Api.Extensions;
 using Bookington_Api.Middlewares;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +15,6 @@ builder.Services.AddRepositories();
 builder.Services.AddUOW();
 builder.Services.AddAutoMapper();
 builder.Services.AddEvents();
-builder.Services.AddServiceFilters();
-
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureApiOptions();
 builder.Services.AddJWTAuthentication(builder.Configuration);
