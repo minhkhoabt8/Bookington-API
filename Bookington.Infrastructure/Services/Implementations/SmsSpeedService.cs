@@ -11,29 +11,27 @@ using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
-    public class SmsSpeedService :ISmsService
+    public class SmsSpeedService : ISmsService
     {
-        private readonly Uri rootUrl = new Uri("https://api.speedsms.vn/index.php/sms/send");
-        private readonly string AuthenticationToken = "Amu3akGoFIWKPLNcBBth94IAWTy549NK";
-        private readonly string Sender = "083c019d6f27c92b";
+        private readonly IConfiguration _configuration;
 
-        public SmsSpeedService(Uri rootUrl, string authenticationToken, string sender)
+        public SmsSpeedService(IConfiguration configuration)
         {
-            this.rootUrl = rootUrl;
-            AuthenticationToken = authenticationToken;
-            Sender = sender;
+            _configuration = configuration;
         }
 
-        public SmsSpeedService()
-        {
-        }
 
         public async Task sendSmsAsync(string phones, string otp)
         {
-           
+            var access = _configuration["SmsSpeed:AccessToken"];
+
+            var auToken = _configuration["SmsSpeed:SenderId"];
+
+            Uri root =  new Uri(_configuration["SmsSpeed:ApiEndpoint"]);
+
             string content = $"Your Otp is: {otp}. Please don't share this to anyone";
 
-            NetworkCredential myCreds = new NetworkCredential(AuthenticationToken, ":x");
+            NetworkCredential myCreds = new NetworkCredential(access, ":x");
 
             WebClient client = new WebClient();
 
@@ -41,13 +39,15 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             client.Headers[HttpRequestHeader.ContentType] = "application/json";
 
-            var builder = "{\"to\":[\""+phones+"\"], \"content\": \"" 
+            var builder = "{\"to\":[\"" + phones + "\"], \"content\": \"" 
                 + content
                 + "\", \"type\":" + 5 
                 + ", \"sender\": \"" 
-                + Sender + "\"}";
+                + auToken + "\"}";
+
             string json = builder.ToString();
-            client.UploadStringAsync(rootUrl, json);
+
+            client.UploadStringAsync(root, json);
         }
     }
 }

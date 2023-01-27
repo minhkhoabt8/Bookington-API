@@ -170,5 +170,6 @@ namespace Bookington_Api.Extensions
         {
             services.AddScoped<AutoValidateModelState>();
         }
+
     }
 }
