@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
-    public interface IProvinceRepository :
-        IGetAllAsync<Province> ,
-        IFindAsync<Province>,
-        IAddAsync<Province>,
-        IUpdate<Province>
+    public interface IDistrictRepository :
+        IGetAllAsync<District>,
+        IFindAsync<District>,
+        IAddAsync<District>,
+        IUpdate<District>
     {
 
     }

@@ -10,6 +10,6 @@ namespace Bookington.Infrastructure.DTOs.Province
     {
         public string Id { get; set; } = null!;
 
-        public string? ProvinceName { get; set; }
+        public string ProvinceName { get; set; }
     }
 }

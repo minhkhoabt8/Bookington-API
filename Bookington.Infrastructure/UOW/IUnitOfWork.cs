@@ -26,6 +26,10 @@ namespace Bookington.Infrastructure.UOW
 
         public ICommentRepository CommentRepository { get; }
 
+        public IProvinceRepository ProvinceRepository { get; }
+
+        public IDistrictRepository DistrictRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

@@ -117,6 +117,8 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ISubCourtService, SubCourtService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ISmsService, SmsSpeedService>();
+            services.AddScoped<IProvinceService, ProvinceService>();
+            services.AddScoped<IDistrictService, DistrictServices>();
         }
 
         ///<Summary>
@@ -134,6 +136,8 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IVoucherRepository, VoucherRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IOtpRepository, OtpRepository>();
+            services.AddScoped<IProvinceRepository, ProvinceRepository>();
+            services.AddScoped<IDistrictRepository, DistrictRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work

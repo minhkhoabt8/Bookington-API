@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bookington.Infrastructure.DTOs.Province;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,8 @@ namespace Bookington.Infrastructure.DTOs.District
     {
         public string Id { get; set; } = null!;
 
-        public string ProvinceId { get; set; }
-
         public string DistrictName { get; set; }
+
+        public string ProvinceId { get; set; }
     }
 }
