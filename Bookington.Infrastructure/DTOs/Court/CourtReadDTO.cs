@@ -11,7 +11,7 @@ namespace Bookington.Infrastructure.DTOs.Court
     {
         public string? OwnerId { get; set; }
 
-        public int? DistrictId { get; set; }
+        public string? DistrictId { get; set; }
 
         public string? Name { get; set; }
 

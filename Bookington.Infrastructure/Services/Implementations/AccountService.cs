@@ -15,15 +15,13 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private IConfiguration _configuration;
         private readonly ITokenService _tokenService;
         private readonly ISmsService _smsService;
 
-        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, IConfiguration configuration, ITokenService tokenService, ISmsService smsService)
+        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService, ISmsService smsService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _configuration = configuration;
             _tokenService = tokenService;
             _smsService = smsService;
         }

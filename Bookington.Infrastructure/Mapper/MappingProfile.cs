@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bookington.Infrastructure.DTOs.Province;
+using Bookington.Infrastructure.DTOs.District;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -51,6 +53,12 @@ namespace Bookington.Infrastructure.Mapper
             // Voucher
             CreateMap<Voucher, VoucherReadDTO>();
             CreateMap<VoucherWriteDTO, Voucher>();
+            //Province
+            CreateMap<Province, ProvinceReadDTO>();
+            CreateMap<ProvinceWriteDTO, Province>();
+            //District
+            CreateMap<District, DistrictReadDTO>();
+            CreateMap<DistrictWriteDTO, District>();
         }
     }
 }

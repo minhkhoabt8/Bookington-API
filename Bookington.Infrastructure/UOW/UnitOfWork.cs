@@ -33,7 +33,9 @@ namespace Bookington.Infrastructure.UOW
         public IVoucherRepository VoucherRepository => GetSingletonRepository<IVoucherRepository>();
         public ICommentRepository CommentRepository => GetSingletonRepository<ICommentRepository>();
 
+        public IProvinceRepository ProvinceRepository=> GetSingletonRepository<IProvinceRepository>();
 
+        public IDistrictRepository DistrictRepository => GetSingletonRepository<IDistrictRepository>();
         private T GetSingletonRepository<T>()
         {
             if (!_singletonRepositories.ContainsKey(typeof(T).Name))
