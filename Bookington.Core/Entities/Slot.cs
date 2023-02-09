@@ -7,17 +7,17 @@ public partial class Slot
 {
     public string Id { get; set; } = null!;
 
-    public string? RefSubCourt { get; set; }
+    public string RefSubCourt { get; set; } = null!;
 
-    public TimeSpan? StartTime { get; set; }
+    public TimeSpan StartTime { get; set; }
 
-    public TimeSpan? EndTime { get; set; }
+    public TimeSpan EndTime { get; set; }
 
-    public double? Price { get; set; }
+    public double Price { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 
-    public virtual SubCourt? RefSubCourtNavigation { get; set; }
+    public virtual SubCourt RefSubCourtNavigation { get; set; } = null!;
 }

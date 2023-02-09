@@ -5,19 +5,21 @@ namespace Bookington.Core.Entities;
 
 public partial class Account
 {
-    public string Id { get; set; } =Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
-    public string? RoleId { get; set; }
+    public string RoleId { get; set; } = null!;
 
     public string Phone { get; set; } = null!;
 
-    public string? Password { get; set; }
+    public string Password { get; set; } = null!;
 
     public string? FullName { get; set; }
 
-    public DateTime? CreateAt { get; set; } = DateTime.Now;
+    public DateTime? DateOfBirth { get; set; }
 
-    public bool? IsActive { get; set; } = false;
+    public DateTime CreateAt { get; set; }
+
+    public bool IsActive { get; set; }
 
     public virtual ICollection<AccountOtp> AccountOtps { get; } = new List<AccountOtp>();
 
@@ -25,11 +27,15 @@ public partial class Account
 
     public virtual ICollection<Comment> Comments { get; } = new List<Comment>();
 
+    public virtual ICollection<CourtReport> CourtReports { get; } = new List<CourtReport>();
+
     public virtual ICollection<Court> Courts { get; } = new List<Court>();
 
-    public virtual ICollection<Report> Reports { get; } = new List<Report>();
+    public virtual Role Role { get; set; } = null!;
 
-    public virtual Role? Role { get; set; }
+    public virtual ICollection<UserReport> UserReportRefUserNavigations { get; } = new List<UserReport>();
+
+    public virtual ICollection<UserReport> UserReportReporters { get; } = new List<UserReport>();
 
     public virtual ICollection<Voucher> Vouchers { get; } = new List<Voucher>();
 }
