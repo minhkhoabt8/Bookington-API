@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class SubCourt
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string Name { get; set; } = null!;
 

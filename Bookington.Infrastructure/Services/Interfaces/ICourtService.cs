@@ -8,8 +8,8 @@ namespace Bookington.Infrastructure.Services.Interfaces
     {
         Task<IEnumerable<CourtReadDTO>> GetAllAsync();
         Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto);
-        Task<CourtReadDTO> UpdateAsync(int id, CourtWriteDTO dto);
-        Task DeleteAsync(int id);
+        Task<CourtReadDTO> UpdateAsync(string id, CourtWriteDTO dto);
+        Task DeleteAsync(string id);
         Task<CourtReadDTO> GetByIdAsync(string id);
         Task<PaginatedResponse<CourtReadDTO>> QueryCourtsAsync(CourtItemQuery query);
     }

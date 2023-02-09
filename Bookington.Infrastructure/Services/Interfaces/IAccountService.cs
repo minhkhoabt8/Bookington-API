@@ -13,9 +13,9 @@ namespace Bookington.Infrastructure.Services.Interfaces
 
         Task<AccountLoginOutputDTO> LoginWithPhoneNumber(AccountLoginInputDTO dto);
 
-        Task<AccountReadDTO> UpdateAsync(int id, AccountWriteDTO dto);
+        Task<AccountReadDTO> UpdateAsync(string id, AccountUpdateDTO dto);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(string id);
 
         Task<AccountReadDTO> GetByIdAsync(string id);
 

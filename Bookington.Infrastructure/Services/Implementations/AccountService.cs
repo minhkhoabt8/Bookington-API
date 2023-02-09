@@ -100,11 +100,11 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<AccountReadDTO> UpdateAsync(int id, AccountWriteDTO dto)
+        public async Task<AccountReadDTO> UpdateAsync(string id, AccountUpdateDTO dto)
         {
-            var existAccount = await _unitOfWork.RoleRepository.FindAsync(id);
+            var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
-            if (existAccount == null) throw new EntityWithIDNotFoundException<Court>(id);
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
 
             _mapper.Map(dto, existAccount);
 
@@ -113,7 +113,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<AccountReadDTO>(existAccount);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
@@ -126,10 +126,10 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<AccountReadDTO> GetByIdAsync(string id)
         {
-            var existAccount = await _unitOfWork.CourtRepository.FindAsync(id);
+            var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
             if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
-
+            
             return _mapper.Map<AccountReadDTO>(existAccount);
         }
 
@@ -139,7 +139,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var courts = await _unitOfWork.AccountRepository.QueryAsync(query);
 
             return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(
-                courts.Where(c => c.IsActive == false), query, _mapper);
+                courts, query, _mapper);
         }
     }
 }

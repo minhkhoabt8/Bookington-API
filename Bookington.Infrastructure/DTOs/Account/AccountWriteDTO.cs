@@ -10,10 +10,24 @@ namespace Bookington.Infrastructure.DTOs.Account
 {
     public class AccountWriteDTO
     {
-        public string? Phone { get; set; }
+        public string Phone { get; set; }
 
-        public string? Password { get; set; }
+        public string Password { get; set; }
 
+        public string FullName { get; set; }
+    }
+
+    public class AccountUpdateDTO
+    {
         public string? FullName { get; set; }
+    }
+
+    public class ChangePhoneNumberDTO
+    {
+        public string UserId { get; set; }
+
+        public string OldPhoneNumber { get; set; }
+
+        public string NewPhoneNumber { get; set; }
     }
 }

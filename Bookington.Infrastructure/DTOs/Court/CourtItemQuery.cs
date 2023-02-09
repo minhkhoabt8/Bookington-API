@@ -15,16 +15,10 @@ namespace Bookington.Infrastructure.DTOs.Court
         //[EnumDataType(typeof(CourtPlayerEnum))]
         //[JsonConverter(typeof(StringEnumConverter))]
         //public CourtPlayerEnum? CourtPLayertype { get; set; }
-
-        [JsonConverter(typeof(TimeSpan))]
-        public TimeSpan? CloseAt { get; set; }
-
-        [JsonConverter(typeof(TimeSpan))]
-        public TimeSpan? OpenAt { get; set; }
-
         public string? SearchText { get; set; }
-
         public string? District { get; set; }
-        //public string? Province { get; set; }
+        public string? Province { get; set; }
+        public string? CloseAt { get; set; }
+        public string? OpenAt { get; set; }
     }
 }

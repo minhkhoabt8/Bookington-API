@@ -84,9 +84,8 @@ namespace Bookington_Api.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> UpdateAccount(int id, AccountWriteDTO writeDTO)
+        public async Task<IActionResult> UpdateAccount(string id, AccountUpdateDTO writeDTO)
         {
 
             var roleDTO = await _accountService.UpdateAsync(id, writeDTO);
@@ -103,7 +102,7 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> DeleteRole(int id)
+        public async Task<IActionResult> DeleteRole(string id)
         {
             await _accountService.DeleteAsync(id);
 
@@ -119,9 +118,9 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
         public async Task<IActionResult> QueryCourts([FromQuery] AccountQuery query)
         {
-            var courts = await _accountService.QueryAccountsAsync(query);
+            var accounts = await _accountService.QueryAccountsAsync(query);
 
-            return ResponseFactory.PaginatedOk(courts);
+            return ResponseFactory.PaginatedOk(accounts);
         }
     }
 }
