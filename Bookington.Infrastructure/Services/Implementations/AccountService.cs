@@ -57,7 +57,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             account.RoleId = ((int) RoleEnum.Customer).ToString();
 
             //Call Send SMS
-            await _smsService.sendSmsAsync(dto.Phone, accountOtp.Otp);
+            await _smsService.sendSmsAsync(dto.Phone, accountOtp.OtpCode);
 
             await _unitOfWork.CommitAsync();
 

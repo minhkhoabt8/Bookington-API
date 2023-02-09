@@ -7,11 +7,11 @@ public partial class Order
 {
     public string Id { get; set; } = null!;
 
-    public string? BookingRef { get; set; }
+    public string? TransactionId { get; set; }
 
-    public DateTime? OrderAt { get; set; }
+    public DateTime OrderAt { get; set; }
 
-    public double? Price { get; set; }
+    public double TotalPrice { get; set; }
 
-    public virtual Booking? BookingRefNavigation { get; set; }
+    public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 }

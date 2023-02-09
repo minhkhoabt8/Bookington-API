@@ -7,9 +7,9 @@ public partial class CourtImage
 {
     public string Id { get; set; } = null!;
 
-    public string? CourtId { get; set; }
+    public string CourtId { get; set; } = null!;
 
     public byte[]? ImageBinary { get; set; }
 
-    public virtual Court? Court { get; set; }
+    public virtual Court Court { get; set; } = null!;
 }

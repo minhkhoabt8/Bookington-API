@@ -5,33 +5,35 @@ namespace Bookington.Core.Entities;
 
 public partial class Booking
 {
-    public string Id { get; set; } =Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
-    public string? RefSlot { get; set; }
+    public string RefSlot { get; set; } = null!;
 
-    public string? BookBy { get; set; }
+    public string RefOrder { get; set; } = null!;
 
-    public string? VoucherCode { get; set; }
+    public string BookBy { get; set; } = null!;
 
-    public DateTime? BookAt { get; set; }
+    public string VoucherCode { get; set; } = null!;
 
-    public DateTime? PlayDate { get; set; }
+    public DateTime BookAt { get; set; }
 
-    public double? Price { get; set; }
+    public DateTime PlayDate { get; set; }
 
-    public double? OriginalPrice { get; set; }
+    public double Price { get; set; }
 
-    public bool? IsPaid { get; set; }
+    public double OriginalPrice { get; set; }
 
-    public bool? IsCanceled { get; set; }
+    public bool IsPaid { get; set; }
 
-    public bool? IsRefunded { get; set; }
+    public bool IsCanceled { get; set; }
 
-    public virtual Account? BookByNavigation { get; set; }
+    public bool IsRefunded { get; set; }
 
-    public virtual ICollection<Order> Orders { get; } = new List<Order>();
+    public virtual Account BookByNavigation { get; set; } = null!;
 
-    public virtual Slot? RefSlotNavigation { get; set; }
+    public virtual Order RefOrderNavigation { get; set; } = null!;
 
-    public virtual Voucher? VoucherCodeNavigation { get; set; }
+    public virtual Slot RefSlotNavigation { get; set; } = null!;
+
+    public virtual Voucher VoucherCodeNavigation { get; set; } = null!;
 }
