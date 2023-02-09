@@ -20,28 +20,28 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             {
                 courts = courts.AsNoTracking();
             }
-            if (query.OpenAt !=null)
-            {
-                courts = courts.Where(c => c.OpenAt == query.OpenAt);
-            }
-            if(query.CloseAt != null)
-            {
-                courts = courts.Where(c => c.CloseAt == query.CloseAt);
-            }
-            if(query.OpenAt !=null || query.CloseAt != null)
-            {
-                courts = courts.Where(c => c.OpenAt == query.OpenAt || c.CloseAt ==query.CloseAt);
-            }
+            //if (query.OpenAt !=null)
+            //{
+            //    courts = courts.Where(c => c.OpenAt == query.OpenAt);
+            //}
+            //if(query.CloseAt != null)
+            //{
+            //    courts = courts.Where(c => c.CloseAt == query.CloseAt);
+            //}
+            //if(query.OpenAt !=null || query.CloseAt != null)
+            //{
+            //    courts = courts.Where(c => c.OpenAt == query.OpenAt || c.CloseAt ==query.CloseAt);
+            //}
             if (!query.SearchText.IsNullOrEmpty())
             {
                 courts = courts.Where(c => c.Name == query.SearchText);
             }
-            if (!query.District.IsNullOrEmpty())
-            {
-                var districId = await ReturnDistricId(query.District);
+            //if (!query.District.IsNullOrEmpty())
+            //{
+            //    var districId = await ReturnDistricId(query.District);
 
-                courts = courts.Where(c => c.DistrictId == districId);
-            }
+            //    courts = courts.Where(c => c.DistrictId == districId);
+            //}
             return courts;
 
         }

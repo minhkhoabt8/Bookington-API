@@ -75,7 +75,7 @@ namespace Bookington_Api.Controllers
         [HttpPut("{id:int}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> UpdateAsync(int id, CourtWriteDTO dto)
+        public async Task<IActionResult> UpdateAsync(string id, CourtWriteDTO dto)
         {
             var updatedTag = await _courtService.UpdateAsync(id, dto);
             return ResponseFactory.Ok(updatedTag);
@@ -88,7 +88,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(string id)
         {
             await _courtService.DeleteAsync(id);
             return ResponseFactory.NoContent();

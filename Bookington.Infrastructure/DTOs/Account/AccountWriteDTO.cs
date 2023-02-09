@@ -16,4 +16,18 @@ namespace Bookington.Infrastructure.DTOs.Account
 
         public string FullName { get; set; }
     }
+
+    public class AccountUpdateDTO
+    {
+        public string? FullName { get; set; }
+    }
+
+    public class ChangePhoneNumberDTO
+    {
+        public string UserId { get; set; }
+
+        public string OldPhoneNumber { get; set; }
+
+        public string NewPhoneNumber { get; set; }
+    }
 }

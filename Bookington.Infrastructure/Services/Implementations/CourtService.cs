@@ -9,6 +9,7 @@ using Bookington.Infrastructure.UOW;
 using System;
 using System.Data;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -36,7 +37,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<CourtReadDTO>(court);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id);
 
@@ -63,14 +64,10 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<CourtReadDTO>(existCourt);
         }
 
-        public async Task<CourtReadDTO> UpdateAsync(int id, CourtWriteDTO dto)
+        public async Task<CourtReadDTO> UpdateAsync(string id, CourtWriteDTO dto)
         {
 
-         
-
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id);
-
-           
 
             if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(id);
 
@@ -79,6 +76,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<CourtReadDTO>(existCourt);
+
         }
 
         public async Task<PaginatedResponse<CourtReadDTO>> QueryCourtsAsync(CourtItemQuery query)
@@ -86,7 +84,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var courts = await _unitOfWork.CourtRepository.QueryAsync(query);
 
             return PaginatedResponse<CourtReadDTO>.FromEnumerableWithMapping(
-                courts.Where(c => c.IsDeleted==false), query, _mapper);
+                courts, query, _mapper);
         }
     }
 }

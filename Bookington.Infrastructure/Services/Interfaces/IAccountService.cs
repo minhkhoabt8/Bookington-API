@@ -13,7 +13,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
 
         Task<AccountLoginOutputDTO> LoginWithPhoneNumber(AccountLoginInputDTO dto);
 
-        Task<AccountReadDTO> UpdateAsync(string id, AccountWriteDTO dto);
+        Task<AccountReadDTO> UpdateAsync(string id, AccountUpdateDTO dto);
 
         Task DeleteAsync(string id);
 

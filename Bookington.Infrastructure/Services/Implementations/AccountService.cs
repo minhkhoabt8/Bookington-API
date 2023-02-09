@@ -100,7 +100,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<AccountReadDTO> UpdateAsync(string id, AccountWriteDTO dto)
+        public async Task<AccountReadDTO> UpdateAsync(string id, AccountUpdateDTO dto)
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
