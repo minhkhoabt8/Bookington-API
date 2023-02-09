@@ -2,7 +2,10 @@
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.DTOs.Role;
+using Bookington.Infrastructure.Enums;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.Extensions.Configuration;
@@ -51,7 +54,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             await _unitOfWork.AccountRepository.AddAsync(account);
             
-            account.RoleId = "1";
+            account.RoleId = ((int) RoleEnum.Customer).ToString();
 
             //Call Send SMS
             await _smsService.sendSmsAsync(dto.Phone, accountOtp.Otp);
@@ -128,6 +131,15 @@ namespace Bookington.Infrastructure.Services.Implementations
             if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
 
             return _mapper.Map<AccountReadDTO>(existAccount);
+        }
+
+
+        public async Task<PaginatedResponse<AccountReadDTO>> QueryAccountsAsync(AccountQuery query)
+        {
+            var courts = await _unitOfWork.AccountRepository.QueryAsync(query);
+
+            return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(
+                courts.Where(c => c.IsActive == false), query, _mapper);
         }
     }
 }

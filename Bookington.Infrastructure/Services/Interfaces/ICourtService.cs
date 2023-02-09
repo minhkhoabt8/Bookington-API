@@ -1,4 +1,5 @@
 ﻿
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Court;
 
 namespace Bookington.Infrastructure.Services.Interfaces
@@ -10,5 +11,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<CourtReadDTO> UpdateAsync(int id, CourtWriteDTO dto);
         Task DeleteAsync(int id);
         Task<CourtReadDTO> GetByIdAsync(string id);
+        Task<PaginatedResponse<CourtReadDTO>> QueryCourtsAsync(CourtItemQuery query);
     }
 }

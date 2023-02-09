@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.DTOs.Court
 {
+    
     public class CourtWriteDTO
     {
         public string OwnerId { get; set; }
@@ -17,9 +18,8 @@ namespace Bookington.Infrastructure.DTOs.Court
 
         public string Address { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
         public string OpenAt { get; set; }
-        [DisplayFormat(DataFormatString = "{0:hh\\:mm}", ApplyFormatInEditMode = true)]
-        public string CloseAt { get; set; }
+        
+        public string CloseAt { get; set; } 
     }
 }

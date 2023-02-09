@@ -1,9 +1,5 @@
 ﻿using Bookington.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Bookington.Infrastructure.DTOs.Court;
 
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
@@ -12,7 +8,8 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IGetAllAsync<Court>,
         IAddAsync<Court>,
         IUpdate<Court>,
-        IDelete<Court>
+        IDelete<Court>,
+        IQueryAsync<Court,CourtItemQuery>
     {
     }
 }
