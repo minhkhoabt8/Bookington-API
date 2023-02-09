@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.District;
@@ -65,7 +65,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var district = await _unitOfWork.DistrictRepository.FindAsync(id);
 
-            if (district == null) throw new EntityWithIDNotFoundException<Province>(id);
+            if (district == null) throw new EntityWithIDNotFoundException<District>(id);
 
             _mapper.Map(dto, district);
 

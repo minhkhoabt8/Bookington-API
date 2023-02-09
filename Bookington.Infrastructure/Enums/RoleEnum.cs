@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookington.Core.Enums
+namespace Bookington.Infrastructure.Enums
 {
     public enum RoleEnum
     {
-        User = 1,
+        Admin = 1,
+        CourtOwner = 2,
+        Customer = 3,
     }
 }

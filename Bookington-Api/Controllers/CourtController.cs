@@ -1,5 +1,7 @@
-﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+﻿using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Court;
+using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Http;
@@ -56,12 +58,11 @@ namespace Bookington_Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
-        [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> CreateAsync(CourtWriteDTO dto)
         {
-            var createdTag = await _courtService.CreateAsync(dto);
-            return ResponseFactory.Created(createdTag);
+            var createdCourt = await _courtService.CreateAsync(dto);
+            return ResponseFactory.Created(createdCourt);
         }
 
 
@@ -91,6 +92,20 @@ namespace Bookington_Api.Controllers
         {
             await _courtService.DeleteAsync(id);
             return ResponseFactory.NoContent();
+        }
+
+
+        /// <summary>
+        /// Query courts
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtReadDTO>))]
+        public async Task<IActionResult> QueryCourts([FromQuery] CourtItemQuery query)
+        {
+            var courts = await _courtService.QueryCourtsAsync(query);
+
+            return ResponseFactory.PaginatedOk(courts);
         }
 
     }

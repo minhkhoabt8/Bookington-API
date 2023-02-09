@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
+using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
-
+using System;
+using System.Data;
+using System.Globalization;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -22,6 +26,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto)
         {
+            
             var court = _mapper.Map<Court>(dto);
 
             await _unitOfWork.CourtRepository.AddAsync(court);
@@ -74,6 +79,14 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<CourtReadDTO>(existCourt);
+        }
+
+        public async Task<PaginatedResponse<CourtReadDTO>> QueryCourtsAsync(CourtItemQuery query)
+        {
+            var courts = await _unitOfWork.CourtRepository.QueryAsync(query);
+
+            return PaginatedResponse<CourtReadDTO>.FromEnumerableWithMapping(
+                courts.Where(c => c.IsDeleted==false), query, _mapper);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Bookington.Infrastructure.DTOs.District
 {
     public class DistrictReadDTO
     {
-        public string Id { get; set; } = null!;
+        public string Id { get; set; }
 
         public string DistrictName { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
@@ -107,6 +108,20 @@ namespace Bookington_Api.Controllers
             await _accountService.DeleteAsync(id);
 
             return ResponseFactory.NoContent();
+        }
+
+
+        /// <summary>
+        /// Query accounts
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
+        public async Task<IActionResult> QueryCourts([FromQuery] AccountQuery query)
+        {
+            var courts = await _accountService.QueryAccountsAsync(query);
+
+            return ResponseFactory.PaginatedOk(courts);
         }
     }
 }

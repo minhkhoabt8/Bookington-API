@@ -1,4 +1,5 @@
 ﻿using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Role;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,5 +21,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
 
 
         Task VerifyAccount(string phoneNumber, string otp);
+
+        Task<PaginatedResponse<AccountReadDTO>> QueryAccountsAsync(AccountQuery query);
     }
 }
