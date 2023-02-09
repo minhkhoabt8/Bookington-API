@@ -100,7 +100,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<AccountReadDTO> UpdateAsync(int id, AccountWriteDTO dto)
+        public async Task<AccountReadDTO> UpdateAsync(string id, AccountWriteDTO dto)
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
@@ -113,7 +113,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<AccountReadDTO>(existAccount);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
