@@ -119,9 +119,9 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
         public async Task<IActionResult> QueryCourts([FromQuery] AccountQuery query)
         {
-            var courts = await _accountService.QueryAccountsAsync(query);
+            var accounts = await _accountService.QueryAccountsAsync(query);
 
-            return ResponseFactory.PaginatedOk(courts);
+            return ResponseFactory.PaginatedOk(accounts);
         }
     }
 }

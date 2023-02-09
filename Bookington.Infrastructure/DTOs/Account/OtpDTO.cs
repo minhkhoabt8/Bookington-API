@@ -9,9 +9,9 @@ namespace Bookington.Infrastructure.DTOs.Account
     public class OtpDTO
     {
         public string Id { get; set; }
-        public string Otp { get; set; }
-        public DateTime CreateAt { get;set; }
-        public DateTime ExpiredTime { get; set; }
+        public string OtpCode { get; set; }
+        public DateTime CreateAt { get;set; } 
+        public DateTime ExpireAt { get; set; }
         public bool IsConfirmed { get; set; }
 
         public static OtpDTO GenerateOTP()
@@ -19,16 +19,16 @@ namespace Bookington.Infrastructure.DTOs.Account
             return new OtpDTO()
             {
                 Id = Guid.NewGuid().ToString(),
-                Otp = new Random().Next(100000, 999999).ToString(),
+                OtpCode = new Random().Next(100000, 999999).ToString(),
                 CreateAt = DateTime.Now,
-                ExpiredTime = DateTime.Now.AddDays(30),
+                ExpireAt = DateTime.Now.AddDays(30),
                 IsConfirmed = false
             };
         }
 
         public static bool ValidateOTP(string checkOTP, OtpDTO otp)
         {
-            if (otp.ExpiredTime < DateTime.Now || checkOTP != otp.Otp)
+            if (otp.ExpireAt < DateTime.Now || checkOTP != otp.OtpCode)
                 return false;
             return true;
         }

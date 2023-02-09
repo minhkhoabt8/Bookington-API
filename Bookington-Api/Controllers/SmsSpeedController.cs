@@ -23,7 +23,7 @@ namespace Bookington_Api.Controllers
         public async Task<IActionResult> SendSms([Required]string phone)
         {
             var otp = OtpDTO.GenerateOTP();
-            var response = _smsService.sendSmsAsync(phone, otp.Otp);
+            var response = _smsService.sendSmsAsync(phone, otp.OtpCode);
             return ResponseFactory.Ok(response);
         }
 

@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Report
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string? TypeId { get; set; }
 

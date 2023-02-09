@@ -23,6 +23,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
             return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone && a.Password == login.Password);
         }
+
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)
         {
             IQueryable<Account> accounts = _context.Accounts;
@@ -30,6 +31,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             {
                 accounts = accounts.Where(c => c.FullName.Contains(query.SearchField) || c.Phone.Contains(query.SearchField));
             }
+
 
             return accounts;
         }
