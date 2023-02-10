@@ -12,6 +12,7 @@ namespace Bookington.Infrastructure.UOW
         public IAccountRepository AccountRepository { get; }
 
         public ICourtRepository CourtRepository { get; }
+
         public IOtpRepository OtpRepository { get; }
 
         public IRoleRepository RoleRepository { get; }
@@ -29,6 +30,8 @@ namespace Bookington.Infrastructure.UOW
         public IProvinceRepository ProvinceRepository { get; }
 
         public IDistrictRepository DistrictRepository { get; }
+
+        public ICourtReportRepository CourtReportRepository { get; }
 
         Task<int> CommitAsync();
     }

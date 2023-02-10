@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Bookington.Core.Entities;
-using Bookington.Infrastructure.DTOs;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.DTOs.Role;
@@ -8,13 +7,9 @@ using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.DTOs.SubCourt;
 using Bookington.Infrastructure.DTOs.Slot;
 using Bookington.Infrastructure.DTOs.Voucher;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Bookington.Infrastructure.DTOs.Province;
 using Bookington.Infrastructure.DTOs.District;
+using Bookington.Infrastructure.DTOs.Report;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -60,6 +55,9 @@ namespace Bookington.Infrastructure.Mapper
             //District
             CreateMap<District, DistrictReadDTO>();
             CreateMap<DistrictWriteDTO, District>();
+            //Court Report
+            CreateMap<CourtReport, CourtReportReadDTO>();
+            CreateMap<CourtReportWriteDTO, CourtReport>();
         }
     }
 }
