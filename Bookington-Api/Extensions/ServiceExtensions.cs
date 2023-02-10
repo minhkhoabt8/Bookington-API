@@ -119,6 +119,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ISmsService, SmsSpeedService>();
             services.AddScoped<IProvinceService, ProvinceService>();
             services.AddScoped<IDistrictService, DistrictServices>();
+            services.AddScoped<IUserContextService, UserContextService>();
         }
 
         ///<Summary>
