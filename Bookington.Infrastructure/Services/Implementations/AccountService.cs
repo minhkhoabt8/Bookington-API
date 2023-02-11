@@ -3,12 +3,9 @@ using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
-using Bookington.Infrastructure.DTOs.Court;
-using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.Enums;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
-using Microsoft.Extensions.Configuration;
 
 
 namespace Bookington.Infrastructure.Services.Implementations
@@ -44,7 +41,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var otp = OtpDTO.GenerateOTP();
 
             var accountOtp = _mapper.Map<AccountOtp>(otp);
-
+            
             accountOtp.Phone = dto.Phone;
 
             await _unitOfWork.OtpRepository.AddAsync(accountOtp);
@@ -95,6 +92,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             var account = await _unitOfWork.AccountRepository.FindAccountByPhoneNumberAsync(accountOtp.Phone);
 
             account.IsActive = true;
+
+            accountOtp.IsConfirmed = true;
 
             await _unitOfWork.CommitAsync();
 

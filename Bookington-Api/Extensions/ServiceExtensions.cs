@@ -120,6 +120,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IProvinceService, ProvinceService>();
             services.AddScoped<IDistrictService, DistrictServices>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IUserContextService, UserContextService>();
         }
 
         ///<Summary>
