@@ -22,6 +22,10 @@ public partial class BookingtonDbContext : DbContext
 
     public virtual DbSet<Booking> Bookings { get; set; }
 
+    public virtual DbSet<ChatMessage> ChatMessages { get; set; }
+
+    public virtual DbSet<ChatRoom> ChatRooms { get; set; }
+
     public virtual DbSet<Comment> Comments { get; set; }
 
     public virtual DbSet<Court> Courts { get; set; }
@@ -44,20 +48,24 @@ public partial class BookingtonDbContext : DbContext
 
     public virtual DbSet<SubCourt> SubCourts { get; set; }
 
+    public virtual DbSet<TransactionHistory> TransactionHistories { get; set; }
+
+    public virtual DbSet<UserBalance> UserBalances { get; set; }
+
     public virtual DbSet<UserReport> UserReports { get; set; }
 
     public virtual DbSet<Voucher> Vouchers { get; set; }
 
-
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__accounts__3213E83FD34FFFAA");
+            entity.HasKey(e => e.Id).HasName("PK__accounts__3213E83F22FEC304");
 
             entity.ToTable("accounts");
 
-            entity.HasIndex(e => e.Phone, "UQ__accounts__B43B145FBA622AF7").IsUnique();
+            entity.HasIndex(e => e.Phone, "UQ__accounts__B43B145F9C9D23A4").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasMaxLength(40)
@@ -94,7 +102,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<AccountOtp>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__account___3213E83F0B057593");
+            entity.HasKey(e => e.Id).HasName("PK__account___3213E83FD40492D3");
 
             entity.ToTable("account_otps");
 
@@ -127,7 +135,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__bookings__3213E83FDF106AD2");
+            entity.HasKey(e => e.Id).HasName("PK__bookings__3213E83FB874A8D5");
 
             entity.ToTable("bookings");
 
@@ -142,9 +150,6 @@ public partial class BookingtonDbContext : DbContext
                 .HasMaxLength(40)
                 .IsUnicode(false)
                 .HasColumnName("book_by");
-            entity.Property(e => e.IsCanceled).HasColumnName("is_canceled");
-            entity.Property(e => e.IsPaid).HasColumnName("is_paid");
-            entity.Property(e => e.IsRefunded).HasColumnName("is_refunded");
             entity.Property(e => e.OriginalPrice).HasColumnName("original_price");
             entity.Property(e => e.PlayDate)
                 .HasColumnType("date")
@@ -185,9 +190,84 @@ public partial class BookingtonDbContext : DbContext
                 .HasConstraintName("FK__bookings__vouche__5629CD9C");
         });
 
+        modelBuilder.Entity<ChatMessage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__chat_mes__3213E83F96A628B9");
+
+            entity.ToTable("chat_messages");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("create_at");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
+            entity.Property(e => e.RefChatroom)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("ref_chatroom");
+            entity.Property(e => e.RefOwner)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("ref_owner");
+            entity.Property(e => e.RefUser)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("ref_user");
+            entity.Property(e => e.SequenceOrder).HasColumnName("sequence_order");
+
+            entity.HasOne(d => d.RefChatroomNavigation).WithMany(p => p.ChatMessages)
+                .HasForeignKey(d => d.RefChatroom)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__chat_mess__ref_c__5CD6CB2B");
+
+            entity.HasOne(d => d.RefOwnerNavigation).WithMany(p => p.ChatMessageRefOwnerNavigations)
+                .HasForeignKey(d => d.RefOwner)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__chat_mess__ref_o__5DCAEF64");
+
+            entity.HasOne(d => d.RefUserNavigation).WithMany(p => p.ChatMessageRefUserNavigations)
+                .HasForeignKey(d => d.RefUser)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__chat_mess__ref_u__5EBF139D");
+        });
+
+        modelBuilder.Entity<ChatRoom>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__chat_roo__3213E83FB89BEDAD");
+
+            entity.ToTable("chat_rooms");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("id");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.RefOwner)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("ref_owner");
+            entity.Property(e => e.RefUser)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("ref_user");
+
+            entity.HasOne(d => d.RefOwnerNavigation).WithMany(p => p.ChatRoomRefOwnerNavigations)
+                .HasForeignKey(d => d.RefOwner)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__chat_room__ref_o__59063A47");
+
+            entity.HasOne(d => d.RefUserNavigation).WithMany(p => p.ChatRoomRefUserNavigations)
+                .HasForeignKey(d => d.RefUser)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__chat_room__ref_u__59FA5E80");
+        });
+
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__comments__3213E83FFB733174");
+            entity.HasKey(e => e.Id).HasName("PK__comments__3213E83F9B212B4E");
 
             entity.ToTable("comments");
 
@@ -225,7 +305,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Court>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__courts__3213E83FFF03D644");
+            entity.HasKey(e => e.Id).HasName("PK__courts__3213E83F12391D8B");
 
             entity.ToTable("courts");
 
@@ -271,7 +351,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<CourtImage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__court_im__3213E83F09840289");
+            entity.HasKey(e => e.Id).HasName("PK__court_im__3213E83F1E8B6DF6");
 
             entity.ToTable("court_images");
 
@@ -293,7 +373,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<CourtReport>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__court_re__3213E83FE37E4D69");
+            entity.HasKey(e => e.Id).HasName("PK__court_re__3213E83F700D230C");
 
             entity.ToTable("court_reports");
 
@@ -326,7 +406,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<CourtType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__court_ty__3213E83F81743FBB");
+            entity.HasKey(e => e.Id).HasName("PK__court_ty__3213E83FB078620A");
 
             entity.ToTable("court_types");
 
@@ -341,7 +421,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<District>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__district__3213E83F3C0A9CED");
+            entity.HasKey(e => e.Id).HasName("PK__district__3213E83F054088A0");
 
             entity.ToTable("districts");
 
@@ -365,7 +445,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83F14BCCF2E");
+            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83F4FCD9A8A");
 
             entity.ToTable("orders");
 
@@ -373,6 +453,9 @@ public partial class BookingtonDbContext : DbContext
                 .HasMaxLength(40)
                 .IsUnicode(false)
                 .HasColumnName("id");
+            entity.Property(e => e.IsCanceled).HasColumnName("is_canceled");
+            entity.Property(e => e.IsPaid).HasColumnName("is_paid");
+            entity.Property(e => e.IsRefunded).HasColumnName("is_refunded");
             entity.Property(e => e.OrderAt)
                 .HasColumnType("datetime")
                 .HasColumnName("order_at");
@@ -385,7 +468,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Province>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__province__3213E83FEC1352DA");
+            entity.HasKey(e => e.Id).HasName("PK__province__3213E83F9A67BBD3");
 
             entity.ToTable("provinces");
 
@@ -400,7 +483,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__roles__3213E83FB88443C2");
+            entity.HasKey(e => e.Id).HasName("PK__roles__3213E83FEB6E3144");
 
             entity.ToTable("roles");
 
@@ -409,14 +492,14 @@ public partial class BookingtonDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("id");
             entity.Property(e => e.RoleName)
-                .HasMaxLength(10)
+                .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("role_name");
         });
 
         modelBuilder.Entity<Slot>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__slots__3213E83F423220B8");
+            entity.HasKey(e => e.Id).HasName("PK__slots__3213E83FFC28A0F3");
 
             entity.ToTable("slots");
 
@@ -441,7 +524,7 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<SubCourt>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__sub_cour__3213E83F1B95042D");
+            entity.HasKey(e => e.Id).HasName("PK__sub_cour__3213E83F4443E630");
 
             entity.ToTable("sub_courts");
 
@@ -477,9 +560,65 @@ public partial class BookingtonDbContext : DbContext
                 .HasConstraintName("FK__sub_court__paren__45F365D3");
         });
 
+        modelBuilder.Entity<TransactionHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83FA00BD87B");
+
+            entity.ToTable("transaction_history");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("id");
+            entity.Property(e => e.Amount).HasColumnName("amount");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("create_at");
+            entity.Property(e => e.RefFrom)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("ref_from");
+            entity.Property(e => e.RefTo)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("ref_to");
+
+            entity.HasOne(d => d.RefFromNavigation).WithMany(p => p.TransactionHistoryRefFromNavigations)
+                .HasForeignKey(d => d.RefFrom)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__transacti__ref_f__6477ECF3");
+
+            entity.HasOne(d => d.RefToNavigation).WithMany(p => p.TransactionHistoryRefToNavigations)
+                .HasForeignKey(d => d.RefTo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__transacti__ref_t__656C112C");
+        });
+
+        modelBuilder.Entity<UserBalance>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__user_bal__3213E83F8707A95E");
+
+            entity.ToTable("user_balances");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("id");
+            entity.Property(e => e.Balance).HasColumnName("balance");
+            entity.Property(e => e.RefUser)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("ref_user");
+
+            entity.HasOne(d => d.RefUserNavigation).WithMany(p => p.UserBalances)
+                .HasForeignKey(d => d.RefUser)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__user_bala__ref_u__619B8048");
+        });
+
         modelBuilder.Entity<UserReport>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__user_rep__3213E83F888332CF");
+            entity.HasKey(e => e.Id).HasName("PK__user_rep__3213E83FFB8FE9AF");
 
             entity.ToTable("user_reports");
 
@@ -491,7 +630,7 @@ public partial class BookingtonDbContext : DbContext
                 .HasMaxLength(500)
                 .HasColumnName("content");
             entity.Property(e => e.RefUser)
-                .HasMaxLength(10)
+                .HasMaxLength(40)
                 .IsUnicode(false)
                 .HasColumnName("ref_user");
             entity.Property(e => e.ReporterId)
@@ -500,7 +639,6 @@ public partial class BookingtonDbContext : DbContext
                 .HasColumnName("reporter_id");
 
             entity.HasOne(d => d.RefUserNavigation).WithMany(p => p.UserReportRefUserNavigations)
-                .HasPrincipalKey(p => p.Phone)
                 .HasForeignKey(d => d.RefUser)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__user_repo__ref_u__403A8C7D");
@@ -513,11 +651,11 @@ public partial class BookingtonDbContext : DbContext
 
         modelBuilder.Entity<Voucher>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__vouchers__3213E83F8F97BDC8");
+            entity.HasKey(e => e.Id).HasName("PK__vouchers__3213E83F3274A2E0");
 
             entity.ToTable("vouchers");
 
-            entity.HasIndex(e => e.VoucherCode, "UQ__vouchers__2173106926FC4073").IsUnique();
+            entity.HasIndex(e => e.VoucherCode, "UQ__vouchers__21731069488649AC").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasMaxLength(40)

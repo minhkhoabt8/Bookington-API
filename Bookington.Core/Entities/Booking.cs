@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Booking
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string RefSlot { get; set; } = null!;
 
@@ -22,12 +22,6 @@ public partial class Booking
     public double Price { get; set; }
 
     public double OriginalPrice { get; set; }
-
-    public bool IsPaid { get; set; }
-
-    public bool IsCanceled { get; set; }
-
-    public bool IsRefunded { get; set; }
 
     public virtual Account BookByNavigation { get; set; } = null!;
 

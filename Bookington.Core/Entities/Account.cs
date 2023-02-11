@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Account
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string RoleId { get; set; } = null!;
 
@@ -17,13 +17,21 @@ public partial class Account
 
     public DateTime? DateOfBirth { get; set; }
 
-    public DateTime CreateAt { get; set; } = DateTime.Now;
+    public DateTime CreateAt { get; set; }
 
     public bool IsActive { get; set; }
 
     public virtual ICollection<AccountOtp> AccountOtps { get; } = new List<AccountOtp>();
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
+
+    public virtual ICollection<ChatMessage> ChatMessageRefOwnerNavigations { get; } = new List<ChatMessage>();
+
+    public virtual ICollection<ChatMessage> ChatMessageRefUserNavigations { get; } = new List<ChatMessage>();
+
+    public virtual ICollection<ChatRoom> ChatRoomRefOwnerNavigations { get; } = new List<ChatRoom>();
+
+    public virtual ICollection<ChatRoom> ChatRoomRefUserNavigations { get; } = new List<ChatRoom>();
 
     public virtual ICollection<Comment> Comments { get; } = new List<Comment>();
 
@@ -32,6 +40,12 @@ public partial class Account
     public virtual ICollection<Court> Courts { get; } = new List<Court>();
 
     public virtual Role Role { get; set; } = null!;
+
+    public virtual ICollection<TransactionHistory> TransactionHistoryRefFromNavigations { get; } = new List<TransactionHistory>();
+
+    public virtual ICollection<TransactionHistory> TransactionHistoryRefToNavigations { get; } = new List<TransactionHistory>();
+
+    public virtual ICollection<UserBalance> UserBalances { get; } = new List<UserBalance>();
 
     public virtual ICollection<UserReport> UserReportRefUserNavigations { get; } = new List<UserReport>();
 
