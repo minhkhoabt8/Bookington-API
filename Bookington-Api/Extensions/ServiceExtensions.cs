@@ -105,7 +105,7 @@ namespace Bookington_Api.Extensions
             });
         }
         ///<Summary>
-        /// Reggister Service
+        /// Register Service
         ///</Summary>
         public static void AddServices(this IServiceCollection services)
         {
@@ -177,6 +177,5 @@ namespace Bookington_Api.Extensions
         {
             services.AddScoped<AutoValidateModelState>();
         }
-
     }
 }

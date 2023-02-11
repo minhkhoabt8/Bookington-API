@@ -1,5 +1,6 @@
 ﻿using Bookington.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace Bookington.Infrastructure.Services.Implementations
@@ -18,7 +19,8 @@ namespace Bookington.Infrastructure.Services.Implementations
                _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.NameIdentifier)
                    ?.Value, out var id)
                ? id
-               : null;
+               : null;   
+
         public string? FullName =>
             _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.Name)?.Value ?? null;
 

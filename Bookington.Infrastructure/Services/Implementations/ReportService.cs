@@ -4,6 +4,8 @@ using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Report;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -11,22 +13,32 @@ namespace Bookington.Infrastructure.Services.Implementations
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserContextService _userContextService;
 
-        public ReportService(IMapper mapper, IUnitOfWork unitOfWork)
+        public ReportService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _userContextService = userContextService;
         }
 
         public async Task<CourtReportReadDTO> CreateCourtReportAsync(CourtReportWriteDTO dto)
         {
-            var report = _mapper.Map<CourtReport>(dto);
+            var accountId = _userContextService.AccountID.ToString();            
 
-            await _unitOfWork.CourtReportRepository.AddAsync(report);
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            var newReport = _mapper.Map<CourtReport>(dto);
+
+            newReport.ReporterId = (accountId ?? "");                     
+
+            if (_unitOfWork.AccountRepository.FindAsync(newReport.ReporterId) == null) throw new EntityWithIDNotFoundException<Account>(newReport.ReporterId);            
+
+            await _unitOfWork.CourtReportRepository.AddAsync(newReport);
 
             await _unitOfWork.CommitAsync();
 
-            return _mapper.Map<CourtReportReadDTO>(report);
+            return _mapper.Map<CourtReportReadDTO>(newReport);
         }
 
         public async Task<IEnumerable<CourtReportReadDTO>> GetAllCourtReportsAsync()

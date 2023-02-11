@@ -21,6 +21,7 @@ builder.Services.AddJWTAuthentication(builder.Configuration);
 builder.Services.AddDbContext(builder.Configuration);
 builder.Services.AddSwaggerGen();
 builder.Services.AddServiceFilters();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -36,7 +37,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

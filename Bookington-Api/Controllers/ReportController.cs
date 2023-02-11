@@ -2,6 +2,7 @@
 using Bookington.Infrastructure.DTOs.Report;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,13 +16,13 @@ namespace Bookington_Api.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
-        private readonly IReportService _reportService;
+        private readonly IReportService _reportService;                
 
         /// <summary>        
         /// </summary>
         public ReportController(IReportService reportService)
         {
-            _reportService = reportService;
+            _reportService = reportService;                       
         }
 
         /// <summary>
@@ -56,14 +57,13 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost]
-        //[ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CreateAsync(CourtReportWriteDTO dto)
+        [HttpPost]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> CreateCourtReportAsync(CourtReportWriteDTO dto)
         {
             var newReport = await _reportService.CreateCourtReportAsync(dto);
             return ResponseFactory.Created(newReport);
         }
-
 
         /// <summary>
         /// Update A Court Report
