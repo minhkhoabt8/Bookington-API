@@ -17,12 +17,13 @@ namespace Bookington.Infrastructure.Services.Implementations
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserContextService _userContextService;
 
-        public CourtService(IMapper mapper, IUnitOfWork unitOfWork)
+        public CourtService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            
+            _userContextService = userContextService;
         }
 
         public async Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto)
@@ -40,6 +41,8 @@ namespace Bookington.Infrastructure.Services.Implementations
         public async Task DeleteAsync(string id)
         {
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id);
+
+            if (existCourt?.OwnerId != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
             if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(id);
 
@@ -68,6 +71,9 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
 
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id);
+
+            if (existCourt?.OwnerId != _userContextService.AccountID.ToString()) throw new ForbiddenException();
+
 
             if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(id);
 
