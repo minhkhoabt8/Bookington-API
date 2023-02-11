@@ -6,7 +6,7 @@ using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.Enums;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
-
+using System.Diagnostics;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -17,13 +17,15 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
         private readonly ISmsService _smsService;
+        private readonly IUserContextService _userContextService;
 
-        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService, ISmsService smsService)
+        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService, ISmsService smsService, IUserContextService userContextService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _smsService = smsService;
+            _userContextService = userContextService;
         }
 
         public async Task<IEnumerable<AccountReadDTO>> GetAllAsync()
@@ -102,6 +104,10 @@ namespace Bookington.Infrastructure.Services.Implementations
         public async Task<AccountReadDTO> UpdateAsync(string id, AccountUpdateDTO dto)
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
+
+            if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
+
+            Debug.WriteLine(_userContextService.AccountID.ToString());
 
             if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
 
