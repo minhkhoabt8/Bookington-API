@@ -141,6 +141,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IProvinceRepository, ProvinceRepository>();
             services.AddScoped<IDistrictRepository, DistrictRepository>();
             services.AddScoped<ICourtReportRepository, CourtReportRepository>();
+            services.AddScoped<IUserReportRepository, UserReportRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work

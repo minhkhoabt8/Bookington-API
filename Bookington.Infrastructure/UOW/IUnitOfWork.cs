@@ -33,6 +33,8 @@ namespace Bookington.Infrastructure.UOW
 
         public ICourtReportRepository CourtReportRepository { get; }
 
+        public IUserReportRepository UserReportRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

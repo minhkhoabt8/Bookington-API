@@ -58,6 +58,10 @@ namespace Bookington.Infrastructure.Mapper
             //Court Report
             CreateMap<CourtReport, CourtReportReadDTO>();
             CreateMap<CourtReportWriteDTO, CourtReport>();
+            //User Report
+            CreateMap<UserReport, UserReportReadDTO>();
+            CreateMap<UserReportCreateDTO, UserReport>();
+            CreateMap<UserReportUpdateDTO, UserReport>();
         }
     }
 }

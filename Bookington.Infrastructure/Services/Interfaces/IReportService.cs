@@ -10,10 +10,18 @@ namespace Bookington.Infrastructure.Services.Interfaces
 {
     public interface IReportService
     {
+        // COURT REPORTS RELATED FUNCTIONS
         Task<IEnumerable<CourtReportReadDTO>> GetAllCourtReportsAsync();
         Task<CourtReportReadDTO> CreateCourtReportAsync(CourtReportWriteDTO dto);
         Task<CourtReportReadDTO> UpdateCourtReportAsync(string id, CourtReportWriteDTO dto);
         Task DeleteCourtReportAsync(string id);
         Task<CourtReportReadDTO> GetCourtReportByIdAsync(string id);
+
+        // USER REPORTS RELATED FUNCTIONS
+        Task<IEnumerable<UserReportReadDTO>> GetAllUserReportsAsync();
+        Task<UserReportReadDTO> CreateUserReportAsync(UserReportCreateDTO dto);
+        Task<UserReportReadDTO> UpdateUserReportAsync(string id, UserReportUpdateDTO dto);
+        Task DeleteUserReportAsync(string id);
+        Task<UserReportReadDTO> GetUserReportByIdAsync(string id);
     }
 }

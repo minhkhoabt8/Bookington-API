@@ -16,21 +16,23 @@ namespace Bookington_Api.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
-        private readonly IReportService _reportService;                
+        private readonly IReportService _reportService;
 
         /// <summary>        
         /// </summary>
         public ReportController(IReportService reportService)
         {
-            _reportService = reportService;                       
+            _reportService = reportService;
         }
+
+        // COURT REPORTS RELATED API CALLS
 
         /// <summary>
         /// Get All Court Reports
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        //[ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [HttpGet("courtreports")]               
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourtReportReadDTO>))]
         public async Task<IActionResult> GetAllCourtReportsAsync()
         {
@@ -39,12 +41,12 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
-        /// Get A Report Details
+        /// Get A Court Report Details
         /// </summary>
         /// <returns></returns>
         /// <param name="id"></param>
-        [HttpGet("{id}")]
-        //[ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [HttpGet("courtreports/{id}")]                
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourtReportReadDTO))]
         public async Task<IActionResult> GetCourtReportDetailsAsync(string id)
         {
@@ -57,7 +59,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost]        
+        [HttpPost("courtreports")]                
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> CreateCourtReportAsync(CourtReportWriteDTO dto)
         {
@@ -71,7 +73,7 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("courtreports/{id}")]                
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> UpdateCourtReportAsync(string id, CourtReportWriteDTO dto)
@@ -85,12 +87,84 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
-        //[ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [HttpDelete("courtreports/{id}")]                
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> DeleteCourtReportAsync(string id)
         {
             await _reportService.DeleteCourtReportAsync(id);
             return ResponseFactory.NoContent();
-        }        
+        }
+
+        //-------------------------------------------------------------------------------------------------
+
+        // USER REPORTS RELATED API CALLS
+
+        /// <summary>
+        /// Get All User Reports
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("userreports")]        
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserReportReadDTO>))]
+        public async Task<IActionResult> GetAllUserReportsAsync()
+        {
+            var userReports = await _reportService.GetAllUserReportsAsync();
+            return ResponseFactory.Ok(userReports);
+        }
+
+        /// <summary>
+        /// Get A User Report Details
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="id"></param>
+        [HttpGet("userreports/{id}")]                
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserReportReadDTO))]
+        public async Task<IActionResult> GetUserReportDetailsAsync(string id)
+        {
+            var report = await _reportService.GetUserReportByIdAsync(id);
+            return ResponseFactory.Ok(report);
+        }
+
+        /// <summary>
+        /// Create A New User Report
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("userreports")]             
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> CreateCourtReportAsync(UserReportCreateDTO dto)
+        {
+            var newReport = await _reportService.CreateUserReportAsync(dto);
+            return ResponseFactory.Created(newReport);
+        }
+
+        /// <summary>
+        /// Update A User Report
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut("userreports/{id}")]                
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> UpdateUserReportAsync(string id, UserReportUpdateDTO dto)
+        {
+            var updatedReport = await _reportService.UpdateUserReportAsync(id, dto);
+            return ResponseFactory.Ok(updatedReport);
+        }
+
+        /// <summary>
+        /// Delete A User Report
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("userreports/{id}")]               
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> DeleteUserReportAsync(string id)
+        {
+            await _reportService.DeleteUserReportAsync(id);
+            return ResponseFactory.NoContent();
+        }
     }
 }

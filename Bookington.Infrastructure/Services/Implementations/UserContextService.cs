@@ -24,7 +24,6 @@ namespace Bookington.Infrastructure.Services.Implementations
         public string? FullName =>
             _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.Name)?.Value ?? null;
 
-        public string? Phone => _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.MobilePhone)?.Value ?? null;
-        
+        public string? Phone => _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.MobilePhone)?.Value ?? null;               
     }
 }

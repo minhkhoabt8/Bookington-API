@@ -10,6 +10,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
     {
         Guid? AccountID { get; }
         string? FullName { get; }
-        string? Phone { get; }
+        string? Phone { get; }        
     }
 }
