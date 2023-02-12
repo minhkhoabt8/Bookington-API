@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Voucher
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string CreateBy { get; set; } = null!;
 
@@ -27,7 +27,7 @@ public partial class Voucher
 
     public DateTime? EndDate { get; set; }
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreateAt { get; set; } = DateTime.Now;
 
     public bool IsActive { get; set; }
 

@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class ChatMessage
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string RefChatroom { get; set; } = null!;
 
@@ -13,7 +13,7 @@ public partial class ChatMessage
 
     public string RefUser { get; set; } = null!;
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreateAt { get; set; } = DateTime.Now;
 
     public int SequenceOrder { get; set; }
 
