@@ -29,6 +29,12 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<CourtWriteDTO, Court>()
                 .ForMember(dest => dest.OpenAt,options => options.MapFrom(src => TimeSpan.Parse(src.OpenAt.ToString())))
                 .ForMember(dest => dest.CloseAt, options => options.MapFrom(src => TimeSpan.Parse(src.CloseAt.ToString())));
+            CreateMap<Court, CourtQueryResponse>()
+                .ForMember(dest => dest.DistrictName, options => options.MapFrom(src=>src.District.DistrictName))
+                .ForMember(dest => dest.ProvinceName, options => options.MapFrom(src => src.District.Province.ProvinceName))
+                .ForMember(dest => dest.NumberOfSubCourt, options => options.MapFrom(src => src.SubCourts.Count()))
+                //.ForMember(dest => dest.RatingStar, options => options.MapFrom(src => src.Comments.Sum(a => a.Rating) / src.Comments.Where(c=>c.Id == src.Id).Count()))
+                .ForMember(des => des.CourtPicture, act => act.MapFrom(src => src.CourtImages.Where(c=>c.Id==src.Id)));
             // Sub Court
             CreateMap<SubCourt, SubCourtReadDTO>();
             CreateMap<SubCourtWriteDTO, SubCourt>();

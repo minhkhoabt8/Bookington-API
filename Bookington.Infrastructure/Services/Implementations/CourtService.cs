@@ -85,11 +85,11 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<PaginatedResponse<CourtReadDTO>> QueryCourtsAsync(CourtItemQuery query)
+        public async Task<PaginatedResponse<CourtQueryResponse>> QueryCourtsAsync(CourtItemQuery query)
         {
             var courts = await _unitOfWork.CourtRepository.QueryAsync(query);
 
-            return PaginatedResponse<CourtReadDTO>.FromEnumerableWithMapping(
+            return PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
                 courts, query, _mapper);
         }
     }

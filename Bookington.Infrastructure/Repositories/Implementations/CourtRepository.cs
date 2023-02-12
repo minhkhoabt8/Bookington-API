@@ -15,42 +15,55 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Court>> QueryAsync(CourtItemQuery query, bool trackChanges = false)
         {
-            IQueryable<Court> courts = _context.Courts;
+            IQueryable<Court> courts = _context.Courts
+                .Include(c => c.District)
+                .Include(c=>c.SubCourts)
+                .Include(c=>c.Comments)
+                .Include(c=>c.District.Province)
+                .Include(c=>c.CourtImages)
+                .Where(c=>c.IsDeleted == false);
+            
             if (!trackChanges)
             {
                 courts = courts.AsNoTracking();
             }
-            //if (query.OpenAt !=null)
-            //{
-            //    courts = courts.Where(c => c.OpenAt == query.OpenAt);
-            //}
-            //if(query.CloseAt != null)
-            //{
-            //    courts = courts.Where(c => c.CloseAt == query.CloseAt);
-            //}
-            //if(query.OpenAt !=null || query.CloseAt != null)
-            //{
-            //    courts = courts.Where(c => c.OpenAt == query.OpenAt || c.CloseAt ==query.CloseAt);
-            //}
             if (!query.SearchText.IsNullOrEmpty())
             {
-                courts = courts.Where(c => c.Name == query.SearchText);
+                courts = courts.Where(c => c.Name.Contains(query.SearchText));
             }
-            //if (!query.District.IsNullOrEmpty())
-            //{
-            //    var districId = await ReturnDistricId(query.District);
+            if (!query.District.IsNullOrEmpty())
+            {
+                courts = courts.Where(c => c.District.DistrictName.Contains(query.District));
+            }
+            if (!query.Province.IsNullOrEmpty())
+            {
+                courts = courts.Where(c => c.District.Province.ProvinceName.Contains(query.District));
+            }
+            if (!query.OpenAt.IsNullOrEmpty() && query.CloseAt.IsNullOrEmpty())
+            {
+                var openAt = TimeSpan.Parse(query.OpenAt);
+                courts = courts.Where(c => c.OpenAt == openAt);
+            }
+            else if (!query.CloseAt.IsNullOrEmpty() && query.OpenAt.IsNullOrEmpty())
+            {
+                var closeAt = TimeSpan.Parse(query.CloseAt);
+                courts = courts.Where(c => c.CloseAt == closeAt);
+            }
+            else if(!query.OpenAt.IsNullOrEmpty() && !query.CloseAt.IsNullOrEmpty())
+            {
 
-            //    courts = courts.Where(c => c.DistrictId == districId);
-            //}
+                var openAt = TimeSpan.Parse(query.OpenAt);
+                var closeAt = TimeSpan.Parse(query.CloseAt);
+
+                if(openAt <= closeAt)
+                {
+                    courts = courts.Where(c => c.OpenAt >= openAt && c.CloseAt <= closeAt);
+                }
+               
+            }
             return courts;
 
         }
-        public async Task<string> ReturnDistricId(string districName)
-        {
-            
-            var result = await _context.Districts.FirstOrDefaultAsync(p => p.DistrictName == districName);
-            return result.Id.ToString();
-            
-        }
+        
     }
 }

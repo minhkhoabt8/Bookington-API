@@ -100,7 +100,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("query")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtQueryResponse>))]
         public async Task<IActionResult> QueryCourts([FromQuery] CourtItemQuery query)
         {
             var courts = await _courtService.QueryCourtsAsync(query);

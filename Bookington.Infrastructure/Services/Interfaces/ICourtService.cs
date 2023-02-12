@@ -11,6 +11,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<CourtReadDTO> UpdateAsync(string id, CourtWriteDTO dto);
         Task DeleteAsync(string id);
         Task<CourtReadDTO> GetByIdAsync(string id);
-        Task<PaginatedResponse<CourtReadDTO>> QueryCourtsAsync(CourtItemQuery query);
+        Task<PaginatedResponse<CourtQueryResponse>> QueryCourtsAsync(CourtItemQuery query);
     }
 }

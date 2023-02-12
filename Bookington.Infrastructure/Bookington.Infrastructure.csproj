@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Configurations\" />
     <Folder Include="EventHandlers\" />
-    <Folder Include="Extensions\" />
     <Folder Include="Mapper\" />
     <Folder Include="MessageConsumers\" />
   </ItemGroup>

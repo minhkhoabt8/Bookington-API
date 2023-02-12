@@ -18,7 +18,7 @@ namespace Bookington.Infrastructure.DTOs.Court
         public string? SearchText { get; set; }
         public string? District { get; set; }
         public string? Province { get; set; }
-        public string? CloseAt { get; set; }
         public string? OpenAt { get; set; }
+        public string? CloseAt { get; set; }
     }
 }
