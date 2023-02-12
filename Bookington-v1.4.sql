@@ -1,11 +1,11 @@
 CREATE TABLE roles (
-    id VARCHAR(40) PRIMARY KEY,
-    role_name VARCHAR(10) NOT NULL
+        id VARCHAR(40) PRIMARY KEY,
+        role_name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE accounts (
-    id VARCHAR(40) PRIMARY KEY,
-    role_id VARCHAR(40) FOREIGN KEY REFERENCES roles(id) NOT NULL,
+        id VARCHAR(40) PRIMARY KEY,
+        role_id VARCHAR(40) FOREIGN KEY REFERENCES roles(id) NOT NULL,
 	phone VARCHAR(10) UNIQUE NOT NULL,
 	password VARCHAR(100) NOT NULL,
 	full_name NVARCHAR(50),
@@ -73,7 +73,7 @@ CREATE TABLE court_reports (
 
 CREATE TABLE user_reports (
 	id VARCHAR(40) PRIMARY KEY,
-	ref_user VARCHAR(10) FOREIGN KEY REFERENCES accounts(phone) NOT NULL,
+	ref_user VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	reporter_id VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	content NVARCHAR(500) NOT NULL
 );
@@ -122,7 +122,10 @@ CREATE TABLE orders (
 	id VARCHAR(40) PRIMARY KEY,
 	transaction_id VARCHAR(100),
 	order_at DATETIME NOT NULL,
-	total_price DOUBLE PRECISION NOT NULL
+	total_price DOUBLE PRECISION NOT NULL,
+	is_paid BIT NOT NULL,
+	is_canceled BIT NOT NULL,
+	is_refunded BIT NOT NULL
 );
 
 CREATE TABLE bookings (
@@ -134,8 +137,36 @@ CREATE TABLE bookings (
 	book_at DATETIME NOT NULL,
 	play_date DATE NOT NULL,
 	price DOUBLE PRECISION NOT NULL,
-	original_price DOUBLE PRECISION NOT NULL,
-	is_paid BIT NOT NULL,
-	is_canceled BIT NOT NULL,
-	is_refunded BIT NOT NULL
+	original_price DOUBLE PRECISION NOT NULL	
+);
+
+CREATE TABLE chat_rooms (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_owner VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	ref_user VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,	
+	is_active BIT NOT NULL
+);
+
+CREATE TABLE chat_messages (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_chatroom VARCHAR(40) FOREIGN KEY REFERENCES chat_rooms(id) NOT NULL,
+	ref_owner VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	ref_user VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	create_at DATETIME NOT NULL,
+	sequence_order INTEGER NOT NULL,		
+	is_deleted BIT NOT NULL
+);
+
+CREATE TABLE user_balances (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_user VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	balance DOUBLE PRECISION NOT NULL
+);
+
+CREATE TABLE transaction_history (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_from VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	ref_to VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	amount DOUBLE PRECISION NOT NULL,
+	create_at DATETIME NOT NULL	
 );
