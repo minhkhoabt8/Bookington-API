@@ -6,6 +6,7 @@ using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.Enums;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 namespace Bookington.Infrastructure.Services.Implementations
@@ -145,6 +146,30 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(
                 courts, query, _mapper);
+        }
+
+        public async Task<AccountProfileReadDTO> GetProfileAsync()
+        {
+            // JWT token check (TRUE to proceed)
+
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            // I'll do the avatar thing later
+
+            var profile = await _unitOfWork.AccountRepository.FindAsync(accountId);
+
+            return _mapper.Map<AccountProfileReadDTO>(profile);
+        }
+
+        public async Task<AccountProfileReadDTO> GetProfileByIdAsync(string accountId)
+        {           
+            var profile = await _unitOfWork.AccountRepository.FindAsync(accountId);
+
+            if (profile == null) throw new EntityWithIDNotFoundException<Account>(accountId);            
+
+            return _mapper.Map<AccountProfileReadDTO>(profile);
         }
     }
 }

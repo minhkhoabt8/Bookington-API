@@ -35,11 +35,18 @@ namespace Bookington.Infrastructure.DTOs.Account
         public int SysTokenExpires { get; set; }
     }
 
-    
-
     public class ConfirmUserDTO
     {
         public string Phone { get; set; }
         public string OTP { get; set; }
+    }
+
+    public class AccountProfileReadDTO
+    {        
+        public string Phone { get; set; } = null!;
+
+        public string FullName { get; set; } = null!;
+
+        public DateTime DateOfBirth { get; set; }
     }
 }
