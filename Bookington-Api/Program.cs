@@ -1,5 +1,6 @@
 
 using Bookington_Api.Extensions;
+using Bookington_Api.Hubs;
 using Bookington_Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddDbContext(builder.Configuration);
 builder.Services.AddSwaggerGen();
 builder.Services.AddServiceFilters();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -42,5 +44,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

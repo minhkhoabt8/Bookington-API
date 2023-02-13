@@ -105,11 +105,9 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
-            if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
-
-            Debug.WriteLine(_userContextService.AccountID.ToString());
-
             if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
+
+            else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
             _mapper.Map(dto, existAccount);
 
@@ -123,6 +121,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
             if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
+
+            else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
             _unitOfWork.AccountRepository.Delete(existAccount);
 

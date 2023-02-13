@@ -19,7 +19,7 @@ public partial class Account
 
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = false;
 
     public virtual ICollection<AccountOtp> AccountOtps { get; } = new List<AccountOtp>();
 

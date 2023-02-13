@@ -178,5 +178,10 @@ namespace Bookington_Api.Extensions
         {
             services.AddScoped<AutoValidateModelState>();
         }
+
+        public static void AddSignalRService(this IServiceCollection services)
+        {
+            
+        }
     }
 }
