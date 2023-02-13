@@ -19,9 +19,12 @@ namespace Bookington.Infrastructure.Services.Interfaces
 
         Task<AccountReadDTO> GetByIdAsync(string id);
 
-
         Task VerifyAccount(string phoneNumber, string otp);
 
         Task<PaginatedResponse<AccountReadDTO>> QueryAccountsAsync(AccountQuery query);
+
+        Task<AccountProfileReadDTO> GetProfileAsync();
+
+        Task<AccountProfileReadDTO> GetProfileByIdAsync(string accountId);
     }
 }

@@ -122,5 +122,31 @@ namespace Bookington_Api.Controllers
 
             return ResponseFactory.PaginatedOk(accounts);
         }
+
+        /// <summary>
+        /// Get Profile
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("profile")]
+        [Authorize(Roles = "Admin,CourtOwner,Customer")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> GetProfileAsync()
+        {
+            var profile = await _accountService.GetProfileAsync();
+            return ResponseFactory.Ok(profile);
+        }
+
+        /// <summary>
+        /// Get Profile
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("profile/{accountId}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> GetProfileAsync(string accountId)
+        {
+            var profile = await _accountService.GetProfileByIdAsync(accountId);
+            return ResponseFactory.Ok(profile);
+        }
     }
 }
