@@ -1,15 +1,9 @@
-﻿using AutoMapper;
-using Azure;
-using Bookington.Core.Entities;
-using Bookington.Core.Exceptions;
+﻿using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Enums;
-using Bookington.Infrastructure.Repositories.Interfaces;
 using Bookington.Infrastructure.Services.Implementations;
-using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Moq;
-using System;
 using Xunit;
 using Assert = Xunit.Assert;
 
@@ -38,7 +32,7 @@ namespace Bookington_Test.Service.Account
             {
                 Phone = phone,
                 FullName = "Test@@",
-                RoleId = RoleEnum.Customer.ToString(),
+                RoleId = RoleEnum.customer.ToString(),
                 CreateAt = DateTime.Now,
                 Password = "Test@@"
             };

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookington.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookington.Api", "Bookington-Api\Bookington.Api.csproj", "{134C79D4-5952-43A5-945F-EACA57028317}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookington_Test", "Bookington_Test\Bookington_Test.csproj", "{2F5866E4-A1A7-4B58-A83D-3D25DC5E68DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookington_Test", "Bookington_Test\Bookington_Test.csproj", "{2F5866E4-A1A7-4B58-A83D-3D25DC5E68DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

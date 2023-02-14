@@ -7,7 +7,7 @@ namespace Bookington.Infrastructure.DTOs.Account
     public class AccountQuery : PaginatedQuery
     {
         public string? SearchField { get; set; } = "";
-        public RoleEnum? Role { get; set; } = RoleEnum.Customer;
+        public RoleEnum? Role { get; set; } = RoleEnum.customer;
         public bool? isActive { get; set; } = false;
     }
 }

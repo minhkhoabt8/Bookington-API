@@ -35,7 +35,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize(Roles = "Customer")]
+        [Authorize(Roles = "user")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -116,7 +116,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpGet("query")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
-        public async Task<IActionResult> QueryCourts([FromQuery] AccountQuery query)
+        public async Task<IActionResult> QueryAccounts([FromQuery] AccountQuery query)
         {
             var accounts = await _accountService.QueryAccountsAsync(query);
 
@@ -124,11 +124,11 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
-        /// Get Profile
+        /// Get Profile From Context (Must Login)
         /// </summary>
         /// <returns></returns>
         [HttpGet("profile")]
-        [Authorize(Roles = "Admin,CourtOwner,Customer")]
+        [Authorize(Roles = "admin, owner, user")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetProfileAsync()
         {
@@ -137,11 +137,11 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
-        /// Get Profile
+        /// Get Profile By Id
         /// </summary>
         /// <returns></returns>
         [HttpGet("profile/{accountId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetProfileAsync(string accountId)
         {
