@@ -11,6 +11,8 @@ namespace Bookington.Infrastructure.DTOs.SubCourt
     {
         public string? Id { get; set; }
 
+        public string Name { get; set; }
+
         public string? ParentCourtId { get; set; }
 
         public int? CourtTypeId { get; set; }
