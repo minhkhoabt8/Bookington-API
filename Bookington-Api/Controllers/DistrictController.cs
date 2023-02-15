@@ -11,7 +11,7 @@ namespace Bookington_Api.Controllers
     /// <summary> 
     /// Province Controller
     /// </summary>
-    [Route("bookington/district")]
+    [Route("bookington/districts")]
     [ApiController]
     public class DistrictController : Controller
     {
@@ -51,7 +51,6 @@ namespace Bookington_Api.Controllers
         /// <summary>
         /// Sync District
         /// </summary>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -59,6 +58,21 @@ namespace Bookington_Api.Controllers
         {
             await _districtService.SyncDistrict();
             return ResponseFactory.NoContent();
+        }
+
+        /// <summary>
+        /// Get Districts By Province Id
+        /// </summary>
+        ///<param name="provinceId"></param>
+        /// <returns></returns>
+        [HttpGet("province")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DistrictReadDTO>))]
+        public async Task<IActionResult> GetDistrictsByProvinceIdAsync([FromQuery]string id)
+        {
+
+            var districts = await _districtService.GetDistrictsByProvinceIdAsync(id);
+
+            return ResponseFactory.Ok(districts);
         }
     }
 }

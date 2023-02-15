@@ -73,5 +73,12 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return _mapper.Map<DistrictReadDTO>(district);
         }
+
+        public async Task<IEnumerable<DistrictReadDTO>> GetDistrictsByProvinceIdAsync(string id)
+        {
+            var districts = await _unitOfWork.DistrictRepository.GetDistrictsByProviceId(id);
+
+            return _mapper.Map<IEnumerable<DistrictReadDTO>>(districts);
+        }
     }
 }

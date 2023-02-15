@@ -1,4 +1,5 @@
-﻿using Bookington.Core.Entities;
+﻿using Bookington.Core.Data;
+using Bookington.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IAddAsync<District>,
         IUpdate<District>
     {
-
+        Task<IEnumerable<District>> GetDistrictsByProviceId(string Id);
     }
 }

@@ -13,6 +13,5 @@ namespace Bookington.Infrastructure.DTOs.District
 
         public string DistrictName { get; set; }
 
-        public string ProvinceId { get; set; }
     }
 }

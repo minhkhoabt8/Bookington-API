@@ -8,7 +8,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<IEnumerable<DistrictReadDTO>> GetAllAsync();
         Task<DistrictReadDTO> CreateAsync(DistrictWriteDTO dto);
         Task<DistrictReadDTO> UpdateAsync(string id, DistrictWriteDTO dto);
-
+        Task<IEnumerable<DistrictReadDTO>> GetDistrictsByProvinceIdAsync(string id);
         Task SyncDistrict();
     }
 }
