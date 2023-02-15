@@ -13,6 +13,5 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IAddAsync<Province>,
         IUpdate<Province>
     {
-
     }
 }
