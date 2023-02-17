@@ -135,13 +135,12 @@ namespace Bookington_Api.Controllers
             var profile = await _accountService.GetProfileAsync();
             return ResponseFactory.Ok(profile);
         }
-
+        /// ss
         /// <summary>
         /// Get Profile By Id
         /// </summary>
         /// <returns></returns>
         [HttpGet("profile/{accountId}")]
-        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetProfileAsync(string accountId)
         {
