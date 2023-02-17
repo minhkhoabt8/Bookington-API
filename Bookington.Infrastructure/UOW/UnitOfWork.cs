@@ -36,6 +36,9 @@ namespace Bookington.Infrastructure.UOW
         public IDistrictRepository DistrictRepository => GetSingletonRepository<IDistrictRepository>();
         public ICourtReportRepository CourtReportRepository => GetSingletonRepository<ICourtReportRepository>();
         public IUserReportRepository UserReportRepository => GetSingletonRepository<IUserReportRepository>();
+        public IUserBalanceRepository UserBalanceRepository => GetSingletonRepository<IUserBalanceRepository>();
+        public ITransactionHistoryRepository TransactionHistoryRepository => GetSingletonRepository<ITransactionHistoryRepository>();
+        public IOrderRepository OrderRepository => GetSingletonRepository<IOrderRepository>();
         private T GetSingletonRepository<T>()
         {
             if (!_singletonRepositories.ContainsKey(typeof(T).Name))
