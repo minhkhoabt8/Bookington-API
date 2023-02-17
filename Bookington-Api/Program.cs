@@ -23,7 +23,7 @@ builder.Services.AddDbContext(builder.Configuration);
 builder.Services.AddSwaggerGen();
 builder.Services.AddServiceFilters();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSignalR();
+builder.Services.ConfigureSignalROptions();
 
 var app = builder.Build();
 
@@ -45,6 +45,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<ChatHub>("/chatHub");
+app.MapHub<NotificationUserHub>("/NotificationHub");
 
 app.Run();
