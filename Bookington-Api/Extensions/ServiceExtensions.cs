@@ -6,8 +6,10 @@ using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Bookington_Api.Filters;
+using Bookington_Api.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -178,10 +180,23 @@ namespace Bookington_Api.Extensions
         {
             services.AddScoped<AutoValidateModelState>();
         }
-
+        ///<Summary>
+        ///Add SignalR Config
+        ///</Summary>
+        public static void ConfigureSignalROptions(this IServiceCollection services)
+        {
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
+            });
+        }
+        ///<Summary>
+        ///Register SignalR Service
+        ///</Summary>
         public static void AddSignalRService(this IServiceCollection services)
         {
-            
+            services.AddScoped<IUserConnectionManager, UserConnectionManager>();
         }
     }
 }
