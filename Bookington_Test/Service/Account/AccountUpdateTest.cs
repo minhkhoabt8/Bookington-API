@@ -35,6 +35,7 @@ namespace Bookington_Test.Service.Account
                 unitOfWorkMock.Object,
                 null!,
                 null!,
+                null!,
                 userContextServiceMock.Object);
 
             // Act & Assert
@@ -67,6 +68,7 @@ namespace Bookington_Test.Service.Account
             var service = new AccountService(
                  mapperMock.Object,
                  unitOfWorkMock.Object,
+                 null!,
                  null!,
                  null!,
                  userContextServiceMock.Object);
@@ -112,6 +114,7 @@ namespace Bookington_Test.Service.Account
             var service = new AccountService(
                  mapperMock.Object,
                  unitOfWorkMock.Object,
+                 null!,
                  null!,
                  null!,
                  userContextServiceMock.Object);

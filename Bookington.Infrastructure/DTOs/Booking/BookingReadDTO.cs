@@ -22,12 +22,6 @@ namespace Bookington.Infrastructure.DTOs.Booking
         public double? Price { get; set; }
 
         public double? OriginalPrice { get; set; }
-
-        public bool? IsPaid { get; set; }
-
-        public bool? IsCanceled { get; set; }
-
-        public bool? IsRefunded { get; set; }
     }
 
     public class CourtBookingHistoryReadDTO
@@ -51,17 +45,5 @@ namespace Bookington.Infrastructure.DTOs.Booking
         public double? Price { get; set; }
 
         public double? OriginalPrice { get; set; }
-
-        public bool? IsPaid { get; set; }
-
-        public bool? IsCanceled { get; set; }
-
-        public bool? IsRefunded { get; set; }
-
-        //public virtual Bookington.Core.Entities.Account? BookByNavigation { get; set; }
-
-        //public virtual Bookington.Core.Entities.Slot? RefSlotNavigation { get; set; }
-
-        //public virtual Bookington.Core.Entities.Voucher? VoucherCodeNavigation { get; set; }
     }
 }

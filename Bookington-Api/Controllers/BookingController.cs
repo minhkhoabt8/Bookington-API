@@ -2,6 +2,7 @@
 using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookingReadDTO>))]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -49,16 +51,16 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
-        /// Create a new Booking
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+        /// Create a new booking(s) order
+        /// </summary>        
+        /// <param name="dtos"></param>
+        /// <returns></returns>        
         [HttpPost]
         [ServiceFilter(typeof(AutoValidateModelState))]
-        public async Task<IActionResult> CreateAsync(BookingWriteDTO dto)
+        public async Task<IActionResult> CreateBookingsAsync(List<BookingWriteDTO> dtos)
         {
-            var newBooking = await _bookingService.CreateAsync(dto);
-            return ResponseFactory.Created(newBooking);
+            var newBookings = await _bookingService.CreateBookingsAsync(dtos);
+            return ResponseFactory.Created(newBookings);
         }
 
 

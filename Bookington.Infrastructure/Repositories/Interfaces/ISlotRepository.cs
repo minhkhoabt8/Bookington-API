@@ -12,6 +12,8 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IAddAsync<Slot>,
         IUpdate<Slot>,
         IFindAsync<Slot>
-    {        
+    {
+        Task<Account> GetCourtOwnerBySlotId(string slotId, bool trackChanges = false);
+        Task<string> GetCourtNameBySlotId(string slotId, bool trackChanges = false);
     }
 }

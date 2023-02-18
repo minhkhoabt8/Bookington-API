@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,14 +18,16 @@ namespace Bookington.Infrastructure.Services.Implementations
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserContextService _userContextService;
 
-        public BookingService(IMapper mapper, IUnitOfWork unitOfWork)
+        public BookingService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _userContextService = userContextService;
         }
 
-        //Will have to check status of voucher code and the referenced slot
+        /*//Will have to check status of voucher code and the referenced slot
         public async Task<BookingReadDTO> CreateAsync(BookingWriteDTO dto)
         {
             var newBooking = _mapper.Map<Booking>(dto);
@@ -64,6 +67,88 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<BookingReadDTO>(newBooking);
+        }*/
+
+        public async Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> dtos)
+        {
+            // Check if account is valid
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            if (dtos.Count() == 0) throw new Exception("Empty Slots List!");
+
+            var playDate = DateOnly.FromDateTime(dtos.ElementAt(0).PlayDate);            
+
+            bool isSameDayBooking = false;
+
+            // Check if play date is valid
+            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new Exception("Your play date is bullshit!");
+            else if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == 0) isSameDayBooking = true;
+
+            var newBookings = _mapper.Map<IEnumerable<Booking>>(dtos);
+            
+            var existSlots = new List<Slot>();
+
+            foreach (var dto in dtos)
+            {
+                // Check if slot existed
+                var existSlot = await _unitOfWork.SlotRepository.FindAsync(dto.RefSlot);
+
+                if (existSlot == null) throw new EntityWithIDNotFoundException<Slot>(dto.RefSlot);
+
+                // Check if slot is still active
+                if (!existSlot.IsActive) throw new Exception("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " is not active right now!");
+
+                // Needs a check for booked slot
+
+                // Needs a check for same day booking
+                if (isSameDayBooking) Debug.WriteLine("Do something here...");
+
+                existSlots.Add(existSlot);
+            }
+
+            // Create an order to contain bookings
+            var bookTime = DateTime.Now;
+            var newOrder = new Order()
+            {
+                OrderAt = bookTime
+            };
+
+            // Assign value to each booking
+
+            // remember to delete this later
+            string defaultVoucher = "AAAAAAAAAA";
+            int pos = 0;                        
+
+            foreach (var booking in newBookings)
+            {
+                booking.RefOrder = newOrder.Id;
+                booking.BookBy = accountId!;
+                booking.VoucherCode = defaultVoucher;
+                booking.PlayDate = playDate.ToDateTime(TimeOnly.MinValue);
+                booking.BookAt = bookTime;
+                booking.Price = existSlots[pos].Price;
+                booking.OriginalPrice = existSlots[pos].Price;
+
+                // Update order's total price
+                newOrder.TotalPrice += booking.Price;
+                pos++;
+            }
+
+            // Proceed to add new order to database
+            await _unitOfWork.OrderRepository.AddAsync(newOrder);
+
+            // Proceed to add new bookings to database
+            foreach (var booking in newBookings)
+            {
+                await _unitOfWork.BookingRepository.AddAsync(booking);
+            }
+
+            // Commit to database
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<IEnumerable<BookingReadDTO>>(newBookings);
         }
 
         public async Task DeleteAsync(string id)

@@ -56,5 +56,23 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return Task.FromResult(result.AsEnumerable());
         }
+
+        public Task<IEnumerable<Booking>> GetBookingsOfOrder(string orderId, bool trackChanges = false)
+        {
+            IQueryable<Booking> dbSet = _context.Set<Booking>();
+            if (trackChanges == false)
+            {
+                dbSet = dbSet.AsNoTracking();
+            }
+
+            var result = new List<Booking>();
+
+            result.AddRange(dbSet.Include(b => b.RefSlotNavigation)
+                .Where(b => b.RefOrder == orderId).ToList());
+
+            result = result.OrderByDescending(b => b.RefSlotNavigation.StartTime).ToList();
+
+            return Task.FromResult(result.AsEnumerable());
+        }
     }
 }

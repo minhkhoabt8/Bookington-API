@@ -35,6 +35,11 @@ namespace Bookington.Infrastructure.UOW
 
         public IUserReportRepository UserReportRepository { get; }
 
+        public IUserBalanceRepository UserBalanceRepository { get; }
+
+        public ITransactionHistoryRepository TransactionHistoryRepository { get; }
+
+        public IOrderRepository OrderRepository { get; }
         Task<int> CommitAsync();
     }
 }
