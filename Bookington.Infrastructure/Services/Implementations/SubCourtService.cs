@@ -50,7 +50,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<SubCourtReadDTO>(existSubCourt);
         }
 
-        public async Task<SubCourtReadDTO> UpdateAsync(int id, SubCourtWriteDTO dto)
+        public async Task<SubCourtReadDTO> UpdateAsync(string id, SubCourtWriteDTO dto)
         {
             var existSubCourt = await _unitOfWork.CourtRepository.FindAsync(id);
 
@@ -63,7 +63,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<SubCourtReadDTO>(updatedSubCourt);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var existSubCourt = await _unitOfWork.SubCourtRepository.FindAsync(id);
 
@@ -75,6 +75,29 @@ namespace Bookington.Infrastructure.Services.Implementations
             _unitOfWork.SubCourtRepository.Update(existSubCourt);
 
             await _unitOfWork.CommitAsync();            
+        }
+
+        public async Task<IEnumerable<SubCourtReadDTO>> CreateSubCourtFromListAsync(List<SubCourtWriteDTO> dto)
+        {
+            var list = new List<SubCourt>();
+            foreach (var subCourtWriteDTO in dto)
+            {
+                var subCourt = _mapper.Map<SubCourt>(subCourtWriteDTO);
+
+                list.Add(subCourt);
+
+                await _unitOfWork.SubCourtRepository.AddAsync(subCourt);
+
+                await _unitOfWork.CommitAsync();
+            }
+            return _mapper.Map<IEnumerable<SubCourtReadDTO>>(list);
+        }
+
+        public async Task<IEnumerable<SubCourtReadDTO>> GetSubCourtsOfACourt(string courtId)
+        {
+            var subCourts = await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(courtId);
+
+            return _mapper.Map<IEnumerable<SubCourtReadDTO>>(subCourts);
         }
     }
 }

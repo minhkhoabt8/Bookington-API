@@ -12,6 +12,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IAddAsync<Voucher>,
         IUpdate<Voucher>,
         IFindAsync<Voucher>
-    {        
-    }
+    {
+        Task<Voucher> FindByCode(string voucherCode, bool trackChanges = false);
+    }    
 }

@@ -10,6 +10,10 @@ using Bookington.Infrastructure.DTOs.Voucher;
 using Bookington.Infrastructure.DTOs.Province;
 using Bookington.Infrastructure.DTOs.District;
 using Bookington.Infrastructure.DTOs.Report;
+using Bookington.Infrastructure.DTOs.UserBalance;
+using Bookington.Infrastructure.DTOs.TransactionHistory;
+using Bookington.Infrastructure.DTOs.Order;
+using Bookington.Infrastructure.DTOs.CheckOut;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -69,6 +73,15 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<UserReport, UserReportReadDTO>();
             CreateMap<UserReportCreateDTO, UserReport>();
             CreateMap<UserReportUpdateDTO, UserReport>();
+            //User Balance
+            CreateMap<UserBalance, UserBalanceReadDTO>();
+            CreateMap<UserBalanceWriteDTO, UserBalance>();
+            //Transaction History
+            CreateMap<TransactionHistory, TransactionHistoryReadDTO>();
+            CreateMap<TransactionHistoryWriteDTO, TransactionHistory>();
+            //Order
+            CreateMap<Order, OrderReadDTO>();
+            CreateMap<OrderWriteDTO, Order>();           
         }
     }
 }

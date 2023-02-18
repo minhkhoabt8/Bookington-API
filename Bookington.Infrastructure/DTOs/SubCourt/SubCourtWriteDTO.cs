@@ -8,16 +8,10 @@ namespace Bookington.Infrastructure.DTOs.SubCourt
 {
     public class SubCourtWriteDTO
     {
-        public string? Id { get; set; }
-
-        public string? ParentCourtId { get; set; }
-
-        public int? CourtTypeId { get; set; }
-
-        public DateTime? CreateAt { get; set; }
-
+        public string ParentCourtId { get; set; }
+        public string Name { get; set; }
+        public int CourtTypeId { get; set; }
         public bool? IsActive { get; set; }
-
         public bool? IsDeleted { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.UserBalance;
 using Bookington.Infrastructure.Enums;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
@@ -18,14 +19,16 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
         private readonly ISmsService _smsService;
+        private readonly IUserBalanceService _userBalanceService;
         private readonly IUserContextService _userContextService;
 
-        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService, ISmsService smsService, IUserContextService userContextService)
+        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService, ISmsService smsService, IUserBalanceService userBalanceService, IUserContextService userContextService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _smsService = smsService;
+            _userBalanceService = userBalanceService;
             _userContextService = userContextService;
         }
 
@@ -58,6 +61,13 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             //Call Send SMS
             await _smsService.sendSmsAsync(dto.Phone, accountOtp.OtpCode);
+
+            // Create A Balance For The New User
+            var userBalance = new UserBalanceWriteDTO();
+
+            userBalance.RefUser = account.Id;
+
+            await _userBalanceService.CreateAsync(userBalance);
 
             await _unitOfWork.CommitAsync();
 
