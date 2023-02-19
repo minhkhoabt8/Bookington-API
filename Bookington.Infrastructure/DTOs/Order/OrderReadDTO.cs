@@ -11,7 +11,7 @@ namespace Bookington.Infrastructure.DTOs.Order
     {
         public string Id { get; set; } = null!;
 
-        public string TransactionId { get; set; } = String.Empty;
+        public string TransactionId { get; set; } = string.Empty;
 
         public DateTime OrderAt { get; set; }
 

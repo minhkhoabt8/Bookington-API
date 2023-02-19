@@ -54,8 +54,8 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AccountReadDTO>))]
         public async Task<IActionResult> CreateAsync(AccountWriteDTO dto)
         {
-            var createdTag = await _accountService.CreateAsync(dto);
-            return ResponseFactory.Created(createdTag);
+            var created = await _accountService.CreateAsync(dto);
+            return ResponseFactory.Created(created);
         }
 
 
@@ -102,7 +102,7 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> DeleteRole(string id)
+        public async Task<IActionResult> DeleteAccount(string id)
         {
             await _accountService.DeleteAsync(id);
 
@@ -137,7 +137,7 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
-        /// Get Profile By Id
+        /// Get Profile By Id For Admin
         /// </summary>
         /// <returns></returns>
         [HttpGet("profile/{accountId}")]

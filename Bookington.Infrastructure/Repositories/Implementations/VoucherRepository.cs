@@ -26,5 +26,12 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return Task.FromResult(dbSet.FirstOrDefault(v => v.VoucherCode == voucherCode))!;
         }
+
+        public Task<IEnumerable<Voucher>> GetAllVoucherOfACourtAsync(string courtId)
+        {
+            var vouchers = _context.Vouchers.Where(v => v.RefCourt == courtId);
+
+            return Task.FromResult(vouchers.AsEnumerable());
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Bookington.Infrastructure.DTOs.Booking;
+using Bookington.Infrastructure.DTOs.IncomingMatch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task DeleteAsync(string id);
         Task<BookingReadDTO> GetByIdAsync(string id);
         Task<IEnumerable<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(string courtId);
+        Task<IEnumerable<IncomingMatchReadDTO>> GetIncomingMatchesFromBookingOfUser(string userId);
     }
 }

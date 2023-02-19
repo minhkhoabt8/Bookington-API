@@ -8,6 +8,7 @@ using AutoMapper;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Booking;
+using Bookington.Infrastructure.DTOs.IncomingMatch;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
@@ -115,9 +116,8 @@ namespace Bookington.Infrastructure.Services.Implementations
                 OrderAt = bookTime
             };
 
-            // Assign value to each booking
-
-            // remember to delete this later
+            // Assign value to each booking 
+            // TODO: remember to delete this later
             string defaultVoucher = "AAAAAAAAAA";
             int pos = 0;                        
 
@@ -240,6 +240,15 @@ namespace Bookington.Infrastructure.Services.Implementations
             var result = _mapper.Map<IEnumerable<CourtBookingHistoryReadDTO>>(bookings);
 
             return result;
+        }
+
+        public async Task<IEnumerable<IncomingMatchReadDTO>> GetIncomingMatchesFromBookingOfUser(string userId)
+        {
+            if(_userContextService.AccountID.ToString() != userId) throw new ForbiddenException(userId);
+
+            var incomingMatches = await _unitOfWork.BookingRepository.GetIncomingMatchesFromBookingOfUser(userId);
+
+            return _mapper.Map<IEnumerable<IncomingMatchReadDTO>>(incomingMatches);
         }
     }
 }

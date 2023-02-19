@@ -5,6 +5,7 @@ using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bookington_Api.Controllers
 {
@@ -102,5 +103,20 @@ namespace Bookington_Api.Controllers
             var bookings = await _bookingService.GetBookingsOfCourt(courtId);
             return ResponseFactory.Ok(bookings);
         }
+
+        /// <summary>
+        /// Get Incoming Matches From Booking Of A User
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("incomingMatch")]
+        [Authorize(Roles = "user")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookingReadDTO>))]
+        public async Task<IActionResult> GetIncomingMatchesFromBookingOfUser( [Required] string userId)
+        {
+            var bookings = await _bookingService.GetIncomingMatchesFromBookingOfUser(userId);
+            return ResponseFactory.Ok(bookings);
+        }
+
     }
 }

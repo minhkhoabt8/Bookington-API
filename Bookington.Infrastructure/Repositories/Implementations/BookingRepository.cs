@@ -8,6 +8,7 @@ using Bookington.Core.Data;
 using Bookington.Core.Entities;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
@@ -73,6 +74,20 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             result = result.OrderByDescending(b => b.RefSlotNavigation.StartTime).ToList();
 
             return Task.FromResult(result.AsEnumerable());
+        }
+
+        public Task<IEnumerable<Booking>> GetIncomingMatchesFromBookingOfUser(string userId)
+        {
+            //Get All Booking Of A User
+            IQueryable<Booking> dbSet = _context.Set<Booking>()
+                .Include(b=>b.RefSlotNavigation)
+                .Include(b=>b.RefSlotNavigation.RefSubCourtNavigation)
+                .Include(b=>b.RefSlotNavigation.RefSubCourtNavigation.ParentCourt)
+                .Where(d=>d.BookBy==userId)
+                .OrderByDescending(b=>b.PlayDate.Date);
+
+            return Task.FromResult(dbSet.AsEnumerable());
+
         }
     }
 }

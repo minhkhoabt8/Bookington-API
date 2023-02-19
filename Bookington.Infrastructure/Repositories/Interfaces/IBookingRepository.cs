@@ -17,5 +17,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<Booking>> GetBookingsOfSubCourt(string subCourtId, bool trackChanges = false);
         Task<IEnumerable<Booking>> GetBookingsOfSubCourts(List<string> subCourtIds, bool trackChanges = false);
         Task<IEnumerable<Booking>> GetBookingsOfOrder(string orderId, bool trackChanges = false);
+        Task<IEnumerable<Booking>> GetIncomingMatchesFromBookingOfUser(string userId);
     }
 }

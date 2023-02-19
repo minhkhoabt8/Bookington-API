@@ -29,7 +29,7 @@ public partial class Voucher
 
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = false;
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 
