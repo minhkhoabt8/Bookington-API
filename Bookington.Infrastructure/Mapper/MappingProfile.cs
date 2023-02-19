@@ -14,6 +14,7 @@ using Bookington.Infrastructure.DTOs.UserBalance;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.DTOs.Order;
 using Bookington.Infrastructure.DTOs.CheckOut;
+using Bookington.Infrastructure.DTOs.IncomingMatch;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -54,6 +55,10 @@ namespace Bookington.Infrastructure.Mapper
             .ForMember(des => des.Customer, act => act.MapFrom(src => src.BookByNavigation.FullName))
             .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone))
             .ForMember(des => des.VoucherDiscount, act => act.MapFrom(src => src.VoucherCodeNavigation.Discount));
+            CreateMap<Booking, IncomingMatchReadDTO>()
+                .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.Name))
+                .ForMember(des => des.CourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.ParentCourt.Name))
+                .ForMember(des => des.PlayDate, act => act.MapFrom(src => src.PlayDate.ToString()));
             // Slot
             CreateMap<Slot, SlotReadDTO>();
             CreateMap<SlotWriteDTO, Slot>();

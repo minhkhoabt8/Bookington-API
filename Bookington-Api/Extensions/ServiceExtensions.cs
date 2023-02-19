@@ -126,6 +126,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IUserBalanceService, UserBalanceService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IVoucherService, VoucherService>();
         }
 
         ///<Summary>
@@ -150,6 +151,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IUserBalanceRepository, UserBalanceRepository>();
             services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IVoucherRepository, VoucherRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work
