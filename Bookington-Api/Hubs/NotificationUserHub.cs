@@ -27,5 +27,9 @@ namespace Bookington_Api.Hubs
             _userConnectionManager.RemoveUserConnection(connectionId);
             var value = await Task.FromResult(0);
         }
+        public async Task SendMessage(string message)
+        {
+            await Clients.All.SendAsync("ReceiveMessage ", GetConnectionId(), message);
+        }
     }
 }
