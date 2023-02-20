@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
@@ -16,13 +17,13 @@ namespace Bookington.Infrastructure.Services.Implementations
     public class TransactionService : ITransactionService
     {
         private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;        
-        private readonly IUserContextService _userContextService;        
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserContextService _userContextService;
 
         public TransactionService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService)
         {
             _mapper = mapper;
-            _unitOfWork = unitOfWork;            
+            _unitOfWork = unitOfWork;
             _userContextService = userContextService;
         }
 
@@ -79,7 +80,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task TransferAsync(double amount, string refTo, string transferReason)
+        public async Task<string> TransferAsync(double amount, string refTo, string transferReason)
         {
             // Check if account is valid
             var accountId = _userContextService.AccountID.ToString();
@@ -114,6 +115,26 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             // Commit to database
             await _unitOfWork.CommitAsync();
+
+            return newTrans.Id;
+        }
+
+        public async Task<IEnumerable<TransactionHistoryReadDTO>> GetSelfTransactionHistory(int page)
+        {
+            // Check if account is valid
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            // Get customer's transaction history
+            // 10 RECORDS EACH PAGE
+
+            // default all wrong page num to be 1
+            if (page < 1) page = 1;
+
+            var trans = await _unitOfWork.TransactionHistoryRepository.GetTransactionHistoryOfCustomer(accountId!, page);
+
+            return _mapper.Map<IEnumerable<TransactionHistoryReadDTO>>(trans);
         }
     }
 }

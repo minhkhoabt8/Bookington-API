@@ -70,6 +70,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<BookingReadDTO>(newBooking);
         }*/
 
+        // PHO FIX THIS PLZ
+        // NEEDS CHECK FOR BOOKED SLOTS        
         public async Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> dtos)
         {
             // Check if account is valid
@@ -104,7 +106,12 @@ namespace Bookington.Infrastructure.Services.Implementations
                 // Needs a check for booked slot
 
                 // Needs a check for same day booking
-                if (isSameDayBooking) Debug.WriteLine("Do something here...");
+                if (isSameDayBooking)
+                {
+                    var dateSlot = DateTime.Now.Date.AddMinutes(existSlot.StartTime.TotalMinutes);
+
+                    if (DateTime.Now.CompareTo(dateSlot) > 0) throw new Exception("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " has passed the booking window!");
+                }
 
                 existSlots.Add(existSlot);
             }
@@ -206,19 +213,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             //Get all available sub courts
             var avSubCourts = await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(courtId);
 
-            //From each sub court get its bookings            
-
-            //NOT WORKING
-            /*var bookings = new List<Booking>();
-            
-            foreach (var sc in avSubCourts)
-            {
-                bookings.AddRange(await _unitOfWork.BookingRepository.GetBookingsOfSubCourt(sc.Id));
-            }
-
-            //Order by the most recent booking            
-            bookings = bookings.OrderByDescending(b => b.BookAt).ToList();*/            
-
+            //From each sub court get its bookings                        
             var subCourtIds = new List<string>();
 
             foreach (var sc in avSubCourts) subCourtIds.Add(sc.Id);

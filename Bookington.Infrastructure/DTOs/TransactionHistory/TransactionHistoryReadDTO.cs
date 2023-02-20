@@ -18,6 +18,8 @@ namespace Bookington.Infrastructure.DTOs.TransactionHistory
 
         public string ToUsername { get; set; } = null!;
 
+        public DateTime CreateAt { get; set; }
+
         public double Amount { get; set; }
     }
 }

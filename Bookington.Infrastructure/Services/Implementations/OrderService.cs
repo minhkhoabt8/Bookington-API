@@ -51,6 +51,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
         }
 
+        // PHO FIX THIS PLZ
+        // NEEDS VOUCHER CHECK        
         public async Task<string> CheckOutAsync(CheckOutWriteDTO dto)
         {
             // Check if account is valid
@@ -61,7 +63,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             // Check if order existed
             var existOrder = await _unitOfWork.OrderRepository.FindAsync(dto.OrderId);
 
-            if (existOrder == null) throw new EntityWithIDNotFoundException<Order>(dto.OrderId);
+            if (existOrder == null) throw new EntityWithIDNotFoundException<Order>(dto.OrderId);            
 
             // Check if it's user's order
             var currOrder = _mapper.Map<OrderReadDTO>(existOrder);
@@ -82,8 +84,9 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existVoucher == null) throw new EntityWithIDNotFoundException<Voucher>(dto.VoucherCode);*/
 
-            // Some other checks involving voucher here ...
-            // And of course you have to update the order with the new price if they use it
+            // Some other checks involving voucher here ...            
+            // Like usages
+            // Or Date based
 
             var courtOwner = await _unitOfWork.SlotRepository.GetCourtOwnerBySlotId(currOrder.Bookings.ElementAt(0).RefSlot);
 
@@ -96,7 +99,16 @@ namespace Bookington.Infrastructure.Services.Implementations
             var reason = "Payment for booking order id " + dto.OrderId + " to (Court Owner: " + courtOwner.FullName + " - " + courtOwner.Phone + ") of (Court: " + courtName + ")";
 
             // Proceed to complete transaction and commit to database
-            await _transactionService.TransferAsync(currOrder.TotalPrice, courtOwner.Id, reason);
+            var transId = await _transactionService.TransferAsync(currOrder.TotalPrice, courtOwner.Id, reason);
+
+            // And of course you have to update the order with the new price if they use it
+            existOrder.TransactionId = transId;
+            existOrder.TotalPrice = existOrder.TotalPrice * (100 - existVoucher.Discount) / 100;
+            existOrder.IsPaid = true;
+
+            _unitOfWork.OrderRepository.Update(existOrder);
+
+            await _unitOfWork.CommitAsync();
 
             return reason;
         }

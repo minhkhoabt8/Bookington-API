@@ -14,5 +14,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IUpdate<TransactionHistory>,        
         IDelete<TransactionHistory>
     {
+        Task<IEnumerable<TransactionHistory>> GetTransactionHistoryOfCustomer(string userId, int page, bool trackChanges = false);
     }
 }
