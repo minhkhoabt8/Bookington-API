@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class ChatRoom
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string RefOwner { get; set; } = null!;
 

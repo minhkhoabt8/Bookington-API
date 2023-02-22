@@ -5,11 +5,11 @@ namespace Bookington.Core.Entities;
 
 public partial class Order
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
-    public string TransactionId { get; set; } = null!;
+    public string? TransactionId { get; set; }
 
-    public string VoucherCode { get; set; } = null!;
+    public string? VoucherCode { get; set; }
 
     public DateTime OrderAt { get; set; }
 
@@ -25,7 +25,7 @@ public partial class Order
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 
-    public virtual TransactionHistory Transaction { get; set; } = null!;
+    public virtual TransactionHistory? Transaction { get; set; }
 
-    public virtual Voucher VoucherCodeNavigation { get; set; } = null!;
+    public virtual Voucher? VoucherCodeNavigation { get; set; }
 }

@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class AccountOtp
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string Phone { get; set; } = null!;
 
@@ -13,7 +13,7 @@ public partial class AccountOtp
 
     public DateTime ExpireAt { get; set; }
 
-    public DateTime CreateAt { get; set; } = DateTime.Now;
+    public DateTime CreateAt { get; set; }
 
     public bool IsConfirmed { get; set; }
 
