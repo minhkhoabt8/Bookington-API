@@ -3,6 +3,7 @@ using Bookington.Core.Data;
 using Bookington.Core.Entities;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
