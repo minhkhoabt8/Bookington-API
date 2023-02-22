@@ -39,6 +39,10 @@ public partial class Account
 
     public virtual ICollection<Court> Courts { get; } = new List<Court>();
 
+    public virtual ICollection<LoginToken> LoginTokens { get; } = new List<LoginToken>();
+
+    public virtual ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
+
     public virtual Role Role { get; set; } = null!;
 
     public virtual ICollection<TransactionHistory> TransactionHistoryRefFromNavigations { get; } = new List<TransactionHistory>();

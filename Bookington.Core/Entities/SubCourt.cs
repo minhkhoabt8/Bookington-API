@@ -15,6 +15,8 @@ public partial class SubCourt
 
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
+    public int SlotDuration { get; set; }
+
     public bool IsActive { get; set; }
 
     public bool IsDeleted { get; set; }

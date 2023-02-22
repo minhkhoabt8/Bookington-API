@@ -27,8 +27,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             }
 
             return await Task.FromResult(dbSet.Include(b => b.RefSlotNavigation)
-                .Include(b => b.BookByNavigation)
-                .Include(b => b.VoucherCodeNavigation)
+                .Include(b => b.BookByNavigation)                
                 .Where(b => b.RefSlotNavigation.RefSubCourt == subCourtId)
                 .AsEnumerable());
         }
@@ -47,8 +46,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             foreach(var subCourtId in subCourtIds)
             {
                 result.AddRange(dbSet.Include(b => b.RefSlotNavigation)
-                .Include(b => b.BookByNavigation)
-                .Include(b => b.VoucherCodeNavigation)
+                .Include(b => b.BookByNavigation)                
                 .Where(b => b.RefSlotNavigation.Id == id)
                 .ToList());
             }

@@ -13,6 +13,8 @@ public partial class Slot
 
     public TimeSpan EndTime { get; set; }
 
+    public string DaysInSchedule { get; set; } = null!;
+
     public double Price { get; set; }
 
     public bool IsActive { get; set; }

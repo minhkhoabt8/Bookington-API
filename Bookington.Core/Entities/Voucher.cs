@@ -31,9 +31,9 @@ public partial class Voucher
 
     public bool IsActive { get; set; } = false;
 
-    public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
-
     public virtual Account CreateByNavigation { get; set; } = null!;
+
+    public virtual ICollection<Order> Orders { get; } = new List<Order>();
 
     public virtual Court RefCourtNavigation { get; set; } = null!;
 }

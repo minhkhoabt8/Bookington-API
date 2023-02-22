@@ -7,17 +7,25 @@ public partial class Order
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    public string TransactionId { get; set; } = String.Empty;
+    public string TransactionId { get; set; } = null!;
+
+    public string VoucherCode { get; set; } = null!;
 
     public DateTime OrderAt { get; set; }
 
-    public double TotalPrice { get; set; } = 0;
+    public double OriginalPrice { get; set; }
 
-    public bool IsPaid { get; set; } = false;
+    public double TotalPrice { get; set; }
 
-    public bool IsCanceled { get; set; } = false;
+    public bool IsPaid { get; set; }
 
-    public bool IsRefunded { get; set; } = false;
+    public bool IsCanceled { get; set; }
+
+    public bool IsRefunded { get; set; }
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
+
+    public virtual TransactionHistory Transaction { get; set; } = null!;
+
+    public virtual Voucher VoucherCodeNavigation { get; set; } = null!;
 }

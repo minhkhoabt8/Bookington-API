@@ -123,20 +123,16 @@ namespace Bookington.Infrastructure.Services.Implementations
                 OrderAt = bookTime
             };
 
-            // Assign value to each booking 
-            // TODO: remember to delete this later
-            string defaultVoucher = "AAAAAAAAAA";
+            // Assign value to each booking                         
             int pos = 0;                        
 
             foreach (var booking in newBookings)
             {
                 booking.RefOrder = newOrder.Id;
-                booking.BookBy = accountId!;
-                booking.VoucherCode = defaultVoucher;
+                booking.BookBy = accountId!;                
                 booking.PlayDate = playDate.ToDateTime(TimeOnly.MinValue);
                 booking.BookAt = bookTime;
-                booking.Price = existSlots[pos].Price;
-                booking.OriginalPrice = existSlots[pos].Price;
+                booking.Price = existSlots[pos].Price;                
 
                 // Update order's total price
                 newOrder.TotalPrice += booking.Price;

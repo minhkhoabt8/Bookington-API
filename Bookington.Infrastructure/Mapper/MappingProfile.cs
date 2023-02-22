@@ -53,8 +53,7 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Booking, CourtBookingHistoryReadDTO>()
             .ForMember(des => des.TimeSlot, act => act.MapFrom(src => src.RefSlotNavigation.StartTime.ToString() + " - " + src.RefSlotNavigation.EndTime.ToString()))
             .ForMember(des => des.Customer, act => act.MapFrom(src => src.BookByNavigation.FullName))
-            .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone))
-            .ForMember(des => des.VoucherDiscount, act => act.MapFrom(src => src.VoucherCodeNavigation.Discount));
+            .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone));    
             CreateMap<Booking, IncomingMatchReadDTO>()
                 .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.Name))
                 .ForMember(des => des.CourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.ParentCourt.Name))

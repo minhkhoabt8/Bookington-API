@@ -13,7 +13,11 @@ public partial class TransactionHistory
 
     public double Amount { get; set; }
 
+    public string Reason { get; set; } = null!;
+
     public DateTime CreateAt { get; set; } = DateTime.Now;
+
+    public virtual ICollection<Order> Orders { get; } = new List<Order>();
 
     public virtual Account RefFromNavigation { get; set; } = null!;
 

@@ -1,22 +1,3 @@
-
-
-USE master
-GO
-
--- Drop the database if it already exists
-IF  EXISTS (
-	SELECT name 
-		FROM sys.databases 
-		WHERE name = N'BookingtonDB'
-)
-DROP DATABASE BookingtonDB
-GO
-
-CREATE DATABASE BookingtonDB
-GO
-
-USE BookingtonDB
-
 CREATE TABLE roles (
         id VARCHAR(40) PRIMARY KEY,
         role_name VARCHAR(50) NOT NULL
@@ -40,6 +21,23 @@ CREATE TABLE account_otps (
 	expire_at DATETIME NOT NULL,
 	create_at DATETIME NOT NULL,
 	is_confirmed BIT NOT NULL
+);
+
+CREATE TABLE login_tokens (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_account VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	token VARCHAR(2048) NOT NULL,
+	create_at DATETIME NOT NULL,
+	expire_at DATETIME NOT NULL	
+);
+
+
+CREATE TABLE refresh_tokens (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_account VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	token VARCHAR(2048) NOT NULL,
+	create_at DATETIME NOT NULL,
+	expire_at DATETIME NOT NULL
 );
 
 CREATE TABLE provinces (
@@ -108,6 +106,7 @@ CREATE TABLE sub_courts (
 	parent_court_id VARCHAR(40) FOREIGN KEY REFERENCES courts(id) NOT NULL,
 	court_type_id VARCHAR(40) FOREIGN KEY REFERENCES court_types(id) NOT NULL,
 	create_at DATETIME NOT NULL,
+	slot_duration INT NOT NULL,
 	is_active BIT NOT NULL,
 	is_deleted BIT NOT NULL
 );
@@ -117,6 +116,7 @@ CREATE TABLE slots (
 	ref_sub_court VARCHAR(40) FOREIGN KEY REFERENCES sub_courts(id) NOT NULL,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
+	days_in_schedule VARCHAR(20) NOT NULL,
 	price DOUBLE PRECISION NOT NULL,
 	is_active BIT NOT NULL
 );
@@ -137,10 +137,21 @@ CREATE TABLE vouchers (
 	is_active BIT NOT NULL
 );
 
+CREATE TABLE transaction_history (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_from VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	ref_to VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	amount DOUBLE PRECISION NOT NULL,
+	reason NVARCHAR(500) NOT NULL,
+	create_at DATETIME NOT NULL	
+);
+
 CREATE TABLE orders (
 	id VARCHAR(40) PRIMARY KEY,
-	transaction_id VARCHAR(100),
+	transaction_id VARCHAR(40) FOREIGN KEY REFERENCES transaction_history(id),
+	voucher_code VARCHAR(10) FOREIGN KEY REFERENCES vouchers(voucher_code),
 	order_at DATETIME NOT NULL,
+	original_price DOUBLE PRECISION NOT NULL,	
 	total_price DOUBLE PRECISION NOT NULL,
 	is_paid BIT NOT NULL,
 	is_canceled BIT NOT NULL,
@@ -152,11 +163,9 @@ CREATE TABLE bookings (
 	ref_slot VARCHAR(40) FOREIGN KEY REFERENCES slots(id) NOT NULL,
 	ref_order VARCHAR(40) FOREIGN KEY REFERENCES orders(id) NOT NULL,
 	book_by VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
-	voucher_code VARCHAR(10) FOREIGN KEY REFERENCES vouchers(voucher_code) NOT NULL,
 	book_at DATETIME NOT NULL,
 	play_date DATE NOT NULL,
 	price DOUBLE PRECISION NOT NULL,
-	original_price DOUBLE PRECISION NOT NULL	
 );
 
 CREATE TABLE chat_rooms (
@@ -180,12 +189,4 @@ CREATE TABLE user_balances (
 	id VARCHAR(40) PRIMARY KEY,
 	ref_user VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	balance DOUBLE PRECISION NOT NULL
-);
-
-CREATE TABLE transaction_history (
-	id VARCHAR(40) PRIMARY KEY,
-	ref_from VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
-	ref_to VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
-	amount DOUBLE PRECISION NOT NULL,
-	create_at DATETIME NOT NULL	
 );
