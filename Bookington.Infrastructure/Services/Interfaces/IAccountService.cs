@@ -26,5 +26,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<AccountProfileReadDTO> GetProfileAsync();
 
         Task<AccountProfileReadDTO> GetProfileByIdAsync(string accountId);
+
+        Task ReSendVerifyOtp(string phone);
     }
 }

@@ -14,5 +14,10 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
             return await _context.AccountOtps.FirstOrDefaultAsync(a=>a.Phone==phoneNumber&& a.OtpCode==otp);
         }
+
+        public async Task<AccountOtp?> FindAccountOtpByPhone(string phone)
+        {
+            return await _context.AccountOtps.FirstOrDefaultAsync(a => a.Phone == phone && a.IsConfirmed == false);
+        }
     }
 }

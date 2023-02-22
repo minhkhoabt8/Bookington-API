@@ -8,8 +8,12 @@ using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
-    public interface IOtpRepository : IAddAsync<AccountOtp>
+    public interface IOtpRepository : IAddAsync<AccountOtp>,
+        IUpdate<AccountOtp>,
+        IDelete<AccountOtp>
     {
         Task<AccountOtp?> VerifyAccountAsync(string phoneNumber, string otp);
+
+        Task<AccountOtp> FindAccountOtpByPhone(string phoneNumber);
     }
 }

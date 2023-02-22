@@ -147,5 +147,7 @@ namespace Bookington_Api.Controllers
             var profile = await _accountService.GetProfileByIdAsync(accountId);
             return ResponseFactory.Ok(profile);
         }
+
+        
     }
 }
