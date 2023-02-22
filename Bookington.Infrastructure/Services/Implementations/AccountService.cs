@@ -55,6 +55,9 @@ namespace Bookington.Infrastructure.Services.Implementations
             //auto mapper
             var account = _mapper.Map<Account>(dto);
 
+            //encrypt password
+            //account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
+
             await _unitOfWork.AccountRepository.AddAsync(account);
             
             account.RoleId = ((int) RoleEnum.customer).ToString();
@@ -181,5 +184,20 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return _mapper.Map<AccountProfileReadDTO>(profile);
         }
+
+        public async Task ReSendVerifyOtp(string phone)
+        {
+            //check validate otp account phone and is confirmed
+            var accountOtp = await _unitOfWork.OtpRepository.FindAccountOtpByPhone(phone);
+            if (accountOtp == null) throw new EntityNotFoundException("Phone Not Found");
+            //create new otp and update account otp using phone number
+            var otp = OtpDTO.GenerateOTP();
+            _mapper.Map(accountOtp, otp);
+            //send otp to user
+            await _smsService.sendSmsAsync(accountOtp.Phone, accountOtp.OtpCode);
+            //save updated account otp to db
+            await _unitOfWork.CommitAsync();
+        }
+
     }
 }

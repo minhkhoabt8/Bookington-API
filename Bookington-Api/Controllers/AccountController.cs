@@ -148,5 +148,18 @@ namespace Bookington_Api.Controllers
             var profile = await _accountService.GetProfileByIdAsync(accountId);
             return ResponseFactory.Ok(profile);
         }
+
+        /// <summary>
+        /// Resend Otp Code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("resend")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> GetProfileAsync(string accountId)
+        {
+            var profile = await _accountService.GetProfileByIdAsync(accountId);
+            return ResponseFactory.Ok(profile);
+        }
+
     }
 }

@@ -21,7 +21,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         }
 
 
-        public async Task sendSmsAsync(string phones, string otp)
+        public async Task sendSmsAsync(string phone, string otp)
         {
             var access = _configuration["SmsSpeed:AccessToken"];
 
@@ -39,7 +39,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             client.Headers[HttpRequestHeader.ContentType] = "application/json";
 
-            var builder = "{\"to\":[\"" + phones + "\"], \"content\": \"" 
+            var builder = "{\"to\":[\"" + phone + "\"], \"content\": \"" 
                 + content
                 + "\", \"type\":" + 5 
                 + ", \"sender\": \"" 

@@ -38,4 +38,6 @@
     <Folder Include="Authorization\" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties properties_4servicedependencies_1json__JsonSchema="https://json.schemastore.org/prisma.json" /></VisualStudio></ProjectExtensions>
+
 </Project>
