@@ -38,7 +38,7 @@ namespace Bookington_Api.Controllers
         /// Resend Otp Code
         /// </summary>
         /// <returns></returns>
-        [HttpGet("resend")]
+        [HttpGet("resend-otp")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> ReSendVerifyOtp(string phone)
