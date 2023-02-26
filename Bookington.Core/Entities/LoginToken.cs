@@ -5,13 +5,13 @@ namespace Bookington.Core.Entities;
 
 public partial class LoginToken
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string RefAccount { get; set; } = null!;
 
     public string Token { get; set; } = null!;
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreateAt { get; set; } = DateTime.Now;
 
     public DateTime ExpireAt { get; set; }
 

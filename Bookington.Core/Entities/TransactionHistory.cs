@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class TransactionHistory
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string RefFrom { get; set; } = null!;
 
@@ -15,7 +15,7 @@ public partial class TransactionHistory
 
     public string Reason { get; set; } = null!;
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreateAt { get; set; } = DateTime.Now;
 
     public virtual ICollection<Order> Orders { get; } = new List<Order>();
 

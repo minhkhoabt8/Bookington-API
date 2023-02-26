@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class SubCourt
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string Name { get; set; } = null!;
 
@@ -13,13 +13,13 @@ public partial class SubCourt
 
     public string CourtTypeId { get; set; } = null!;
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreateAt { get; set; } = DateTime.Now;
 
     public int SlotDuration { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = false;
 
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
     public virtual CourtType CourtType { get; set; } = null!;
 
