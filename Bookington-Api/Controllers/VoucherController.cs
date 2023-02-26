@@ -5,6 +5,7 @@ using Bookington.Infrastructure.DTOs.Voucher;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington_Api.Controllers
@@ -14,6 +15,7 @@ namespace Bookington_Api.Controllers
     /// </summary>
     [ApiController]
     [Route("vouchers")]
+    [Authorize(Roles = "owner")]
     public class VoucherController : Controller
     {
         private readonly IVoucherService _voucherService;

@@ -13,7 +13,7 @@ namespace Bookington_Api.Controllers
     /// <summary>
     /// User Balance Controller
     /// </summary>    
-    [Route("bookington/userbalances")]
+    [Route("userbalances")]
     [ApiController]
     public class UserBalanceController : ControllerBase
     {

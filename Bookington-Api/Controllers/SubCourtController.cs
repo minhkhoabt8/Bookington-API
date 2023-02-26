@@ -13,7 +13,8 @@ namespace Bookington_Api.Controllers
     /// Account Controller
     /// </summary>
     /// 
-    [Route("bookington/subcourts")]
+    [Route("subcourts")]
+    [Authorize(Roles = "owner")]
     [ApiController]
     public class SubCourtController : Controller
     {

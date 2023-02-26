@@ -16,7 +16,7 @@ namespace Bookington_Api.Controllers
     /// Account Controller
     /// </summary>
     /// 
-    [Route("bookington/accounts")]
+    [Route("accounts")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -35,7 +35,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize(Roles = "user")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -99,6 +99,7 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -128,14 +129,15 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("profile")]
-        [Authorize(Roles = "admin, owner, user")]
+        [Authorize(Roles = "admin,owner,user")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> GetProfileAsync()
         {
             var profile = await _accountService.GetProfileAsync();
             return ResponseFactory.Ok(profile);
         }
-        /// ss
+
         /// <summary>
         /// Get Profile By Id For Admin
         /// </summary>
@@ -148,6 +150,21 @@ namespace Bookington_Api.Controllers
             return ResponseFactory.Ok(profile);
         }
 
-        
+        /// <summary>
+        /// Update Password
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut("change-password")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ChangePasswordDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> UpdatePassword(ChangePasswordDTO dto)
+        {
+            await _accountService.ChangePasswordAsync(dto);
+            return ResponseFactory.NoContent();
+        }
+
     }
 }

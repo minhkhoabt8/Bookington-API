@@ -14,7 +14,7 @@ namespace Bookington_Api.Controllers
     /// <summary>
     /// Order Controller
     /// </summary>    
-    [Route("bookington/orders")]
+    [Route("orders")]
     [ApiController]
     public class OrderController : ControllerBase
     {

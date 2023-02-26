@@ -2,6 +2,7 @@
 using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace Bookington_Api.Controllers
     /// Role Controller
     /// </summary>
     [ApiController]
+    [Authorize(Roles = "admin")]
     [Route("auth/roles")]
     public class RoleController : ControllerBase
     {

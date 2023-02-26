@@ -199,5 +199,22 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
         }
 
+        public async Task ChangePasswordAsync(ChangePasswordDTO dto)
+        {
+            var existAccount = await _unitOfWork.AccountRepository.FindAsync(dto.UserId);
+
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(dto.UserId);
+
+            else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
+
+            if (dto.NewPassword.Equals(dto.ConfirmPassword))
+            {
+                existAccount.Password = dto.NewPassword;
+
+                await _unitOfWork.CommitAsync();
+            }
+            else throw new Exception("Confirm Password Not Match");
+        }
+
     }
 }

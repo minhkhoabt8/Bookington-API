@@ -12,8 +12,9 @@ namespace Bookington_Api.Controllers
     /// <summary>
     /// Booking Controller
     /// </summary>
-    [Route("bookington/bookings")]
+    [Route("bookings")]
     [ApiController]
+    [Authorize(Roles = "user")]
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
@@ -30,7 +31,6 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
-        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookingReadDTO>))]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -110,7 +110,6 @@ namespace Bookington_Api.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("incomingMatch")]
-        [Authorize(Roles = "user")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookingReadDTO>))]
         public async Task<IActionResult> GetIncomingMatchesFromBookingOfUser( [Required] string userId)
         {

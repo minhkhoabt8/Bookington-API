@@ -4,6 +4,7 @@ using Bookington.Infrastructure.DTOs.Province;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington_Api.Controllers
@@ -11,7 +12,8 @@ namespace Bookington_Api.Controllers
     /// <summary> 
     /// Province Controller
     /// </summary>
-    [Route("bookington/districts")]
+    [Route("districts")]
+    [Authorize(Roles = "user,admin,owner")]
     [ApiController]
     public class DistrictController : Controller
     {

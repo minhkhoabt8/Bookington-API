@@ -4,6 +4,7 @@ using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,8 @@ namespace Bookington_Api.Controllers
     /// <summary> 
     /// Court Controller
     /// </summary>
-    [Route("bookington/courts")]
+    [Route("courts")]
+    [Authorize(Roles = "owner")]
     [ApiController]
     public class CourtController : ControllerBase
     {

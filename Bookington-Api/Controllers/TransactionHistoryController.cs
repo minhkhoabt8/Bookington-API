@@ -13,6 +13,7 @@ namespace Bookington_Api.Controllers
     /// Transaction History Controller
     /// </summary>
     [Route("api/[controller]")]
+    [Authorize(Roles = "user,owner")]
     [ApiController]
     public class TransactionHistoryController : ControllerBase
     {

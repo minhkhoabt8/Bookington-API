@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -22,12 +23,16 @@ namespace Bookington.Infrastructure.DTOs.Account
         public string? FullName { get; set; }
     }
 
-    public class ChangePhoneNumberDTO
+    public class ChangePasswordDTO
     {
+        [Required]
         public string UserId { get; set; }
-
-        public string OldPhoneNumber { get; set; }
-
-        public string NewPhoneNumber { get; set; }
+        [Required]
+        public string OldPassword { get; set; }
+        [Required]
+        public string NewPassword { get; set; }
+        [Required]
+        public string ConfirmPassword { get; set; }
     }
+
 }

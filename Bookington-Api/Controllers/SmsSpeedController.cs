@@ -3,12 +3,15 @@ using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace Bookington_Api.Controllers
 {
     [Route("sms/sent")]
+    [Authorize(Roles = "admin")]
     [ApiController]
     public class SmsSpeedController : ControllerBase
     {
