@@ -25,6 +25,7 @@ builder.Services.AddServiceFilters();
 builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureSignalROptions();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,7 +35,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
@@ -43,7 +43,7 @@ app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseAuthentication();
 
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -83,7 +83,11 @@ namespace Bookington_Test.Service.Account
         {
             // Arrange
             var id = "fe9e33fb-cbe5-423a-a6cd-b3bbe27f47e3";
-            var dto = new AccountUpdateDTO();
+            var dto = new AccountUpdateDTO
+            {
+                FullName = "KhoaLe",
+                DateOfBirth="24/06/2001"
+            };
 
             var userContextServiceMock = new Mock<IUserContextService>();
             var unitOfWorkMock = new Mock<IUnitOfWork>();

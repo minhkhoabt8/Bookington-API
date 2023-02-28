@@ -26,10 +26,11 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Account, AccountReadDTO>();
             CreateMap<Account, AccountProfileReadDTO>();
             CreateMap<AccountWriteDTO, Account>();
-            CreateMap<AccountUpdateDTO,Account>();            
+            CreateMap<AccountUpdateDTO,Account>()
+                .ForMember(dest => dest.DateOfBirth, options => options.MapFrom(src => DateTime.Parse(src.DateOfBirth.ToString())));            
             //Otp
             CreateMap<OtpDTO, AccountOtp>();
-              
+
             // Court
             CreateMap<Court, CourtReadDTO>();
             CreateMap<CourtWriteDTO, Court>()

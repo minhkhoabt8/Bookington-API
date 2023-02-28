@@ -60,9 +60,9 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<CourtReadDTO> GetByIdAsync(string id)
         {
-            var existCourt = await _unitOfWork.CourtRepository.FindAsync(id);
+            var existCourt = await _unitOfWork.CourtRepository.FindAsync(id, include: "District");
 
-            if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(id);
+            if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(existCourt.Id);
 
             return _mapper.Map<CourtReadDTO>(existCourt);
         }

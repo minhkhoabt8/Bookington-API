@@ -40,7 +40,7 @@ public class GenericRepository<TEntity, TContext> :
             entries = entries.AsNoTracking();
         }
 
-        return await entries.FirstOrDefaultAsync(GenerateFindByIDExpression(key));
+        return await entries.Include(include).FirstOrDefaultAsync(GenerateFindByIDExpression(key));
     }
     
     public virtual async Task<TEntity?> FindAsync(params object[] keys)

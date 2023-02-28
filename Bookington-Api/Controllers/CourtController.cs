@@ -45,7 +45,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         /// <param name="id"></param>
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourtReadDTO))]
         public async Task<IActionResult> GetDetailsAsync(string id)

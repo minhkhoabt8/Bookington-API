@@ -88,9 +88,9 @@ namespace Bookington_Api.Controllers
         public async Task<IActionResult> UpdateAccount(string id, AccountUpdateDTO writeDTO)
         {
 
-            var roleDTO = await _accountService.UpdateAsync(id, writeDTO);
+            var account = await _accountService.UpdateAsync(id, writeDTO);
 
-            return ResponseFactory.Ok(roleDTO);
+            return ResponseFactory.Ok(account);
         }
 
         /// <summary>
