@@ -14,7 +14,6 @@ namespace Bookington_Api.Controllers
     /// Court Controller
     /// </summary>
     [Route("courts")]
-    [Authorize(Roles = "owner")]
     [ApiController]
     public class CourtController : ControllerBase
     {
@@ -32,6 +31,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "owner,user")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourtReadDTO>))]
         public async Task<IActionResult> GetAllAsync()
@@ -46,6 +46,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         /// <param name="id"></param>
         [HttpGet("{id}")]
+        [Authorize(Roles = "owner,user")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourtReadDTO))]
         public async Task<IActionResult> GetDetailsAsync(string id)
@@ -60,6 +61,7 @@ namespace Bookington_Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = "owner")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> CreateAsync(CourtWriteDTO dto)
         {
@@ -75,6 +77,7 @@ namespace Bookington_Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "owner")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> UpdateAsync(string id, CourtWriteDTO dto)
@@ -89,6 +92,7 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "owner")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> DeleteAsync(string id)
         {
@@ -102,6 +106,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("query")]
+        [Authorize(Roles = "owner, user")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtQueryResponse>))]
         public async Task<IActionResult> QueryCourts([FromQuery] CourtItemQuery query)
         {
