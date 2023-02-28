@@ -64,6 +64,8 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(existCourt.Id);
 
+
+
             return _mapper.Map<CourtReadDTO>(existCourt);
         }
 

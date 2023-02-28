@@ -68,7 +68,7 @@ public class GenericRepository<TEntity, TContext> :
     {
         var propInfo =
             typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
-                .SingleOrDefault(prop => prop.Name == "ID" || prop.GetCustomAttribute<KeyAttribute>() != null) ??
+                .SingleOrDefault(prop => prop.Name == "Id" || prop.GetCustomAttribute<KeyAttribute>() != null) ??
             throw new Exception($"Could not find primary key attribute of entity {typeof(TEntity).Name}");
 
         var objParameterExpr = Expression.Parameter(typeof(TEntity));
