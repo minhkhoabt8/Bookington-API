@@ -17,8 +17,6 @@ namespace Bookington.Infrastructure.DTOs.Court
 
         public string? DistrictName { get; set; }
 
-        public string? Name { get; set; }
-
         public string? Address { get; set; }
 
         public TimeSpan? OpenAt { get; set; }
