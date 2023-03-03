@@ -31,7 +31,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>        
         [HttpGet("self")]
-        [Authorize(Roles = "Admin,Customer,CourtOwner")]
+        [Authorize(Roles = "admin,user,owner")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetSelfBalance()
         {
@@ -43,8 +43,8 @@ namespace Bookington_Api.Controllers
         /// Get All User Balances
         /// </summary>
         /// <returns></returns>        
-        [HttpGet("")]
-        [Authorize(Roles = "Admin")]
+        [HttpGet()]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -57,7 +57,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>        
         [HttpPost()]
-        [Authorize(Roles = "Admin,Customer,CourtOwner")]
+        [Authorize(Roles = "admin,user,owner")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> AddBalance(UserBalanceWriteDTO dto)
         {

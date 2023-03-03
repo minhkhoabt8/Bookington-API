@@ -32,7 +32,7 @@ namespace Bookington_Api.Controllers
         /// <param name="page"></param>
         /// <returns></returns>        
         [HttpGet("self")]
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "user")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<TransactionHistoryReadDTO>>))]
         public async Task<IActionResult> GetSelfTransactionHistory(int? page)
