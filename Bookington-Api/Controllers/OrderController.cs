@@ -1,8 +1,10 @@
-﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.Order;
 using Bookington.Infrastructure.DTOs.Province;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,7 +63,7 @@ namespace Bookington_Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>                
         [HttpPost("checkout")]
-        [Authorize(Roles = "user")]
+        [RoleAuthorize(AccountRole.user)]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]

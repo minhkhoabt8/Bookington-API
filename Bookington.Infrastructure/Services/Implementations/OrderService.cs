@@ -72,17 +72,21 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (currOrder.Bookings.ElementAt(0).BookBy != accountId) throw new Exception("This is not your order to check out!");
 
-            // Check if voucher existed
+            // Check if voucher there is a voucher in request
 
-            var voucherCode = "AAAAAAAAAA";
+            bool hasUsedVoucher = true;
 
-            var existVoucher = await _unitOfWork.VoucherRepository.FindByCode(voucherCode);
+            if (!dto.VoucherCode.IsNullOrEmpty()) hasUsedVoucher = false;
 
-            if (existVoucher == null) throw new EntityWithIDNotFoundException<Voucher>(voucherCode);
+            var existVoucher = new Voucher() { Discount = 0 };            
 
-            /*var existVoucher = await _unitOfWork.VoucherRepository.FindByCode(dto.VoucherCode);
+            // Check if voucher used exists
+            if (hasUsedVoucher)
+            {
+                existVoucher = await _unitOfWork.VoucherRepository.FindByCode(dto.VoucherCode);
 
-            if (existVoucher == null) throw new EntityWithIDNotFoundException<Voucher>(dto.VoucherCode);*/
+                if (existVoucher == null) throw new EntityWithIDNotFoundException<Voucher>(dto.VoucherCode);
+            }
 
             // Some other checks involving voucher here ...            
             // Like usages
@@ -96,15 +100,18 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (courtName == null) throw new Exception("Can't find court name!");
 
+            // Reason for transaction history
             var reason = "Payment for booking order id " + dto.OrderId + " to (Court Owner: " + courtOwner.FullName + " - " + courtOwner.Phone + ") of (Court: " + courtName + ")";
 
             // Proceed to complete transaction and commit to database
             var transId = await _transactionService.TransferAsync(currOrder.TotalPrice, courtOwner.Id, reason);
 
-            // And of course you have to update the order with the new price if they use it
+            // And of course you have to update the order with the transaction and new price if user uses voucher
             existOrder.TransactionId = transId;
             existOrder.TotalPrice = existOrder.TotalPrice * (100 - existVoucher.Discount) / 100;
             existOrder.IsPaid = true;
+
+            if (hasUsedVoucher) existOrder.VoucherCode = dto.VoucherCode;
 
             _unitOfWork.OrderRepository.Update(existOrder);
 

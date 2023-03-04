@@ -19,6 +19,8 @@ namespace Bookington_Api.Controllers
     {
         private readonly IProvinceService _provinceService;
 
+        /// <summary>        
+        /// </summary>        
         public ProvinceController(IProvinceService provinceService)
         {
             _provinceService = provinceService;

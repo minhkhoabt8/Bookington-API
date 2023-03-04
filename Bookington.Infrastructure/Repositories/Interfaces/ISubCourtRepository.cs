@@ -1,4 +1,5 @@
 ﻿using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.SubCourt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<SubCourt>
     {
         Task<IEnumerable<SubCourt>> GetAvailableSubCourtsByCourtId(string courtId, bool trackChanges = false);
-    }    
+        Task<IEnumerable<SubCourt>> GetSubCourtsForBooking(SubCourtQueryForBooking dto, bool trackChanges = false);
+        //Task<IEnumerable<SubCourt>> GetUnavailableSubCourtsForBooking(SubCourtQueryForBooking dto, bool trackChanges = false);
+    }
 }

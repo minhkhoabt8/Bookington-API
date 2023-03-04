@@ -1,6 +1,8 @@
-﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +14,7 @@ namespace Bookington_Api.Controllers
     /// Role Controller
     /// </summary>
     [ApiController]
-    [Authorize(Roles = "admin")]
+    [RoleAuthorize(AccountRole.admin)]
     [Route("auth/roles")]
     public class RoleController : ControllerBase
     {

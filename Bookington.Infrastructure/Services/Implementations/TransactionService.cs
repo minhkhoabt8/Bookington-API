@@ -108,8 +108,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             {
                 RefFrom = fromBal.RefUser,
                 RefTo = toBal.RefUser,
-                Amount = amount
-                //Reason = transferReason
+                Amount = amount,
+                Reason = transferReason
             };
             await _unitOfWork.TransactionHistoryRepository.AddAsync(newTrans);
 

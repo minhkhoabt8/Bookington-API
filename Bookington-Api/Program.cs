@@ -24,7 +24,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddServiceFilters();
 builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureSignalROptions();
-
+builder.Services.AddDateOnlyTimeOnlyStringConverters();
 
 var app = builder.Build();
 

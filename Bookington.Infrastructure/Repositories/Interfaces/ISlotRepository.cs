@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.Slot;
 
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
@@ -11,9 +12,11 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IGetAllAsync<Slot>,
         IAddAsync<Slot>,
         IUpdate<Slot>,
-        IFindAsync<Slot>
+        IFindAsync<Slot>,
+        IDelete<Slot>
     {
         Task<Account> GetCourtOwnerBySlotId(string slotId, bool trackChanges = false);
         Task<string> GetCourtNameBySlotId(string slotId, bool trackChanges = false);
+        Task<IEnumerable<Slot>> GetAvailableSlotsForBooking(SlotQueryForBooking dto, bool trackChanges = false);
     }
 }
