@@ -32,7 +32,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<SubCourtReadDTO>(subCourt);
-        }       
+        }
 
         public async Task<IEnumerable<SubCourtReadDTO>> GetAllAsync()
         {
@@ -74,7 +74,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             _unitOfWork.SubCourtRepository.Update(existSubCourt);
 
-            await _unitOfWork.CommitAsync();            
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<IEnumerable<SubCourtReadDTO>> CreateSubCourtFromListAsync(List<SubCourtWriteDTO> dto)
@@ -98,6 +98,32 @@ namespace Bookington.Infrastructure.Services.Implementations
             var subCourts = await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(courtId);
 
             return _mapper.Map<IEnumerable<SubCourtReadDTO>>(subCourts);
+        }
+
+        public async Task<IEnumerable<SubCourtForBookingReadDTO>> GetSubCourtsForBooking(SubCourtQueryForBooking dto)
+        {
+            var currCourt = await _unitOfWork.CourtRepository.FindAsync(dto.CourtId);
+            if (currCourt == null) throw new EntityWithIDNotFoundException<SubCourt>(dto.CourtId);
+
+            // Check if play date provided by user is valid or not
+            // Play date must not be any day before today
+            if (dto.PlayDate.ToDateTime(TimeOnly.MaxValue).CompareTo(DateTime.Now) <= 0) throw new Exception("Play Date " + dto.PlayDate.ToString() + " is not valid!");
+
+            // Check start time and end time condition
+            // End Time > Start Time (always)
+            if (dto.EndTime.CompareTo(dto.StartTime) <= 0) throw new Exception("End time must be greater than start time!");
+
+            var scs = await _unitOfWork.SubCourtRepository.GetSubCourtsForBooking(dto);
+            //var unavSubCourts = await _unitOfWork.SubCourtRepository.GetUnavailableSubCourtsForBooking(dto);
+
+            var subCourts = _mapper.Map<IEnumerable<SubCourtForBookingReadDTO>>(scs);            
+
+            /*var unavSCs = _mapper.Map<IEnumerable<SubCourtForBookingReadDTO>>(unavSubCourts);
+            foreach (var sc in unavSCs) sc.IsAvailable = false;*/
+
+            //var subCourts = avSCs.Concat(unavSCs).OrderBy(sc => sc.Name);            
+
+            return subCourts;            
         }
     }
 }

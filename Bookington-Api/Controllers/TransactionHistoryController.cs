@@ -1,7 +1,9 @@
-﻿using Bookington.Infrastructure.DTOs.Account;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +14,7 @@ namespace Bookington_Api.Controllers
     /// <summary>
     /// Transaction History Controller
     /// </summary>
-    [Route("api/[controller]")]
-    [Authorize(Roles = "user,owner")]
+    [Route("transactionhistory")]    
     [ApiController]
     public class TransactionHistoryController : ControllerBase
     {
@@ -32,7 +33,7 @@ namespace Bookington_Api.Controllers
         /// <param name="page"></param>
         /// <returns></returns>        
         [HttpGet("self")]
-        [Authorize(Roles = "Customer")]
+        [RoleAuthorize(AccountRole.user)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<TransactionHistoryReadDTO>>))]
         public async Task<IActionResult> GetSelfTransactionHistory(int? page)

@@ -46,6 +46,9 @@ namespace Bookington.Infrastructure.Mapper
             // Sub Court
             CreateMap<SubCourt, SubCourtReadDTO>();
             CreateMap<SubCourtWriteDTO, SubCourt>();
+            CreateMap<SubCourt, SubCourtForBookingReadDTO>()
+                .ForMember(dest => dest.IsAvailable, options => options.MapFrom(src => src.IsActive));
+
             // Role
             CreateMap<Role, RoleReadDTO>();
             CreateMap<RoleWriteDTO, Role>();
@@ -62,6 +65,8 @@ namespace Bookington.Infrastructure.Mapper
                 .ForMember(des => des.PlayDate, act => act.MapFrom(src => src.PlayDate.ToString()));
             // Slot
             CreateMap<Slot, SlotReadDTO>();
+            CreateMap<Slot, SlotForBookingReadDTO>()
+                .ForMember(dest => dest.IsAvailable, options => options.MapFrom(src => src.IsActive));
             CreateMap<SlotWriteDTO, Slot>();
             // Voucher
             CreateMap<Voucher, VoucherReadDTO>();

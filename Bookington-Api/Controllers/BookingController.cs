@@ -1,6 +1,11 @@
-﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Booking;
+using Bookington.Infrastructure.DTOs.Slot;
+using Bookington.Infrastructure.DTOs.SubCourt;
+using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,16 +19,19 @@ namespace Bookington_Api.Controllers
     /// </summary>
     [Route("bookings")]
     [ApiController]
-    [Authorize(Roles = "user")]
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
+        private readonly ISubCourtService _subCourtService;
+        private readonly ISlotService _slotService;
 
         /// <summary>        
         /// </summary>
-        public BookingController(IBookingService bookingService)
+        public BookingController(IBookingService bookingService, ISubCourtService subCourtService, ISlotService slotService)
         {
             _bookingService = bookingService;
+            _subCourtService = subCourtService;
+            _slotService = slotService;
         }
 
         /// <summary>
@@ -97,6 +105,7 @@ namespace Bookington_Api.Controllers
         /// <param name="courtId"></param>
         /// <returns></returns>
         [HttpGet("{courtId}")]
+        [RoleAuthorize(AccountRole.owner)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourtBookingHistoryReadDTO>))]
         public async Task<IActionResult> GetBookingHistoryOfCourt(string courtId)
         {
@@ -110,12 +119,40 @@ namespace Bookington_Api.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("incomingMatch")]
+        [RoleAuthorize(AccountRole.user)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookingReadDTO>))]
-        public async Task<IActionResult> GetIncomingMatchesFromBookingOfUser( [Required] string userId)
+        public async Task<IActionResult> GetIncomingMatchesFromBookingOfUser([Required] string userId)
         {
             var bookings = await _bookingService.GetIncomingMatchesFromBookingOfUser(userId);
             return ResponseFactory.Ok(bookings);
         }
 
+        /// <summary>
+        /// Get Available Sub Courts For Booking
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("subcourts/available")]
+        [RoleAuthorize(AccountRole.user)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SubCourtForBookingReadDTO>>))]
+        public async Task<IActionResult> GetAvailableSubCourtsForBooking([FromBody] SubCourtQueryForBooking dto)
+        {
+            var subCourts = await _subCourtService.GetSubCourtsForBooking(dto);
+            return ResponseFactory.Ok(subCourts);
+        }
+
+        /// <summary>
+        /// Get Available Slots For Booking
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("slots/available")]
+        [RoleAuthorize(AccountRole.user)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SlotsForBookingReadDTO>))]
+        public async Task<IActionResult> GetAvailableSlotsForBooking([FromBody] SlotQueryForBooking dto)
+        {
+            var result = await _slotService.GetAvailableSlotsForBooking(dto);
+            return ResponseFactory.Ok(result);
+        }
     }
 }

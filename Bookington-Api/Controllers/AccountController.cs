@@ -1,9 +1,11 @@
-﻿using Bookington.Infrastructure.DTOs.Account;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +37,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [RoleAuthorize(AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -99,7 +101,7 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [RoleAuthorize(AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -129,7 +131,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("profile")]
-        [Authorize(Roles = "admin,owner,user")]
+        [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.user)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> GetProfileAsync()

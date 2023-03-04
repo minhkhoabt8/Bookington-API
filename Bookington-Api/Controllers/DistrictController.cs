@@ -19,6 +19,9 @@ namespace Bookington_Api.Controllers
     {
         private readonly IDistrictService _districtService;
 
+
+        /// <summary>        
+        /// </summary>        
         public DistrictController(IDistrictService districtService)
         {
             _districtService = districtService;

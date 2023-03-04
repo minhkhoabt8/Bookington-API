@@ -11,17 +11,17 @@ namespace Bookington.Infrastructure.DTOs.Booking
     {
         public string? Id { get; set; }
 
-        public string? RefSlot { get; set; }
+        public string RefSlot { get; set; } = null!;
 
-        public string? BookBy { get; set; }
+        public string RefOrder { get; set; } = null!;
 
-        public string? VoucherCode { get; set; }
+        public string BookBy { get; set; } = null!;
 
-        public DateTime? BookAt { get; set; }
+        public DateTime BookAt { get; set; }
 
-        public double? Price { get; set; }
+        public DateTime PlayDate { get; set; }
 
-        public double? OriginalPrice { get; set; }
+        public double Price { get; set; }        
     }
 
     public class CourtBookingHistoryReadDTO

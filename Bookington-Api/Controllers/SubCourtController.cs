@@ -1,8 +1,10 @@
-﻿using Bookington.Infrastructure.DTOs.Account;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.SubCourt;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +12,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bookington_Api.Controllers
 {
     /// <summary>
-    /// Account Controller
-    /// </summary>
-    /// 
+    /// Sub Court Controller
+    /// </summary>   
     [Route("subcourts")]
-    [Authorize(Roles = "owner")]
+    [RoleAuthorize(AccountRole.owner)]
     [ApiController]
     public class SubCourtController : Controller
     {
         private ISubCourtService _subCourtService;
 
+        /// <summary>        
+        /// </summary>        
         public SubCourtController(ISubCourtService subCourtService)
         {
             _subCourtService = subCourtService;

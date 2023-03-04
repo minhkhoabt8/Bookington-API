@@ -1,6 +1,8 @@
-﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Report;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +15,7 @@ namespace Bookington_Api.Controllers
     /// Report Controller
     /// </summary>
     [Route("bookington/reports")]
-    [Authorize(Roles = "user,admin,owner")]
+    [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.user)]
     [ApiController]
     public class ReportController : ControllerBase
     {

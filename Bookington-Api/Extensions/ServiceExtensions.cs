@@ -68,20 +68,22 @@ namespace Bookington_Api.Extensions
                 });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-            {
                 {
-                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
+                        new OpenApiSecurityScheme
                         {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer"
                         },
-                        Name = "Bearer"
-                    },
-                    new List<string>()
-                }
-            });
+                        new List<string>()
+                    }
+                });
+
+                c.UseDateOnlyTimeOnlyStringConverters();
             });
         }
         ///<Summary>
@@ -127,6 +129,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IVoucherService, VoucherService>();
+            services.AddScoped<ISlotService, SlotService>();
         }
 
         ///<Summary>
