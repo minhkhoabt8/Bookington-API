@@ -1,11 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.DTOs.Account
 {
@@ -13,9 +7,21 @@ namespace Bookington.Infrastructure.DTOs.Account
     {
         public string Phone { get; set; }
 
-        public string Password { get; set; }
+        public string Password
+        {
+            get { return password; }
+            set { password = EncryptPassword(value); }
+        }
 
         public string FullName { get; set; }
+
+        private string password;
+
+        public static string EncryptPassword(string pass)
+        {
+              return BCrypt.Net.BCrypt.HashPassword(pass);
+        }
+
     }
 
     public class AccountUpdateDTO
@@ -31,9 +37,19 @@ namespace Bookington.Infrastructure.DTOs.Account
         [Required]
         public string OldPassword { get; set; }
         [Required]
-        public string NewPassword { get; set; }
+        public string NewPassword
+        {
+            get { return password; }
+            set { password = EncryptPassword(value); }
+        }
         [Required]
         public string ConfirmPassword { get; set; }
+
+        private string password;
+        public static string EncryptPassword(string pass)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(pass);
+        }
     }
 
 }

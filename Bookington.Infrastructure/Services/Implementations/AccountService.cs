@@ -95,8 +95,9 @@ namespace Bookington.Infrastructure.Services.Implementations
                 FullName = existAccount.FullName,
                 Role = role.RoleName,
                 SysToken = await _tokenService.GenerateTokenAsync(existAccount),
-                SysTokenExpires = 1200
+                SysTokenExpires = 12000
             };
+
         }
 
         public async Task VerifyAccount(string phoneNumber, string otp)
@@ -134,11 +135,13 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
-            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
+            if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
+            
+            else if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
 
-            else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
+            existAccount.IsActive = false;
 
-            _unitOfWork.AccountRepository.Delete(existAccount);
+            _unitOfWork.AccountRepository.Update(existAccount);
 
             await _unitOfWork.CommitAsync();
         }

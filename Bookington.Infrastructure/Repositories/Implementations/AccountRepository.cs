@@ -1,9 +1,7 @@
-﻿using Azure;
-using Bookington.Core.Data;
+﻿using Bookington.Core.Data;
 using Bookington.Core.Entities;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Repositories.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -21,7 +19,11 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         }
         public async Task<Account?> LoginByPhoneAsync(AccountLoginInputDTO login)
         {
-            return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone && a.Password == login.Password);
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(login.Password);
+
+            bool verified = BCrypt.Net.BCrypt.Verify(login.Password, passwordHash);
+
+            return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone && verified == true);
         }
 
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)

@@ -13,6 +13,11 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
 
+        public async Task<IEnumerable<Court?>> GetAllCourtByOwnerIdAsync(string ownerId)
+        {
+            return _context.Courts.Where(c => c.OwnerId == ownerId && c.IsDeleted == false);
+        }
+
         public async Task<IEnumerable<Court>> QueryAsync(CourtItemQuery query, bool trackChanges = false)
         {
             IQueryable<Court> courts = _context.Courts

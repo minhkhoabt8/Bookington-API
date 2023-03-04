@@ -10,7 +10,7 @@
     <Folder Include="Configurations\" />
     <Folder Include="EventHandlers\" />
     <Folder Include="Mapper\" />
-    <Folder Include="MessageConsumers\" />
+    <Folder Include="BackgroundServices\" />
   </ItemGroup>
 
   <ItemGroup>

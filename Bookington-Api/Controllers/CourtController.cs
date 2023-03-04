@@ -35,16 +35,16 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
-        /// Get All Court
+        /// Get All Courts Of Owner
         /// </summary>
         /// <returns></returns>
         [HttpGet]        
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourtReadDTO>))]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllCourtByOwnerIdAsync()
         {
-            var tags = await _courtService.GetAllAsync();
-            return ResponseFactory.Ok(tags);
+            var courts = await _courtService.GetAllCourtByOwnerIdAsync();
+            return ResponseFactory.Ok(courts);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [RoleAuthorize(AccountRole.owner)]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -98,7 +98,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [RoleAuthorize( AccountRole.owner)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> DeleteAsync(string id)

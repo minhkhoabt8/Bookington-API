@@ -14,6 +14,8 @@ namespace Bookington.Infrastructure.DTOs.Account
 
         public string Phone { get; set; }
 
+        public DateTime DateOfBirth { get; set; }
+
         public string FullName { get; set; }
 
         public bool IsActive { get; set; }
@@ -22,7 +24,18 @@ namespace Bookington.Infrastructure.DTOs.Account
     public class AccountLoginInputDTO
     {
         public string Phone { get; set; }
-        public string Password { get; set; }
+         public string Password
+         {
+            get { return password; }
+            set { password = EncryptPassword(value); }
+         }
+
+        private string password;
+
+        public static string EncryptPassword(string pass)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(pass);
+        }
     }
 
     public class AccountLoginOutputDTO

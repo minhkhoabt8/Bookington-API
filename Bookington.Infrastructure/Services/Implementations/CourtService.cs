@@ -46,25 +46,33 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(id);
 
-            _unitOfWork.CourtRepository.Delete(existCourt);
+            existCourt.IsDeleted = true;
+
+            _unitOfWork.CourtRepository.Update(existCourt);
 
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task<IEnumerable<CourtReadDTO>> GetAllAsync()
+        public async Task<IEnumerable<CourtReadDTO>> GetAllCourtByOwnerIdAsync()
         {
-            var courts = await _unitOfWork.CourtRepository.GetAllAsync();
+
+            var ownerId = _userContextService.AccountID.ToString();
+
+            if(ownerId == null) throw new ForbiddenException();
+
+            var courts = await _unitOfWork.CourtRepository.GetAllCourtByOwnerIdAsync(ownerId);
 
             return _mapper.Map<IEnumerable<CourtReadDTO>>(courts);
+            
         }
 
         public async Task<CourtReadDTO> GetByIdAsync(string id)
         {
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id, include: "District");
 
-            if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(existCourt.Id);
+            if (existCourt?.OwnerId != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
-
+            else if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(existCourt.Id);
 
             return _mapper.Map<CourtReadDTO>(existCourt);
         }

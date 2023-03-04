@@ -19,10 +19,10 @@ namespace Bookington_Test.Service.Account
             var existAccount = CreateTestAccount(phone);
             
             var mockUOW = new Mock<IUnitOfWork>();
-            var tagService = new AccountService(null!, mockUOW.Object, null!,null!,null! ,null!);
+            var accountService = new AccountService(null!, mockUOW.Object, null!,null!,null! ,null!);
             mockUOW.Setup(uow => uow.AccountRepository.FindAccountByPhoneNumberAsync(existAccount.Phone)).ReturnsAsync(existAccount);
             await Assert.ThrowsAsync<UniqueConstraintException<Bookington.Core.Entities.Account>>(() =>
-               tagService.CreateAsync(new AccountWriteDTO { Phone = existAccount.Phone }));
+               accountService.CreateAsync(new AccountWriteDTO { Phone = existAccount.Phone }));
         }
 
 
@@ -37,5 +37,23 @@ namespace Bookington_Test.Service.Account
                 Password = "Test@@"
             };
         }
+
+        [Fact]
+        public void EncryptPassword_ReturnsNonEmptyString()
+        {
+            string password = "password123";
+            string encryptedPassword = AccountWriteDTO.EncryptPassword(password);
+            Assert.NotNull(encryptedPassword);
+        }
+
+        [Fact]
+        public void Password_Set_CallsEncryptPassword()
+        {
+            string password = "password123";
+            AccountWriteDTO account = new AccountWriteDTO();
+            account.Password = password;
+            Assert.NotEqual(password, account.Password);
+        }
+
     }
 }
