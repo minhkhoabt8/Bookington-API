@@ -9,11 +9,12 @@ namespace Bookington_Api.Hubs
 {
     public class NotificationUserHub : Hub, INotificationUserHub
     {
+        [HubMethodName("SendNotificationToUser")]
         public async Task SendNotification(string userId, NotificationReadDTO notification)
         {
             await Clients.User(userId).SendAsync("ReceiveNotification", notification);
         }
-
+        [HubMethodName("GetNotificationOfUser")]
         public async Task SendNotificationList(string userId, List<NotificationReadDTO> notifications)
         {
             await Clients.User(userId).SendAsync("ReceiveNotifications", notifications);

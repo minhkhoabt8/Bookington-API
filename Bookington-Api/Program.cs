@@ -15,6 +15,7 @@ builder.Services.AddServices();
 builder.Services.AddRepositories();
 builder.Services.AddUOW();
 builder.Services.AddAutoMapper();
+builder.Services.AddSignalRService();
 builder.Services.AddEvents();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureApiOptions();
@@ -48,6 +49,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<NotificationUserHub>("/NotificationHub");
+app.MapHub<NotificationUserHub>("/notificationHub");
 
 app.Run();

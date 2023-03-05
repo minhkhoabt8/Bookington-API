@@ -202,8 +202,9 @@ namespace Bookington_Api.Extensions
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
-                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
+                options.KeepAliveInterval = TimeSpan.FromMinutes(5);
             });
+            
         }
         ///<Summary>
         ///Register SignalR Service
