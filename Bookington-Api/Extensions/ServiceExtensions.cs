@@ -1,4 +1,5 @@
 ﻿using Bookington.Core.Data;
+using Bookington.Infrastructure.Hubs;
 using Bookington.Infrastructure.Mapper;
 using Bookington.Infrastructure.Repositories.Implementations;
 using Bookington.Infrastructure.Repositories.Interfaces;
@@ -130,6 +131,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IVoucherService, VoucherService>();
             services.AddScoped<ISlotService, SlotService>();
+            services.AddScoped<INotificationService, NotificationService>();
         }
 
         ///<Summary>
@@ -155,6 +157,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work
@@ -207,7 +210,7 @@ namespace Bookington_Api.Extensions
         ///</Summary>
         public static void AddSignalRService(this IServiceCollection services)
         {
-            services.AddScoped<IUserConnectionManager, UserConnectionManager>();
+            services.AddScoped<INotificationUserHub, NotificationUserHub>();
         }
     }
 }

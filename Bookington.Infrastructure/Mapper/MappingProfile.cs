@@ -15,6 +15,7 @@ using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.DTOs.Order;
 using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.IncomingMatch;
+using Bookington.Infrastructure.DTOs.Notification;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -92,7 +93,11 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<TransactionHistoryWriteDTO, TransactionHistory>();
             //Order
             CreateMap<Order, OrderReadDTO>();
-            CreateMap<OrderWriteDTO, Order>();           
+            CreateMap<OrderWriteDTO, Order>();    
+            //Notification
+            CreateMap<Notification, NotificationReadDTO>();
+            CreateMap<NotificationWriteDTO, Notification>();
+
         }
     }
 }

@@ -7,8 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="EventHandlers\" />
+    <Compile Remove="Configurations\**" />
+    <Compile Remove="EventHandlers\**" />
+    <EmbeddedResource Remove="Configurations\**" />
+    <EmbeddedResource Remove="EventHandlers\**" />
+    <None Remove="Configurations\**" />
+    <None Remove="EventHandlers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Mapper\" />
     <Folder Include="BackgroundServices\" />
   </ItemGroup>

@@ -39,6 +39,7 @@ namespace Bookington.Infrastructure.UOW
         public IUserBalanceRepository UserBalanceRepository => GetSingletonRepository<IUserBalanceRepository>();
         public ITransactionHistoryRepository TransactionHistoryRepository => GetSingletonRepository<ITransactionHistoryRepository>();
         public IOrderRepository OrderRepository => GetSingletonRepository<IOrderRepository>();
+        public INotificationRepository NotificationRepository => GetSingletonRepository<INotificationRepository>();
         private T GetSingletonRepository<T>()
         {
             if (!_singletonRepositories.ContainsKey(typeof(T).Name))
