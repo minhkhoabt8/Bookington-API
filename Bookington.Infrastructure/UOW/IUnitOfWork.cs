@@ -43,6 +43,8 @@ namespace Bookington.Infrastructure.UOW
 
         public INotificationRepository NotificationRepository { get; }
 
+        public ILoginTokenRepository LoginTokenRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

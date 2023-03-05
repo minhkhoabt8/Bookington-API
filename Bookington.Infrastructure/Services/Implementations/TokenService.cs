@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Bookington.Infrastructure.UOW;
+using System.Security.Cryptography;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -18,6 +19,21 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             _configuration = configuration;
             _unitOfWork = unitOfWork;
+        }
+
+        public LoginToken GenerateRefreshToken(Account account)
+        {
+            var randomBytes = RandomNumberGenerator.GetBytes(64);
+
+            var refreshToken = new LoginToken
+            {
+                Token = Convert.ToBase64String(randomBytes),
+                // Last for 15 minute
+                ExpireAt = DateTime.UtcNow.AddMinutes(15),
+                RefAccount = account.Id
+            };
+
+            return refreshToken;
         }
 
         public Task<string> GenerateTokenAsync(Account account)

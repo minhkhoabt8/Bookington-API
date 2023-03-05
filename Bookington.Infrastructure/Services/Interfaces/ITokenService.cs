@@ -10,5 +10,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
     public interface ITokenService
     {
         Task<string> GenerateTokenAsync(Account account);
+
+        LoginToken GenerateRefreshToken(Account account);
     }
 }

@@ -19,5 +19,20 @@ public partial class LoginToken
 
     public bool IsRevoked { get; set; } = false;
 
+    public bool IsExpired => DateTime.Now >= ExpireAt;
+
+    public int ExpiresIn => (int)ExpireAt.Subtract(DateTime.Now).TotalSeconds;
+
     public virtual Account RefAccountNavigation { get; set; } = null!;
+
+    public void Revoke()
+    {
+        IsRevoked = true;
+    }
+
+    public void ReplaceWith(LoginToken replacement)
+    {
+        RefreshToken = replacement.Token;
+        Revoke();
+    }
 }

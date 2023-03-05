@@ -8,7 +8,6 @@ using Bookington.Infrastructure.Enums;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -87,6 +86,9 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var role = await _unitOfWork.RoleRepository.FindAsync(existAccount.RoleId);
 
+            // Generate new refresh token
+            var newRefreshToken = _tokenService.GenerateRefreshToken(existAccount);
+
             //create new Token and return 
             return new AccountLoginOutputDTO
             {
@@ -95,7 +97,70 @@ namespace Bookington.Infrastructure.Services.Implementations
                 FullName = existAccount.FullName,
                 Role = role.RoleName,
                 SysToken = await _tokenService.GenerateTokenAsync(existAccount),
-                SysTokenExpires = 12000
+                //SysTokenExpires = 60 * 60 * 4, // 4 hours
+                SysTokenExpires = 12000,
+                RefreshToken = newRefreshToken.Token,
+                RefreshTokenExpires = newRefreshToken.ExpiresIn,
+            };
+
+        }
+
+        public async Task<AccountLoginOutputDTO> LoginWithRefreshTokenAsync(string? token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new InvalidRefreshTokenException();
+            }
+            var refreshToken = await _unitOfWork.LoginTokenRepository.FindByTokenIncludeAccountAsync(token) ??
+                           throw new InvalidRefreshTokenException();
+
+            // Refresh token compromised => revoke all tokens in family
+            if (refreshToken.IsRevoked)
+            {
+                // Travel down family chain
+                while (refreshToken.RefreshToken != null)
+                {
+                    // Descendant token
+                    refreshToken =
+                        await _unitOfWork.LoginTokenRepository.FindByTokenAsync(refreshToken.RefreshToken);
+                    refreshToken!.Revoke();
+                }
+                await _unitOfWork.CommitAsync();
+                throw new InvalidRefreshTokenException();
+            }
+
+            // Expired token
+            if (refreshToken.IsExpired)
+            {
+                throw new InvalidRefreshTokenException();
+            }
+
+            var newRefreshToken = _tokenService.GenerateRefreshToken(refreshToken.RefAccountNavigation);
+
+            await _unitOfWork.LoginTokenRepository.AddAsync(newRefreshToken);
+
+            refreshToken.ReplaceWith(newRefreshToken);
+
+            await _unitOfWork.CommitAsync();
+
+            return new AccountLoginOutputDTO
+            {
+                UserID = refreshToken.RefAccountNavigation.Id,
+
+                PhoneNumber = refreshToken.RefAccountNavigation.Phone,
+
+                FullName = refreshToken.RefAccountNavigation.FullName,
+
+                Role = refreshToken.RefAccountNavigation.Role.RoleName,
+
+                SysToken = await _tokenService.GenerateTokenAsync(refreshToken.RefAccountNavigation),
+
+                //SysTokenExpires = 60 * 60 * 4, // 4 hours
+                SysTokenExpires = 12000,
+
+                RefreshToken = newRefreshToken.Token,
+
+                RefreshTokenExpires = newRefreshToken.ExpiresIn,
             };
 
         }

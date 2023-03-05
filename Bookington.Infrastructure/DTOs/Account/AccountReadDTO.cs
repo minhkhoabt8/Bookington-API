@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bookington.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,6 +47,8 @@ namespace Bookington.Infrastructure.DTOs.Account
         public string Role { get; set; }
         public string SysToken { get; set; }
         public int SysTokenExpires { get; set; }
+        public string RefreshToken { get; set; }
+        public int RefreshTokenExpires { get; set; }
     }
 
     public class ConfirmUserDTO
@@ -59,6 +62,8 @@ namespace Bookington.Infrastructure.DTOs.Account
         public string Phone { get; set; } = null!;
 
         public string FullName { get; set; } = null!;
+
+        public virtual AccountAvatar RefAvatarNavigation { get; set; }
 
         public DateTime DateOfBirth { get; set; }
     }
