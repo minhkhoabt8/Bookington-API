@@ -19,16 +19,5 @@ namespace Bookington_Api.Hubs
             await Clients.User(userId).SendAsync("ReceiveNotifications", notifications);
         }
 
-        public async Task SendDiscountVoucherNotificationAsync(string userId, string voucherCode)
-        {
-            var notification = new NotificationReadDTO
-            {
-                Content = $"Congratulations! You have received a discount voucher with code: {voucherCode}"
-            };
-
-            await _hubContext.SendNotification(userId, notification);
-        }
-
-
     }
 }

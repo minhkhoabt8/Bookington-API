@@ -6,8 +6,6 @@ using Bookington.Infrastructure.DTOs.Notification;
 using Bookington.Infrastructure.Hubs;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
-using Bookington_Api.Hubs;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
