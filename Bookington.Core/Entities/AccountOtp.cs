@@ -7,6 +7,8 @@ public partial class AccountOtp
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
+    public string RefAccount { get; set; } = null!;
+
     public string Phone { get; set; } = null!;
 
     public string OtpCode { get; set; } = null!;
@@ -17,5 +19,5 @@ public partial class AccountOtp
 
     public bool IsConfirmed { get; set; } = false;
 
-    public virtual Account PhoneNavigation { get; set; } = null!;
+    public virtual Account RefAccountNavigation { get; set; } = null!;
 }

@@ -19,6 +19,8 @@ public partial class Slot
 
     public bool IsActive { get; set; } = false;
 
+    public bool IsDeleted { get; set; } = false;
+
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 
     public virtual SubCourt RefSubCourtNavigation { get; set; } = null!;

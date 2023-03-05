@@ -17,11 +17,11 @@ public partial class Order
 
     public double TotalPrice { get; set; }
 
-    public bool IsPaid { get; set; }
+    public bool IsPaid { get; set; } = false;
 
-    public bool IsCanceled { get; set; }
+    public bool IsCanceled { get; set; } = false;
 
-    public bool IsRefunded { get; set; }
+    public bool IsRefunded { get; set; } = false;
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 

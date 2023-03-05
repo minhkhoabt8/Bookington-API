@@ -9,7 +9,7 @@ public partial class UserBalance
 
     public string RefUser { get; set; } = null!;
 
-    public double Balance { get; set; } = 0;
+    public double Balance { get; set; }
 
     public virtual Account RefUserNavigation { get; set; } = null!;
 }

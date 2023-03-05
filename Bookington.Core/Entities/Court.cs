@@ -27,6 +27,8 @@ public partial class Court
 
     public bool IsDeleted { get; set; } = false;
 
+    public virtual ICollection<Ban> Bans { get; } = new List<Ban>();
+
     public virtual ICollection<Comment> Comments { get; } = new List<Comment>();
 
     public virtual ICollection<CourtImage> CourtImages { get; } = new List<CourtImage>();
@@ -36,6 +38,8 @@ public partial class Court
     public virtual District District { get; set; } = null!;
 
     public virtual Account Owner { get; set; } = null!;
+
+    public virtual ICollection<Promotion> Promotions { get; } = new List<Promotion>();
 
     public virtual ICollection<SubCourt> SubCourts { get; } = new List<SubCourt>();
 

@@ -9,6 +9,8 @@ public partial class Account
 
     public string RoleId { get; set; } = null!;
 
+    public string RefAvatar { get; set; } = null!;
+
     public string Phone { get; set; } = null!;
 
     public string Password { get; set; } = null!;
@@ -21,7 +23,11 @@ public partial class Account
 
     public bool IsActive { get; set; } = false;
 
+    public bool IsDeleted { get; set; } = false;
+
     public virtual ICollection<AccountOtp> AccountOtps { get; } = new List<AccountOtp>();
+
+    public virtual ICollection<Ban> Bans { get; } = new List<Ban>();
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 
@@ -41,7 +47,9 @@ public partial class Account
 
     public virtual ICollection<LoginToken> LoginTokens { get; } = new List<LoginToken>();
 
-    public virtual ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
+    public virtual ICollection<Notification> Notifications { get; } = new List<Notification>();
+
+    public virtual AccountAvatar RefAvatarNavigation { get; set; } = null!;
 
     public virtual Role Role { get; set; } = null!;
 

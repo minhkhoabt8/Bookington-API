@@ -1,22 +1,30 @@
 CREATE TABLE roles (
-        id VARCHAR(40) PRIMARY KEY,
-        role_name VARCHAR(50) NOT NULL
+    id VARCHAR(40) PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE account_avatars (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_image VARCHAR(40) NOT NULL
 );
 
 CREATE TABLE accounts (
         id VARCHAR(40) PRIMARY KEY,
-        role_id VARCHAR(40) FOREIGN KEY REFERENCES roles(id) NOT NULL,
+        role_id VARCHAR(40) FOREIGN KEY REFERENCES roles(id) NOT NULL,	
+	ref_avatar VARCHAR(40) FOREIGN KEY REFERENCES account_avatars(id) NOT NULL,
 	phone VARCHAR(10) UNIQUE NOT NULL,
 	password VARCHAR(100) NOT NULL,
 	full_name NVARCHAR(50),
 	date_of_birth DATE,
 	create_at DATETIME NOT NULL,	
-	is_active BIT NOT NULL
+	is_active BIT NOT NULL,
+	is_deleted BIT NOT NULL
 );
 
 CREATE TABLE account_otps (
 	id VARCHAR(40) PRIMARY KEY,
-	phone VARCHAR(10) FOREIGN KEY REFERENCES accounts(phone) NOT NULL,
+	ref_account VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	phone VARCHAR(10) NOT NULL,
 	otp_code VARCHAR(6) NOT NULL,
 	expire_at DATETIME NOT NULL,
 	create_at DATETIME NOT NULL,
@@ -27,17 +35,10 @@ CREATE TABLE login_tokens (
 	id VARCHAR(40) PRIMARY KEY,
 	ref_account VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	token VARCHAR(2048) NOT NULL,
+	refresh_token VARCHAR(2048) NOT NULL,	
 	create_at DATETIME NOT NULL,
-	expire_at DATETIME NOT NULL	
-);
-
-
-CREATE TABLE refresh_tokens (
-	id VARCHAR(40) PRIMARY KEY,
-	ref_account VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
-	token VARCHAR(2048) NOT NULL,
-	create_at DATETIME NOT NULL,
-	expire_at DATETIME NOT NULL
+	expire_at DATETIME NOT NULL,
+	is_revoked BIT NOT NULL	
 );
 
 CREATE TABLE provinces (
@@ -68,7 +69,7 @@ CREATE TABLE courts (
 CREATE TABLE court_images (
 	id VARCHAR(40) PRIMARY KEY,
 	court_id VARCHAR(40) FOREIGN KEY REFERENCES courts(id) NOT NULL,
-	image_binary VARBINARY(MAX)
+	ref_image VARCHAR(40) NOT NULL
 );
 
 CREATE TABLE comments (
@@ -78,21 +79,36 @@ CREATE TABLE comments (
 	content NVARCHAR(500) NOT NULL,
 	rating DOUBLE PRECISION NOT NULL,
 	create_at DATETIME NOT NULL,
-	is_active BIT NOT NULL	
+	is_active BIT NOT NULL,
+	is_deleted BIT NOT NULL
 );
+
+CREATE TABLE court_report_responses (
+	id VARCHAR(40) PRIMARY KEY,
+	content NVARCHAR(1000) NOT NULL
+)
 
 CREATE TABLE court_reports (
 	id VARCHAR(40) PRIMARY KEY,
 	ref_court VARCHAR(40) FOREIGN KEY REFERENCES courts(id) NOT NULL,
 	reporter_id VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
-	content NVARCHAR(500) NOT NULL
+	ref_response VARCHAR(40) FOREIGN KEY REFERENCES court_report_responses(id),
+	content NVARCHAR(1000) NOT NULL,
+	is_responded BIT NOT NULL
 );
+
+CREATE TABLE user_report_responses (
+	id VARCHAR(40) PRIMARY KEY,
+	content NVARCHAR(1000) NOT NULL
+)
 
 CREATE TABLE user_reports (
 	id VARCHAR(40) PRIMARY KEY,
 	ref_user VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	reporter_id VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
-	content NVARCHAR(500) NOT NULL
+	ref_response VARCHAR(40) FOREIGN KEY REFERENCES user_report_responses(id),
+	content NVARCHAR(1000) NOT NULL,
+	is_responsed BIT NOT NULL
 );
 
 CREATE TABLE court_types (
@@ -118,7 +134,8 @@ CREATE TABLE slots (
 	end_time TIME NOT NULL,
 	days_in_schedule VARCHAR(20) NOT NULL,
 	price DOUBLE PRECISION NOT NULL,
-	is_active BIT NOT NULL
+	is_active BIT NOT NULL,
+	is_deleted BIT NOT NULL
 );
 
 CREATE TABLE vouchers (
@@ -134,7 +151,8 @@ CREATE TABLE vouchers (
 	start_date DATETIME,
 	end_date DATETIME,
 	create_at DATETIME NOT NULL,
-	is_active BIT NOT NULL
+	is_active BIT NOT NULL,
+	is_deleted BIT NOT NULL
 );
 
 CREATE TABLE transaction_history (
@@ -189,4 +207,38 @@ CREATE TABLE user_balances (
 	id VARCHAR(40) PRIMARY KEY,
 	ref_user VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	balance DOUBLE PRECISION NOT NULL
+);
+
+CREATE TABLE notifications (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_account VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	content VARCHAR(500) NOT NULL,
+	create_at DATETIME NOT NULL,
+	is_read BIT NOT NULL
+);
+
+CREATE TABLE promotions (
+	id VARCHAR(40) PRIMARY KEY,
+	title NVARCHAR(200) NOT NULL,
+	ref_court VARCHAR(40) FOREIGN KEY REFERENCES courts(id),
+	ref_image VARCHAR(40) NOT NULL,
+	promotion_order INT NOT NULL,
+	start_time DATETIME NOT NULL,
+	end_time DATETIME NOT NULL,
+	link VARCHAR(2048) NOT NULL,
+	is_court_promotion BIT NOT NULL,
+	is_deleted BIT NOT NULL
+);
+
+CREATE TABLE bans (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_account VARCHAR(40) FOREIGN KEY REFERENCES accounts(id),
+	ref_court VARCHAR(40) FOREIGN KEY REFERENCES courts(id),
+	reason NVARCHAR(500) NOT NULL,
+	duration INT NOT NULL,	
+	ban_until DATETIME,
+	create_at DATETIME NOT NULL,
+	is_account_ban BIT NOT NULL,
+	is_court_ban BIT NOT NULL,
+	is_active BIT NOT NULL
 );

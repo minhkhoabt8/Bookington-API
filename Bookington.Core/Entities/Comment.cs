@@ -19,6 +19,8 @@ public partial class Comment
 
     public bool IsActive { get; set; } = false;
 
+    public bool IsDeleted { get; set; } = false;
+
     public virtual Account CommentWriter { get; set; } = null!;
 
     public virtual Court RefCourtNavigation { get; set; } = null!;

@@ -31,6 +31,8 @@ public partial class Voucher
 
     public bool IsActive { get; set; } = false;
 
+    public bool IsDeleted { get; set; } = false;
+
     public virtual Account CreateByNavigation { get; set; } = null!;
 
     public virtual ICollection<Order> Orders { get; } = new List<Order>();
