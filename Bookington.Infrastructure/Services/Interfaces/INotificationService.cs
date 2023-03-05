@@ -14,6 +14,5 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<NotificationReadDTO> CreateNotificationAsync(NotificationWriteDTO dto);
         Task<PaginatedResponse<NotificationReadDTO>> QueryNotificationOfUserAsync(NotificationQuerry querry);
         Task MarkAsReadAsync(List<NotificationReadDTO> notifications);
-
     }
 }

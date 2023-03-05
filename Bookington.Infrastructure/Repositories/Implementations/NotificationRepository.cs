@@ -25,5 +25,13 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             return notifications;
 
         }
+
+        public async Task<IEnumerable<Notification>> GetAllOverDateNotification()
+        {
+            return _context.Notifications.Where(n => n.DeleteAfter <= DateTime.Now.AddDays(-7));
+
+           
+        }
+
     }
 }

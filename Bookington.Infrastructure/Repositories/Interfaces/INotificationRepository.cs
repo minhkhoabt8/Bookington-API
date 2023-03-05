@@ -14,6 +14,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<Notification>,
         IQueryAsync<Notification, NotificationQuerry>
     {
-        
+        Task<IEnumerable<Notification>> GetAllOverDateNotification();
     }
 }

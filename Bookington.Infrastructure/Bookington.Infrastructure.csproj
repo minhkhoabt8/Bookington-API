@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Folder Include="Mapper\" />
-    <Folder Include="BackgroundServices\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +37,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Quartz" Version="3.6.2" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -27,6 +27,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureSignalROptions();
 builder.Services.AddDateOnlyTimeOnlyStringConverters();
 
+builder.Services.AddCronJob();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

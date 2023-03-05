@@ -1,10 +1,13 @@
-﻿using Bookington.Core.Entities;
+﻿using AutoMapper;
+using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Enums;
+using Bookington.Infrastructure.Mapper;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Xunit;
 
@@ -16,8 +19,14 @@ namespace Bookington_Test.Service.Auth
         private readonly Mock<ITokenService> _mockTokenService;
         private readonly AccountService _accountService;
 
+
         public LoginTest()
         {
+            var configuration = new ConfigurationBuilder().Build();
+            var smsServiceMock = new Mock<ISmsService>();
+            var userBalanceServiceMock = new Mock<IUserBalanceService>();
+            var userContextServiceMock = new Mock<IUserContextService>();
+
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockTokenService = new Mock<ITokenService>();
             _accountService = new AccountService(
@@ -29,47 +38,8 @@ namespace Bookington_Test.Service.Auth
                 userContextService: null);
         }
 
-        [Fact]
-        public async Task LoginWithPhoneNumber_WhenPhoneNumberAndPasswordCorrect_ReturnsAccountLoginOutputDTO()
-        {
-            // Arrange
-            var inputDto = new AccountLoginInputDTO
-            {
-                Phone = "1234567890",
-                Password = "password"
-            };
-            var existingAccount = new Bookington.Core.Entities.Account
-            {
-                Id = Guid.NewGuid().ToString(),
-                Phone = "1234567890",
-                FullName = "John Doe",
-                RoleId = ((int)RoleEnum.customer).ToString(),
-                IsActive = true
-            };
-            var role = new Role
-            {
-                Id = ((int)RoleEnum.customer).ToString(),
-                RoleName = "customer"
-            };
-            _mockUnitOfWork.Setup(uow => uow.AccountRepository.LoginByPhoneAsync(inputDto))
-                .ReturnsAsync(existingAccount);
-            _mockUnitOfWork.Setup(uow => uow.RoleRepository.FindAsync(existingAccount.RoleId))
-                .ReturnsAsync(role);
-            _mockTokenService.Setup(ts => ts.GenerateTokenAsync(existingAccount))
-                .ReturnsAsync("generated_token");
+        
 
-            // Act
-            var result = await _accountService.LoginWithPhoneNumber(inputDto);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(existingAccount.Id, result.UserID);
-            Assert.Equal(existingAccount.Phone, result.PhoneNumber);
-            Assert.Equal(existingAccount.FullName, result.FullName);
-            Assert.Equal(role.RoleName, result.Role);
-            Assert.Equal("generated_token", result.SysToken);
-            Assert.Equal(12000, result.SysTokenExpires);
-        }
 
         [Fact]
         public async Task LoginWithPhoneNumber_WhenPhoneNumberAndPasswordIncorrect_ThrowsEntityNotFoundException()

@@ -1,4 +1,5 @@
 ﻿using Bookington.Core.Data;
+using Bookington.Infrastructure.BackgroundServices;
 using Bookington.Infrastructure.Hubs;
 using Bookington.Infrastructure.Mapper;
 using Bookington.Infrastructure.Repositories.Implementations;
@@ -10,10 +11,10 @@ using Bookington_Api.Filters;
 using Bookington_Api.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Quartz;
 using System.Reflection;
 using System.Text;
 
@@ -207,12 +208,34 @@ namespace Bookington_Api.Extensions
             });
             
         }
+
         ///<Summary>
         ///Register SignalR Service
         ///</Summary>
         public static void AddSignalRService(this IServiceCollection services)
         {
             services.AddScoped<INotificationUserHub, NotificationUserHub>();
+        }
+
+        ///<Summary>
+        ///Register Cron Job
+        ///</Summary>
+        public static void AddCronJob(this IServiceCollection services)
+        {
+            services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionScopedJobFactory();
+                var jobKey = new JobKey("NotificationCleanupJob");
+                q.AddJob<NotificationCleanupJob>(opts => opts.WithIdentity(jobKey));
+
+                q.AddTrigger(opts => opts
+                .ForJob(jobKey)
+                .WithIdentity("NotificationCleanupJob-trigger")
+                .WithCronSchedule("0 0 0 */7 * ? *"));
+
+            });
+
+           services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
     }
 }
