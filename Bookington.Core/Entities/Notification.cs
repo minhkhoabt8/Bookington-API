@@ -15,7 +15,5 @@ public partial class Notification
 
     public bool IsRead { get; set; } = false;
 
-    public DateTime DeleteAfter { get; set; } = DateTime.Now.AddDays(7); // Set the delete time to 7 days from now
-
     public virtual Account RefAccountNavigation { get; set; } = null!;
 }

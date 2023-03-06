@@ -185,7 +185,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
-            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
+            if (existAccount == null || existAccount.IsDeleted == true) throw new EntityWithIDNotFoundException<Account>(id);
 
             else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
@@ -202,9 +202,9 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
             
-            else if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
+            else if (existAccount == null || existAccount.IsDeleted == true ) throw new EntityWithIDNotFoundException<Account>(id);
 
-            existAccount.IsActive = false;
+            existAccount.IsDeleted = true;
 
             _unitOfWork.AccountRepository.Update(existAccount);
 

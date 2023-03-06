@@ -18,19 +18,20 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Notification>> QueryAsync(NotificationQuerry query, bool trackChanges = false)
         {
+
             //get list notifications order by date create and not yet read of a user
             IQueryable<Notification> notifications = _context.Notifications
                 .Where(n => n.RefAccount == query.UserId)
                 .OrderByDescending(n => n.IsRead == false).ThenBy(n => n.CreateAt);
+
             return notifications;
 
         }
 
         public async Task<IEnumerable<Notification>> GetAllOverDateNotification()
         {
-            return _context.Notifications.Where(n => n.DeleteAfter <= DateTime.Now.AddDays(-7));
+            return _context.Notifications.Where(n => n.CreateAt <= DateTime.Now.AddDays(7));
 
-           
         }
 
     }

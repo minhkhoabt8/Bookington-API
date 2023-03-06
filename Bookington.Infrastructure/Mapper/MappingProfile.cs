@@ -93,11 +93,12 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<TransactionHistoryWriteDTO, TransactionHistory>();
             //Order
             CreateMap<Order, OrderReadDTO>();
-            CreateMap<OrderWriteDTO, Order>();    
+            CreateMap<OrderWriteDTO, Order>();
             //Notification
             CreateMap<Notification, NotificationReadDTO>();
+                
             CreateMap<NotificationWriteDTO, Notification>();
-
+                
         }
     }
 }

@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddServices();
 builder.Services.AddRepositories();
 builder.Services.AddUOW();
+builder.Services.AddSignalR();
 builder.Services.AddAutoMapper();
 builder.Services.AddSignalRService();
 builder.Services.AddEvents();

@@ -29,7 +29,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<NotificationReadDTO>))]
-        public async Task<IActionResult> QueryAccounts([FromQuery] NotificationQuerry query)
+        public async Task<IActionResult> QueryNotifications([FromQuery] NotificationQuerry query)
         {
             var notifications = await _notificationService.QueryNotificationOfUserAsync(query);
 
@@ -48,6 +48,20 @@ namespace Bookington_Api.Controllers
         {
             var created = await _notificationService.CreateNotificationAsync(dto);
             return ResponseFactory.Created(created);
+        }
+
+        /// <summary>
+        /// Mark notifications as read
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(List<NotificationReadDTO>))]
+        public async Task<IActionResult> MarkAsReadAsync(List<NotificationReadDTO> notifications)
+        {
+            await _notificationService.MarkAsReadAsync(notifications);
+
+            return ResponseFactory.NoContent();
         }
 
     }

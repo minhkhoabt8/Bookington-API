@@ -15,7 +15,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<Account?> FindAccountByPhoneNumberAsync(string phoneNumber)
         {
-            return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == phoneNumber);
+            return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == phoneNumber && a.IsDeleted == false);
         }
         public async Task<Account?> LoginByPhoneAsync(AccountLoginInputDTO login)
         {
@@ -28,7 +28,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)
         {
-            IQueryable<Account> accounts = _context.Accounts;
+            IQueryable<Account> accounts = _context.Accounts.Where(a => a.IsDeleted == false);
             if (!trackChanges)
             {
                 accounts = accounts.AsNoTracking();
