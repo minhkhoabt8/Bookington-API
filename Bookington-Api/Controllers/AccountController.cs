@@ -131,7 +131,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("profile")]
-        [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.user)]
+        [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> GetProfileAsync()

@@ -1,16 +1,11 @@
 ﻿using AutoMapper;
-using Azure;
 using Bookington.Core.Entities;
+using Bookington.Core.Enums;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -119,6 +114,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return newTrans.Id;
         }
 
+        // TODO: Fix database first to proceed
         public async Task<IEnumerable<TransactionHistoryReadDTO>> GetSelfTransactionHistory(int page)
         {
             // Check if account is valid
@@ -134,7 +130,45 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var trans = await _unitOfWork.TransactionHistoryRepository.GetTransactionHistoryOfCustomer(accountId!, page);
 
-            return _mapper.Map<IEnumerable<TransactionHistoryReadDTO>>(trans);
+            var result = _mapper.Map<IEnumerable<TransactionHistoryReadDTO>>(trans);
+
+            foreach (var record in result)
+            {
+                var otherParty = new Account();
+
+                if (accountId == record.RefFrom) record.FromUsername = "You";
+                else
+                {
+                    otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefFrom);
+                    if (otherParty == null) throw new EntityWithIDNotFoundException<Account>(record.RefFrom);
+
+                    // If the other party is an admin the transaction from in transaction will be "System"
+                    // Else if they are an owner get their name and the court they own
+                    if (otherParty.RoleId == AccountRole.admin.ToString()) record.FromUsername = "System";
+                    else if (otherParty.RoleId == AccountRole.owner.ToString())
+                    {
+                        record.FromUsername += " (Court Owner)";
+                        // TODO: there's a missing FK 'transaction_id' in table 'orders'
+                    }
+                }
+                if (accountId == record.RefTo) record.ToUsername = "You";
+                else
+                {
+                    otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefTo);
+                    if (otherParty == null) throw new EntityWithIDNotFoundException<Account>(record.RefFrom);
+
+                    // If the other party is an admin the transaction to in transaction will be "System"
+                    // Else if they are an owner get their name and the court they own
+                    if (otherParty.RoleId == AccountRole.admin.ToString()) record.FromUsername = "System";
+                    else if (otherParty.RoleId == AccountRole.owner.ToString())
+                    {
+                        record.FromUsername += " (Court Owner)";
+                        // TODO: there's a missing FK 'transaction_id' in table 'orders'
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

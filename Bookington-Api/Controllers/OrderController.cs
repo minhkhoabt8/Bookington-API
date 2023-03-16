@@ -63,7 +63,7 @@ namespace Bookington_Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>                
         [HttpPost("checkout")]
-        [RoleAuthorize(AccountRole.user)]
+        [RoleAuthorize(AccountRole.customer)]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]

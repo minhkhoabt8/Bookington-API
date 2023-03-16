@@ -16,7 +16,7 @@ namespace Bookington_Api.Controllers
     /// Report Controller
     /// </summary>
     [Route("bookington/reports")]
-    [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.user)]
+    [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.customer)]
     [ApiController]
     public class ReportController : ControllerBase
     {

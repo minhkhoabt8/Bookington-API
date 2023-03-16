@@ -14,13 +14,9 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
 
-        public Task<IEnumerable<TransactionHistory>> GetTransactionHistoryOfCustomer(string userId, int page, bool trackChanges = false)
+        public Task<IEnumerable<TransactionHistory>> GetTransactionHistoryOfCustomer(string userId, int page)
         {
-            IQueryable<TransactionHistory> dbSet = _context.Set<TransactionHistory>();
-            if (trackChanges == false)
-            {
-                dbSet = dbSet.AsNoTracking();
-            }
+            var dbSet = _context.TransactionHistories.Include(th => th.RefFromNavigation).Include(th => th.RefToNavigation).ToList();
 
             var trans = dbSet.Where(sc => sc.RefFrom == userId).OrderByDescending(sc => sc.CreateAt).AsEnumerable();
 

@@ -18,6 +18,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         Task<Account> GetCourtOwnerBySlotId(string slotId, bool trackChanges = false);
         Task<string> GetCourtNameBySlotId(string slotId, bool trackChanges = false);
         Task<IEnumerable<Slot>> GetAvailableSlotsForBooking(SlotQueryForBooking dto, bool trackChanges = false);
-        Task<bool> IsSlotBooked(string slotId, DateTime playDate, bool trackChanges = false)
+        Task<bool> IsSlotBooked(string slotId, DateTime playDate, bool trackChanges = false);
     }
 }

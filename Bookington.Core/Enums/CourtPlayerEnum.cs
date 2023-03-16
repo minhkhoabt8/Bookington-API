@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookington.Infrastructure.Enums
+namespace Bookington.Core.Enums
 {
-    public enum FileType
+    public enum CourtPlayerEnum
     {
-        JPEG,
-        PNG,
+        _1vs1 = 1,
+        _2vs2 = 2,
     }
 }

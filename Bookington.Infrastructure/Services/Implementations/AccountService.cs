@@ -4,7 +4,7 @@ using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.UserBalance;
-using Bookington.Infrastructure.Enums;
+using Bookington.Core.Enums;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
@@ -59,7 +59,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             await _unitOfWork.AccountRepository.AddAsync(account);
             
-            account.RoleId = ((int) RoleEnum.customer).ToString();
+            account.RoleId = ((int) AccountRole.customer).ToString();
 
             //Call Send SMS
             await _smsService.sendSmsAsync(dto.Phone, accountOtp.OtpCode);
@@ -84,6 +84,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             
             if (existAccount.IsActive == false) throw new InvalidActionException("Account Not Yet Verify");
 
+            if (existAccount.IsDeleted == true) throw new InvalidActionException("Account Is Deleted!");
+
             var role = await _unitOfWork.RoleRepository.FindAsync(existAccount.RoleId);
 
             // Generate new refresh token
@@ -94,8 +96,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             {
                 UserID = existAccount.Id,
                 PhoneNumber = existAccount.Phone,
-                FullName = existAccount.FullName,
-                Role = role.RoleName,
+                FullName = existAccount.FullName!,
+                Role = role!.RoleName,
                 SysToken = await _tokenService.GenerateTokenAsync(existAccount),
                 //SysTokenExpires = 60 * 60 * 4, // 4 hours
                 SysTokenExpires = 12000,
@@ -186,8 +188,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
             if (existAccount == null || existAccount.IsDeleted == true) throw new EntityWithIDNotFoundException<Account>(id);
-
-            else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
+            // Admin can't update themselves via this method
+            else if (existAccount?.Id == _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
             _mapper.Map(dto, existAccount);
 
@@ -198,13 +200,13 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task DeleteAsync(string id)
         {
-            var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
-
-            if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
+            var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);            
             
-            else if (existAccount == null || existAccount.IsDeleted == true ) throw new EntityWithIDNotFoundException<Account>(id);
+            if (existAccount == null || existAccount.IsDeleted == true ) throw new EntityWithIDNotFoundException<Account>(id);
+            // Admin can't delete themselves
+            else if (existAccount?.Id == _userContextService.AccountID.ToString()) throw new InvalidActionException("Can't delete self!");
 
-            existAccount.IsDeleted = true;
+            existAccount!.IsDeleted = true;
 
             _unitOfWork.AccountRepository.Update(existAccount);
 

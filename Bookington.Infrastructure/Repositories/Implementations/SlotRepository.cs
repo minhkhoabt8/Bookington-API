@@ -58,10 +58,11 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                 slots = slots.AsNoTracking();                
             }
 
-            var activeSlots = slots.Where(s => s.IsActive && s.RefSubCourt == dto.SubCourtId).ToList();
-            var atvSlots = activeSlots.Select(s => s.Id).ToList();
-
             var dotw = dto.PlayDate.DayOfWeek;
+
+            // Get only active slots in playDate
+            var activeSlots = slots.Where(s => s.IsActive && s.RefSubCourt == dto.SubCourtId && s.DaysInSchedule == dotw.ToString()).ToList();
+            var atvSlots = activeSlots.Select(s => s.Id).ToList();            
 
             var bookings = _context.Bookings.Include(b => b.RefOrderNavigation).ToList();
 

@@ -25,7 +25,8 @@ namespace Bookington.Infrastructure.Mapper
         public MappingProfile()
         {
             // Account
-            CreateMap<Account, AccountReadDTO>();
+            CreateMap<Account, AccountReadDTO>()
+                .ForMember(dest => dest.RoleName, options => options.MapFrom(src => src.Role.RoleName));
             CreateMap<Account, AccountProfileReadDTO>();
             CreateMap<AccountWriteDTO, Account>();
             CreateMap<AccountUpdateDTO,Account>()
@@ -96,7 +97,9 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<UserBalance, UserBalanceReadDTO>();
             CreateMap<UserBalanceWriteDTO, UserBalance>();
             //Transaction History
-            CreateMap<TransactionHistory, TransactionHistoryReadDTO>();
+            CreateMap<TransactionHistory, TransactionHistoryReadDTO>()
+                .ForMember(des => des.FromUsername, act => act.MapFrom(src => src.RefFromNavigation.FullName))
+                .ForMember(des => des.ToUsername, act => act.MapFrom(src => src.RefToNavigation.FullName));
             CreateMap<TransactionHistoryWriteDTO, TransactionHistory>();
             //Order
             CreateMap<Order, OrderReadDTO>();

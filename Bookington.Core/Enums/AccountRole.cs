@@ -8,8 +8,8 @@ namespace Bookington.Core.Enums
 {
     public enum AccountRole 
     {
-        admin,
-        owner,
-        user
+        admin = 1,
+        owner = 2,
+        customer = 3
     }
 }
