@@ -1,6 +1,7 @@
 ﻿using Bookington.Core.Enums;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Report;
+using Bookington.Infrastructure.DTOs.ReportResponse;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
@@ -98,6 +99,20 @@ namespace Bookington_Api.Controllers
             return ResponseFactory.NoContent();
         }
 
+        /// <summary>
+        /// Handle Court Reports
+        /// </summary>
+        /// /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("courtreports/handle")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        public async Task<IActionResult> HandleCourtReportAsync(CourtReportResponseWriteDTO dto)
+        {
+            var result = await _reportService.HandleCourtReportAsync(dto);
+            return ResponseFactory.Ok(result);
+        }
+
         //-------------------------------------------------------------------------------------------------
 
         // USER REPORTS RELATED API CALLS
@@ -168,6 +183,20 @@ namespace Bookington_Api.Controllers
         {
             await _reportService.DeleteUserReportAsync(id);
             return ResponseFactory.NoContent();
+        }
+
+        /// <summary>
+        /// Handle User Reports
+        /// </summary>
+        /// /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("userreports/handle")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        public async Task<IActionResult> HandleUserReportAsync(UserReportResponseWriteDTO dto)
+        {
+            var result = await _reportService.HandleUserReportAsync(dto);
+            return ResponseFactory.Ok(result);
         }
     }
 }

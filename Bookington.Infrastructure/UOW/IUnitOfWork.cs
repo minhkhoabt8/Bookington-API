@@ -1,4 +1,5 @@
 ﻿using Bookington.Infrastructure.Repositories.Interfaces;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,11 @@ namespace Bookington.Infrastructure.UOW
 
         public ILoginTokenRepository LoginTokenRepository { get; }
 
+        public ICourtReportResponseRepository CourtReportResponseRepository { get; }
+
+        public IBanRepository BanRepository { get; }
+
+        public IUserReportResponseRepository UserReportResponseRepository { get; }
         Task<int> CommitAsync();
     }
 }

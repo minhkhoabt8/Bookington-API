@@ -16,6 +16,7 @@ using Bookington.Infrastructure.DTOs.Order;
 using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.IncomingMatch;
 using Bookington.Infrastructure.DTOs.Notification;
+using Bookington.Infrastructure.DTOs.ReportResponse;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -81,10 +82,16 @@ namespace Bookington.Infrastructure.Mapper
             //Court Report
             CreateMap<CourtReport, CourtReportReadDTO>();
             CreateMap<CourtReportWriteDTO, CourtReport>();
+            //Court Report Response
+            CreateMap<CourtReportResponse, CourtReportResponseReadDTO>();
+            CreateMap<CourtReportResponseWriteDTO, CourtReportResponse>();           
             //User Report
             CreateMap<UserReport, UserReportReadDTO>();
             CreateMap<UserReportCreateDTO, UserReport>();
             CreateMap<UserReportUpdateDTO, UserReport>();
+            //User Report Response
+            CreateMap<UserReportResponse, UserReportResponseReadDTO>();
+            CreateMap<UserReportResponseWriteDTO, UserReportResponse>();
             //User Balance
             CreateMap<UserBalance, UserBalanceReadDTO>();
             CreateMap<UserBalanceWriteDTO, UserBalance>();
@@ -95,10 +102,8 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Order, OrderReadDTO>();
             CreateMap<OrderWriteDTO, Order>();
             //Notification
-            CreateMap<Notification, NotificationReadDTO>();
-                
-            CreateMap<NotificationWriteDTO, Notification>();
-                
+            CreateMap<Notification, NotificationReadDTO>();                
+            CreateMap<NotificationWriteDTO, Notification>();          
         }
     }
 }

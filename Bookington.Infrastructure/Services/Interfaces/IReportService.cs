@@ -1,4 +1,5 @@
 ﻿using Bookington.Infrastructure.DTOs.Report;
+using Bookington.Infrastructure.DTOs.ReportResponse;
 using Bookington.Infrastructure.DTOs.SubCourt;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<CourtReportReadDTO> UpdateCourtReportAsync(string id, CourtReportWriteDTO dto);
         Task DeleteCourtReportAsync(string id);
         Task<CourtReportReadDTO> GetCourtReportByIdAsync(string id);
+        Task<string> HandleCourtReportAsync(CourtReportResponseWriteDTO dto);
 
         // USER REPORTS RELATED FUNCTIONS
         Task<IEnumerable<UserReportReadDTO>> GetAllUserReportsAsync();
@@ -23,5 +25,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<UserReportReadDTO> UpdateUserReportAsync(string id, UserReportUpdateDTO dto);
         Task DeleteUserReportAsync(string id);
         Task<UserReportReadDTO> GetUserReportByIdAsync(string id);
+        Task<string> HandleUserReportAsync(UserReportResponseWriteDTO dto);
     }
 }

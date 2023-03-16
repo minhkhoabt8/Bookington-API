@@ -81,5 +81,17 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return Task.FromResult(activeSlots.OrderBy(s => s.StartTime).AsEnumerable());
         }
+
+        public Task<bool> IsSlotBooked(string slotId, DateTime playDate, bool trackChanges = false)
+        {
+            var bookings = _context.Bookings.Include(b => b.RefOrderNavigation).ToList();
+
+            var foundSlot = bookings.FirstOrDefault(b => b.RefSlot == slotId
+                                                      && b.RefOrderNavigation.IsPaid && !b.RefOrderNavigation.IsRefunded & !b.RefOrderNavigation.IsCanceled
+                                                      && playDate.CompareTo(playDate) == 0);
+            if (foundSlot == null) return Task.FromResult(false);
+
+            return Task.FromResult(true);
+        }
     }
 }

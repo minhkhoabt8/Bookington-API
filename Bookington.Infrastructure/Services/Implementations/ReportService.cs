@@ -2,6 +2,7 @@
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Report;
+using Bookington.Infrastructure.DTOs.ReportResponse;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
@@ -83,6 +84,55 @@ namespace Bookington.Infrastructure.Services.Implementations
             _unitOfWork.CourtReportRepository.Delete(existCourtReport);
 
             await _unitOfWork.CommitAsync();
+        }
+
+        public async Task<string> HandleCourtReportAsync(CourtReportResponseWriteDTO dto)
+        {
+            var existCourtReport = await _unitOfWork.CourtReportRepository.FindAsync(dto.CourtReportId);
+
+            if (existCourtReport == null) throw new EntityWithIDNotFoundException<CourtReport>(dto.CourtReportId);
+            
+            if (existCourtReport.IsResponded) throw new InvalidActionException("This report has already been responded!");
+
+            var courtBan = new Ban()
+            {
+                IsCourtBan = true,
+                IsActive = true
+            };
+
+            var reportResponse = _mapper.Map<CourtReportResponse>(dto);
+
+            // If the reported court is banned create a Ban record
+            if (dto.IsBanned)
+            {
+                if (dto.Duration < 0) throw new InvalidActionException("Ban duration can not be lower than 0!");
+
+                // Ban duration is in hours
+                courtBan.Duration = dto.Duration;
+                courtBan.Reason = dto.Content;
+                courtBan.BanUntil = courtBan.CreateAt.AddHours(dto.Duration);
+                courtBan.RefCourt = existCourtReport.RefCourt;
+
+                await _unitOfWork.BanRepository.AddAsync(courtBan);
+
+                // Deactivate court as well
+                var existCourt = await _unitOfWork.CourtRepository.FindAsync(existCourtReport.RefCourt);
+
+                if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(existCourtReport.RefCourt);
+
+                existCourt.IsActive = false;
+
+                _unitOfWork.CourtRepository.Update(existCourt);
+            }
+
+            // And record the response down as well
+            await _unitOfWork.CourtReportResponseRepository.AddAsync(reportResponse);
+
+            await _unitOfWork.CommitAsync();
+
+            var result = "Response to Court Report ID (" + dto.CourtReportId + ") has been created successfully!";
+
+            return result;
         }
 
         // USER REPORTS RELATED FUNCTIONS
@@ -184,6 +234,55 @@ namespace Bookington.Infrastructure.Services.Implementations
             _unitOfWork.UserReportRepository.Delete(existUserReport);
 
             await _unitOfWork.CommitAsync();
+        }
+
+        public async Task<string> HandleUserReportAsync(UserReportResponseWriteDTO dto)
+        {
+            var existAccountReport = await _unitOfWork.UserReportRepository.FindAsync(dto.UserReportId);
+
+            if (existAccountReport == null) throw new EntityWithIDNotFoundException<UserReport>(dto.UserReportId);
+
+            if (existAccountReport.IsResponsed) throw new InvalidActionException("This Account Report ID (" + dto.UserReportId + ") has already been responded!");
+
+            var userBan = new Ban()
+            {
+                IsAccountBan = true,
+                IsActive = true
+            };
+
+            var reportResponse = _mapper.Map<UserReportResponse>(dto);
+
+            // If the reported user is banned create a Ban record
+            if (dto.IsBanned)
+            {
+                if (dto.Duration < 0) throw new InvalidActionException("Ban duration can not be lower than 0!");
+
+                // Ban duration is in hours
+                userBan.Duration = dto.Duration;
+                userBan.Reason = dto.Content;
+                userBan.BanUntil = userBan.CreateAt.AddHours(dto.Duration);
+                userBan.RefCourt = existAccountReport.RefUser;
+
+                await _unitOfWork.BanRepository.AddAsync(userBan);
+
+                // Deactivate account as well
+                var existAccount = await _unitOfWork.AccountRepository.FindAsync(existAccountReport.RefUser);
+
+                if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(existAccountReport.RefUser);
+
+                existAccount.IsActive = false;
+
+                _unitOfWork.AccountRepository.Update(existAccount);
+            }
+
+            // And record the response down as well
+            await _unitOfWork.UserReportResponseRepository.AddAsync(reportResponse);
+
+            await _unitOfWork.CommitAsync();
+
+            var result = "Response to Account Report ID (" + dto.UserReportId + ") has been created successfully!";
+
+            return result;
         }
     }
 }
