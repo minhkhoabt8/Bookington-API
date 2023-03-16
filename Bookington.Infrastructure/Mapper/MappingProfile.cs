@@ -16,6 +16,7 @@ using Bookington.Infrastructure.DTOs.Order;
 using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.IncomingMatch;
 using Bookington.Infrastructure.DTOs.Notification;
+using Bookington.Infrastructure.DTOs.ReportResponse;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -24,7 +25,8 @@ namespace Bookington.Infrastructure.Mapper
         public MappingProfile()
         {
             // Account
-            CreateMap<Account, AccountReadDTO>();
+            CreateMap<Account, AccountReadDTO>()
+                .ForMember(dest => dest.RoleName, options => options.MapFrom(src => src.Role.RoleName));
             CreateMap<Account, AccountProfileReadDTO>();
             CreateMap<AccountWriteDTO, Account>();
             CreateMap<AccountUpdateDTO,Account>()
@@ -81,24 +83,30 @@ namespace Bookington.Infrastructure.Mapper
             //Court Report
             CreateMap<CourtReport, CourtReportReadDTO>();
             CreateMap<CourtReportWriteDTO, CourtReport>();
+            //Court Report Response
+            CreateMap<CourtReportResponse, CourtReportResponseReadDTO>();
+            CreateMap<CourtReportResponseWriteDTO, CourtReportResponse>();           
             //User Report
             CreateMap<UserReport, UserReportReadDTO>();
             CreateMap<UserReportCreateDTO, UserReport>();
             CreateMap<UserReportUpdateDTO, UserReport>();
+            //User Report Response
+            CreateMap<UserReportResponse, UserReportResponseReadDTO>();
+            CreateMap<UserReportResponseWriteDTO, UserReportResponse>();
             //User Balance
             CreateMap<UserBalance, UserBalanceReadDTO>();
             CreateMap<UserBalanceWriteDTO, UserBalance>();
             //Transaction History
-            CreateMap<TransactionHistory, TransactionHistoryReadDTO>();
+            CreateMap<TransactionHistory, TransactionHistoryReadDTO>()
+                .ForMember(des => des.FromUsername, act => act.MapFrom(src => src.RefFromNavigation.FullName))
+                .ForMember(des => des.ToUsername, act => act.MapFrom(src => src.RefToNavigation.FullName));
             CreateMap<TransactionHistoryWriteDTO, TransactionHistory>();
             //Order
             CreateMap<Order, OrderReadDTO>();
             CreateMap<OrderWriteDTO, Order>();
             //Notification
-            CreateMap<Notification, NotificationReadDTO>();
-                
-            CreateMap<NotificationWriteDTO, Notification>();
-                
+            CreateMap<Notification, NotificationReadDTO>();                
+            CreateMap<NotificationWriteDTO, Notification>();          
         }
     }
 }

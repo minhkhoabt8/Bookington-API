@@ -1,5 +1,5 @@
 ﻿using Bookington.Core.Exceptions;
-using Bookington.Infrastructure.Enums;
+using Bookington.Core.Enums;
 
 namespace Bookington.Infrastructure.Extensions
 {

@@ -119,7 +119,7 @@ namespace Bookington_Api.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("incomingMatch")]
-        [RoleAuthorize(AccountRole.user)]
+        [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookingReadDTO>))]
         public async Task<IActionResult> GetIncomingMatchesFromBookingOfUser([Required] string userId)
         {
@@ -133,7 +133,7 @@ namespace Bookington_Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("subcourts/available")]
-        [RoleAuthorize(AccountRole.user)]
+        [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SubCourtForBookingReadDTO>>))]
         public async Task<IActionResult> GetAvailableSubCourtsForBooking([FromBody] SubCourtQueryForBooking dto)
         {
@@ -147,7 +147,7 @@ namespace Bookington_Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("slots/available")]
-        [RoleAuthorize(AccountRole.user)]
+        [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SlotsForBookingReadDTO>))]
         public async Task<IActionResult> GetAvailableSlotsForBooking([FromBody] SlotQueryForBooking dto)
         {

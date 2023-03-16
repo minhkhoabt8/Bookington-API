@@ -53,7 +53,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         /// <param name="id"></param>
         [HttpGet("{id}")]
-        [RoleAuthorize(AccountRole.owner, AccountRole.user)]
+        [RoleAuthorize(AccountRole.owner, AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CourtReadDTO))]
         public async Task<IActionResult> GetDetailsAsync(string id)
@@ -113,7 +113,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("query")]
-        [RoleAuthorize(AccountRole.owner, AccountRole.user)]
+        [RoleAuthorize(AccountRole.owner, AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtQueryResponse>))]
         public async Task<IActionResult> QueryCourts([FromQuery] CourtItemQuery query)
         {

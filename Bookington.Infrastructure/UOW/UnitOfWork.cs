@@ -40,8 +40,10 @@ namespace Bookington.Infrastructure.UOW
         public ITransactionHistoryRepository TransactionHistoryRepository => GetSingletonRepository<ITransactionHistoryRepository>();
         public IOrderRepository OrderRepository => GetSingletonRepository<IOrderRepository>();
         public INotificationRepository NotificationRepository => GetSingletonRepository<INotificationRepository>();
-
         public ILoginTokenRepository LoginTokenRepository => GetSingletonRepository<ILoginTokenRepository>();
+        public ICourtReportResponseRepository CourtReportResponseRepository => GetSingletonRepository<ICourtReportResponseRepository>();
+        public IBanRepository BanRepository => GetSingletonRepository<IBanRepository>();
+        public IUserReportResponseRepository UserReportResponseRepository => GetSingletonRepository<IUserReportResponseRepository>();
 
         private T GetSingletonRepository<T>()
         {

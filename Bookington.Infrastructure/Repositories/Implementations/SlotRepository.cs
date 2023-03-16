@@ -58,10 +58,11 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                 slots = slots.AsNoTracking();                
             }
 
-            var activeSlots = slots.Where(s => s.IsActive && s.RefSubCourt == dto.SubCourtId).ToList();
-            var atvSlots = activeSlots.Select(s => s.Id).ToList();
-
             var dotw = dto.PlayDate.DayOfWeek;
+
+            // Get only active slots in playDate
+            var activeSlots = slots.Where(s => s.IsActive && s.RefSubCourt == dto.SubCourtId && s.DaysInSchedule == dotw.ToString()).ToList();
+            var atvSlots = activeSlots.Select(s => s.Id).ToList();            
 
             var bookings = _context.Bookings.Include(b => b.RefOrderNavigation).ToList();
 
@@ -80,6 +81,18 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             }
 
             return Task.FromResult(activeSlots.OrderBy(s => s.StartTime).AsEnumerable());
+        }
+
+        public Task<bool> IsSlotBooked(string slotId, DateTime playDate, bool trackChanges = false)
+        {
+            var bookings = _context.Bookings.Include(b => b.RefOrderNavigation).ToList();
+
+            var foundSlot = bookings.FirstOrDefault(b => b.RefSlot == slotId
+                                                      && b.RefOrderNavigation.IsPaid && !b.RefOrderNavigation.IsRefunded & !b.RefOrderNavigation.IsCanceled
+                                                      && playDate.CompareTo(playDate) == 0);
+            if (foundSlot == null) return Task.FromResult(false);
+
+            return Task.FromResult(true);
         }
     }
 }

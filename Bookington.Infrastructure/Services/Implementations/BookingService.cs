@@ -65,7 +65,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<BookingReadDTO>(newBooking);
         }*/
 
-        // PHO FIX THIS PLZ
+        // TODO: PHO FIX THIS PLZ
         // NEEDS CHECK FOR BOOKED SLOTS        
         public async Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> dtos)
         {
@@ -74,19 +74,23 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-            if (dtos.Count() == 0) throw new Exception("Empty Slots List!");
+            if (dtos.Count() == 0) throw new InvalidActionException("You didn't choose a slot to proceed booking!");
 
             var playDate = DateOnly.FromDateTime(dtos.ElementAt(0).PlayDate);            
 
             bool isSameDayBooking = false;
 
             // Check if play date is valid
-            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new Exception("Your play date is bullshit!");
+            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your play date is bullshit!");
             else if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == 0) isSameDayBooking = true;
 
             var newBookings = _mapper.Map<IEnumerable<Booking>>(dtos);
             
             var existSlots = new List<Slot>();
+
+            var IsThereAnySlotBooked = false;
+
+            var slotBookedErr = "Some slots you chose have already been booked: ";
 
             foreach (var dto in dtos)
             {
@@ -96,16 +100,23 @@ namespace Bookington.Infrastructure.Services.Implementations
                 if (existSlot == null) throw new EntityWithIDNotFoundException<Slot>(dto.RefSlot);
 
                 // Check if slot is still active
-                if (!existSlot.IsActive) throw new Exception("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " is not active right now!");
+                if (!existSlot.IsActive) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " is not active right now!");
 
-                // Needs a check for booked slot
-
-                // Needs a check for same day booking
+                // Check for same day booking
                 if (isSameDayBooking)
                 {
                     var dateSlot = DateTime.Now.Date.AddMinutes(existSlot.StartTime.TotalMinutes);
 
-                    if (DateTime.Now.CompareTo(dateSlot) > 0) throw new Exception("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " has passed the booking window!");
+                    if (DateTime.Now.CompareTo(dateSlot) > 0) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " has passed the booking window!");
+                }
+
+                // Check if this slot is a booked slot                
+                var isThisSlotBooked = await _unitOfWork.SlotRepository.IsSlotBooked(existSlot.Id, playDate.ToDateTime(TimeOnly.MinValue));
+
+                if (isThisSlotBooked)
+                {
+                    IsThereAnySlotBooked = true;
+
                 }
 
                 existSlots.Add(existSlot);

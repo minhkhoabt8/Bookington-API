@@ -1,5 +1,5 @@
 ﻿using Bookington.Infrastructure.DTOs.ApiResponse;
-using Bookington.Infrastructure.Enums;
+using Bookington.Core.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bookington.Core.Enums
 {
-    public enum VourcherTypeEnum
+    public enum VoucherTypeEnum
     {
     }
 }
