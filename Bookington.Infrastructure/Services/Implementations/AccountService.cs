@@ -225,10 +225,23 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<PaginatedResponse<AccountReadDTO>> QueryAccountsAsync(AccountQuery query)
         {
-            var courts = await _unitOfWork.AccountRepository.QueryAsync(query);
+            var accounts = (await _unitOfWork.AccountRepository.QueryAsync(query)).ToList();
+
+            var currAccountID = _userContextService.AccountID.ToString();
+
+            var currAccount = new Account();
+
+            foreach (var acc in accounts)
+            {
+                if (acc.Id == currAccountID) currAccount = acc;
+            }
+
+            if (currAccount == null) throw new EntityWithIDNotFoundException<Account>(currAccountID!);
+
+            accounts.Remove(currAccount!);
 
             return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(
-                courts, query, _mapper);
+                accounts, query, _mapper);
         }
 
         public async Task<AccountProfileReadDTO> GetProfileAsync()

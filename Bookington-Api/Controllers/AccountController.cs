@@ -118,6 +118,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("query")]
+        [RoleAuthorize(AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
         public async Task<IActionResult> QueryAccounts([FromQuery] AccountQuery query)
         {
