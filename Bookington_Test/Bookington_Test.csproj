@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bookington.Core\Bookington.Core.csproj" />
     <ProjectReference Include="..\Bookington.Infrastructure\Bookington.Infrastructure.csproj" />
   </ItemGroup>
 

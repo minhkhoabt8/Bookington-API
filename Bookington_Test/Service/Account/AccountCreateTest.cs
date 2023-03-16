@@ -1,6 +1,6 @@
 ﻿using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
-using Bookington.Infrastructure.Enums;
+using Bookington.Core.Enums;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.UOW;
 using Moq;
@@ -32,7 +32,7 @@ namespace Bookington_Test.Service.Account
             {
                 Phone = phone,
                 FullName = "Test@@",
-                RoleId = RoleEnum.customer.ToString(),
+                RoleId = AccountRole.customer.ToString(),
                 CreateAt = DateTime.Now,
                 Password = "Test@@"
             };
