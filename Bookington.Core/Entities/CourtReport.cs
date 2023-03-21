@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class CourtReport
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string RefCourt { get; set; } = null!;
 
@@ -15,7 +15,7 @@ public partial class CourtReport
 
     public string Content { get; set; } = null!;
 
-    public bool IsResponded { get; set; } = false;
+    public bool IsResponded { get; set; }
 
     public virtual Court RefCourtNavigation { get; set; } = null!;
 

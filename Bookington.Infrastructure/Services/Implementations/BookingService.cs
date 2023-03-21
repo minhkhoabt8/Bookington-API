@@ -69,95 +69,97 @@ namespace Bookington.Infrastructure.Services.Implementations
         // NEEDS CHECK FOR BOOKED SLOTS        
         public async Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> dtos)
         {
-            // Check if account is valid
-            var accountId = _userContextService.AccountID.ToString();
+            //TODO: Fix Update DB v1.7
+            //// Check if account is valid
+            //var accountId = _userContextService.AccountID.ToString();
 
-            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+            //if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-            if (dtos.Count() == 0) throw new InvalidActionException("You didn't choose a slot to proceed booking!");
+            //if (dtos.Count() == 0) throw new InvalidActionException("You didn't choose a slot to proceed booking!");
 
-            var playDate = DateOnly.FromDateTime(dtos.ElementAt(0).PlayDate);            
+            //var playDate = DateOnly.FromDateTime(dtos.ElementAt(0).PlayDate);            
 
-            bool isSameDayBooking = false;
+            //bool isSameDayBooking = false;
 
-            // Check if play date is valid
-            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your play date is bullshit!");
-            else if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == 0) isSameDayBooking = true;
+            //// Check if play date is valid
+            //if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your play date is bullshit!");
+            //else if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == 0) isSameDayBooking = true;
 
-            var newBookings = _mapper.Map<IEnumerable<Booking>>(dtos);
-            
-            var existSlots = new List<Slot>();
+            //var newBookings = _mapper.Map<IEnumerable<Booking>>(dtos);
 
-            var IsThereAnySlotBooked = false;
+            //var existSlots = new List<Slot>();
 
-            var slotBookedErr = "Some slots you chose have already been booked: ";
+            //var IsThereAnySlotBooked = false;
 
-            foreach (var dto in dtos)
-            {
-                // Check if slot existed
-                var existSlot = await _unitOfWork.SlotRepository.FindAsync(dto.RefSlot);
+            //var slotBookedErr = "Some slots you chose have already been booked: ";
 
-                if (existSlot == null) throw new EntityWithIDNotFoundException<Slot>(dto.RefSlot);
+            //foreach (var dto in dtos)
+            //{
+            //    // Check if slot existed
+            //    var existSlot = await _unitOfWork.SlotRepository.FindAsync(dto.RefSlot);
 
-                // Check if slot is still active
-                if (!existSlot.IsActive) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " is not active right now!");
+            //    if (existSlot == null) throw new EntityWithIDNotFoundException<Slot>(dto.RefSlot);
 
-                // Check for same day booking
-                if (isSameDayBooking)
-                {
-                    var dateSlot = DateTime.Now.Date.AddMinutes(existSlot.StartTime.TotalMinutes);
+            //    // Check if slot is still active
+            //    if (!existSlot.IsActive) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " is not active right now!");
 
-                    if (DateTime.Now.CompareTo(dateSlot) > 0) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " has passed the booking window!");
-                }
+            //    // Check for same day booking
+            //    if (isSameDayBooking)
+            //    {
+            //        var dateSlot = DateTime.Now.Date.AddMinutes(existSlot.StartTime.TotalMinutes);
 
-                // Check if this slot is a booked slot                
-                var isThisSlotBooked = await _unitOfWork.SlotRepository.IsSlotBooked(existSlot.Id, playDate.ToDateTime(TimeOnly.MinValue));
+            //        if (DateTime.Now.CompareTo(dateSlot) > 0) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " has passed the booking window!");
+            //    }
 
-                if (isThisSlotBooked)
-                {
-                    IsThereAnySlotBooked = true;
+            //    // Check if this slot is a booked slot                
+            //    var isThisSlotBooked = await _unitOfWork.SlotRepository.IsSlotBooked(existSlot.Id, playDate.ToDateTime(TimeOnly.MinValue));
 
-                }
+            //    if (isThisSlotBooked)
+            //    {
+            //        IsThereAnySlotBooked = true;
 
-                existSlots.Add(existSlot);
-            }
+            //    }
 
-            // Create an order to contain bookings
-            var bookTime = DateTime.Now;
-            var newOrder = new Order()
-            {
-                OrderAt = bookTime
-            };
+            //    existSlots.Add(existSlot);
+            //}
 
-            // Assign value to each booking                         
-            int pos = 0;                        
+            //// Create an order to contain bookings
+            //var bookTime = DateTime.Now;
+            //var newOrder = new Order()
+            //{
+            //    OrderAt = bookTime
+            //};
 
-            foreach (var booking in newBookings)
-            {
-                booking.RefOrder = newOrder.Id;
-                booking.BookBy = accountId!;                
-                booking.PlayDate = playDate.ToDateTime(TimeOnly.MinValue);
-                booking.BookAt = bookTime;
-                booking.Price = existSlots[pos].Price;                
+            //// Assign value to each booking                         
+            //int pos = 0;                        
 
-                // Update order's total price
-                newOrder.TotalPrice += booking.Price;
-                pos++;
-            }
+            //foreach (var booking in newBookings)
+            //{
+            //    booking.RefOrder = newOrder.Id;
+            //    booking.BookBy = accountId!;                
+            //    booking.PlayDate = playDate.ToDateTime(TimeOnly.MinValue);
+            //    booking.BookAt = bookTime;
+            //    booking.Price = existSlots[pos].Price;                
 
-            // Proceed to add new order to database
-            await _unitOfWork.OrderRepository.AddAsync(newOrder);
+            //    // Update order's total price
+            //    newOrder.TotalPrice += booking.Price;
+            //    pos++;
+            //}
 
-            // Proceed to add new bookings to database
-            foreach (var booking in newBookings)
-            {
-                await _unitOfWork.BookingRepository.AddAsync(booking);
-            }
+            //// Proceed to add new order to database
+            //await _unitOfWork.OrderRepository.AddAsync(newOrder);
 
-            // Commit to database
-            await _unitOfWork.CommitAsync();
+            //// Proceed to add new bookings to database
+            //foreach (var booking in newBookings)
+            //{
+            //    await _unitOfWork.BookingRepository.AddAsync(booking);
+            //}
 
-            return _mapper.Map<IEnumerable<BookingReadDTO>>(newBookings);
+            //// Commit to database
+            //await _unitOfWork.CommitAsync();
+
+            //return _mapper.Map<IEnumerable<BookingReadDTO>>(newBookings);
+            throw new NotImplementedException();
         }
 
         public async Task DeleteAsync(string id)
@@ -207,36 +209,38 @@ namespace Bookington.Infrastructure.Services.Implementations
         // Order by the most recent booking
         public async Task<IEnumerable<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(string courtId)
         {
-            //Check if court exists
-            var existCourt = await _unitOfWork.CourtRepository.FindAsync(courtId);
+            //TODO: Fix Update DB v1.7
+            ////Check if court exists
+            //var existCourt = await _unitOfWork.CourtRepository.FindAsync(courtId);
 
-            if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(courtId);
+            //if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(courtId);
 
-            //Get all available sub courts
-            var avSubCourts = await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(courtId);
+            ////Get all available sub courts
+            //var avSubCourts = await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(courtId);
 
-            //From each sub court get its bookings                        
-            var subCourtIds = new List<string>();
+            ////From each sub court get its bookings                        
+            //var subCourtIds = new List<string>();
 
-            foreach (var sc in avSubCourts) subCourtIds.Add(sc.Id);
+            //foreach (var sc in avSubCourts) subCourtIds.Add(sc.Id);
 
-            var bookings = await _unitOfWork.BookingRepository.GetBookingsOfSubCourts(subCourtIds);
+            //var bookings = await _unitOfWork.BookingRepository.GetBookingsOfSubCourts(subCourtIds);
 
-            //Forgot sub court name in database
-            foreach (var b in bookings)
-            {
-                foreach (var sc in avSubCourts)
-                {
-                    if (sc.Id == b.RefSlotNavigation.RefSubCourt) { }
-                    //item.SubCourtName = sc.Name + " - " + sc.CourtType.Content;                    
-                }
-            }
+            ////Forgot sub court name in database
+            //foreach (var b in bookings)
+            //{
+            //    foreach (var sc in avSubCourts)
+            //    {
+            //        if (sc.Id == b.RefSlotNavigation.RefSubCourt) { }
+            //        //item.SubCourtName = sc.Name + " - " + sc.CourtType.Content;                    
+            //    }
+            //}
 
-            //Don't know how to include sub court name in mapper without altering database
-            //so i have to make do with this
-            var result = _mapper.Map<IEnumerable<CourtBookingHistoryReadDTO>>(bookings);
+            ////Don't know how to include sub court name in mapper without altering database
+            ////so i have to make do with this
+            //var result = _mapper.Map<IEnumerable<CourtBookingHistoryReadDTO>>(bookings);
 
-            return result;
+            //return result;
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<IncomingMatchReadDTO>> GetIncomingMatchesFromBookingOfUser(string userId)

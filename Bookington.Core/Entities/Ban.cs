@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Ban
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string? RefAccount { get; set; }
 
@@ -17,13 +17,13 @@ public partial class Ban
 
     public DateTime? BanUntil { get; set; }
 
-    public DateTime CreateAt { get; set; } = DateTime.Now;
+    public DateTime CreateAt { get; set; }
 
-    public bool IsAccountBan { get; set; } = false;
+    public bool IsAccountBan { get; set; }
 
-    public bool IsCourtBan { get; set; } = false;
+    public bool IsCourtBan { get; set; }
 
-    public bool IsActive { get; set; } = false;
+    public bool IsActive { get; set; }
 
     public virtual Account? RefAccountNavigation { get; set; }
 

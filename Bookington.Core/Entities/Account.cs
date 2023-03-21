@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Account
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string RoleId { get; set; } = null!;
 
@@ -19,11 +19,13 @@ public partial class Account
 
     public DateTime? DateOfBirth { get; set; }
 
-    public DateTime CreateAt { get; set; } = DateTime.Now;
+    public DateTime CreateAt { get; set; }
 
-    public bool IsActive { get; set; } = false;
+    public bool IsVerified { get; set; }
 
-    public bool IsDeleted { get; set; } = false;
+    public bool IsActive { get; set; }
+
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<AccountOtp> AccountOtps { get; } = new List<AccountOtp>();
 
@@ -41,11 +43,15 @@ public partial class Account
 
     public virtual ICollection<Comment> Comments { get; } = new List<Comment>();
 
+    public virtual ICollection<Competition> Competitions { get; } = new List<Competition>();
+
     public virtual ICollection<CourtReport> CourtReports { get; } = new List<CourtReport>();
 
     public virtual ICollection<Court> Courts { get; } = new List<Court>();
 
     public virtual ICollection<LoginToken> LoginTokens { get; } = new List<LoginToken>();
+
+    public virtual ICollection<Match> Matches { get; } = new List<Match>();
 
     public virtual ICollection<Notification> Notifications { get; } = new List<Notification>();
 
@@ -53,9 +59,11 @@ public partial class Account
 
     public virtual Role Role { get; set; } = null!;
 
-    public virtual ICollection<TransactionHistory> TransactionHistoryRefFromNavigations { get; } = new List<TransactionHistory>();
+    public virtual ICollection<TeamPlayer> TeamPlayers { get; } = new List<TeamPlayer>();
 
-    public virtual ICollection<TransactionHistory> TransactionHistoryRefToNavigations { get; } = new List<TransactionHistory>();
+    public virtual ICollection<Transaction> TransactionRefFromNavigations { get; } = new List<Transaction>();
+
+    public virtual ICollection<Transaction> TransactionRefToNavigations { get; } = new List<Transaction>();
 
     public virtual ICollection<UserBalance> UserBalances { get; } = new List<UserBalance>();
 

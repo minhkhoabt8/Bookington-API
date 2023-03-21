@@ -238,51 +238,53 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<string> HandleUserReportAsync(UserReportResponseWriteDTO dto)
         {
-            var existAccountReport = await _unitOfWork.UserReportRepository.FindAsync(dto.UserReportId);
+            //TODO: Fix Update DB v1.7
+            //var existAccountReport = await _unitOfWork.UserReportRepository.FindAsync(dto.UserReportId);
 
-            if (existAccountReport == null) throw new EntityWithIDNotFoundException<UserReport>(dto.UserReportId);
+            //if (existAccountReport == null) throw new EntityWithIDNotFoundException<UserReport>(dto.UserReportId);
 
-            if (existAccountReport.IsResponsed) throw new InvalidActionException("This Account Report ID (" + dto.UserReportId + ") has already been responded!");
+            //if (existAccountReport.IsResponsed) throw new InvalidActionException("This Account Report ID (" + dto.UserReportId + ") has already been responded!");
 
-            var userBan = new Ban()
-            {
-                IsAccountBan = true,
-                IsActive = true
-            };
+            //var userBan = new Ban()
+            //{
+            //    IsAccountBan = true,
+            //    IsActive = true
+            //};
 
-            var reportResponse = _mapper.Map<UserReportResponse>(dto);
+            //var reportResponse = _mapper.Map<UserReportResponse>(dto);
 
-            // If the reported user is banned create a Ban record
-            if (dto.IsBanned)
-            {
-                if (dto.Duration < 0) throw new InvalidActionException("Ban duration can not be lower than 0!");
+            //// If the reported user is banned create a Ban record
+            //if (dto.IsBanned)
+            //{
+            //    if (dto.Duration < 0) throw new InvalidActionException("Ban duration can not be lower than 0!");
 
-                // Ban duration is in hours
-                userBan.Duration = dto.Duration;
-                userBan.Reason = dto.Content;
-                userBan.BanUntil = userBan.CreateAt.AddHours(dto.Duration);
-                userBan.RefCourt = existAccountReport.RefUser;
+            //    // Ban duration is in hours
+            //    userBan.Duration = dto.Duration;
+            //    userBan.Reason = dto.Content;
+            //    userBan.BanUntil = userBan.CreateAt.AddHours(dto.Duration);
+            //    userBan.RefCourt = existAccountReport.RefUser;
 
-                await _unitOfWork.BanRepository.AddAsync(userBan);
+            //    await _unitOfWork.BanRepository.AddAsync(userBan);
 
-                // Deactivate account as well
-                var existAccount = await _unitOfWork.AccountRepository.FindAsync(existAccountReport.RefUser);
+            //    // Deactivate account as well
+            //    var existAccount = await _unitOfWork.AccountRepository.FindAsync(existAccountReport.RefUser);
 
-                if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(existAccountReport.RefUser);
+            //    if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(existAccountReport.RefUser);
 
-                existAccount.IsActive = false;
+            //    existAccount.IsActive = false;
 
-                _unitOfWork.AccountRepository.Update(existAccount);
-            }
+            //    _unitOfWork.AccountRepository.Update(existAccount);
+            //}
 
-            // And record the response down as well
-            await _unitOfWork.UserReportResponseRepository.AddAsync(reportResponse);
+            //// And record the response down as well
+            //await _unitOfWork.UserReportResponseRepository.AddAsync(reportResponse);
 
-            await _unitOfWork.CommitAsync();
+            //await _unitOfWork.CommitAsync();
 
-            var result = "Response to Account Report ID (" + dto.UserReportId + ") has been created successfully!";
+            //var result = "Response to Account Report ID (" + dto.UserReportId + ") has been created successfully!";
 
-            return result;
+            //return result;
+            throw new NotImplementedException();
         }
     }
 }

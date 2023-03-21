@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class UserBalance
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string RefUser { get; set; } = null!;
 

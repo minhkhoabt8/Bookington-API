@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Comment
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string CommentWriterId { get; set; } = null!;
 
@@ -15,11 +15,11 @@ public partial class Comment
 
     public double Rating { get; set; }
 
-    public DateTime CreateAt { get; set; } = DateTime.Now;
+    public DateTime CreateAt { get; set; }
 
-    public bool IsActive { get; set; } = false;
+    public bool IsActive { get; set; }
 
-    public bool IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; }
 
     public virtual Account CommentWriter { get; set; } = null!;
 

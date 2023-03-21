@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Court
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = null!;
 
     public string OwnerId { get; set; } = null!;
 
@@ -21,11 +21,13 @@ public partial class Court
 
     public TimeSpan CloseAt { get; set; }
 
-    public DateTime CreateAt { get; set; } = DateTime.Now;
+    public DateTime CreateAt { get; set; }
 
-    public bool IsActive { get; set; } = false;
+    public bool IsActive { get; set; }
 
-    public bool IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; }
+
+    public virtual ICollection<Ad> Ads { get; } = new List<Ad>();
 
     public virtual ICollection<Ban> Bans { get; } = new List<Ban>();
 
@@ -38,8 +40,6 @@ public partial class Court
     public virtual District District { get; set; } = null!;
 
     public virtual Account Owner { get; set; } = null!;
-
-    public virtual ICollection<Promotion> Promotions { get; } = new List<Promotion>();
 
     public virtual ICollection<SubCourt> SubCourts { get; } = new List<SubCourt>();
 
