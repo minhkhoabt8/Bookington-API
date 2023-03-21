@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Bookington.Core.Entities;
+using Bookington.Core.Enums;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.Enums;
@@ -71,7 +72,7 @@ namespace Bookington_Test.Service.Auth
                 Id = Guid.NewGuid().ToString(),
                 Phone = "1234567890",
                 FullName = "John Doe",
-                RoleId = ((int)RoleEnum.customer).ToString(),
+                RoleId = ((int)AccountRole.customer).ToString(),
                 IsActive = false
             };
             _mockUnitOfWork.Setup(uow => uow.AccountRepository.LoginByPhoneAsync(inputDto))
