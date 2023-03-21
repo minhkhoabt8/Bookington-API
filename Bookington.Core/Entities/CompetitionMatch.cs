@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class CompetitionMatch
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string RefCompetition { get; set; } = null!;
 

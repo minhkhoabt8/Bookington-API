@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Booking
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string RefSlot { get; set; } = null!;
 
@@ -13,7 +13,7 @@ public partial class Booking
 
     public string BookBy { get; set; } = null!;
 
-    public DateTime BookAt { get; set; }
+    public DateTime BookAt { get; set; } = DateTime.Now;
 
     public DateTime PlayDate { get; set; }
 

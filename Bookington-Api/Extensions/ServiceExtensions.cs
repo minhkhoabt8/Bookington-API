@@ -52,7 +52,7 @@ namespace Bookington_Api.Extensions
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Bookington",
-                    Version = "v1.0.0",
+                    Version = "v1.0.1",
                     Description = "Court Booking System",
                 });
                 c.UseInlineDefinitionsForEnums();

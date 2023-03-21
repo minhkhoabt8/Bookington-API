@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class Ad
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string Title { get; set; } = null!;
 
@@ -23,7 +23,7 @@ public partial class Ad
 
     public bool IsCourtAd { get; set; }
 
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
     public virtual Court? RefCourtNavigation { get; set; }
 }
