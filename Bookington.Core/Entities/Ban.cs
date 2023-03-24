@@ -19,11 +19,11 @@ public partial class Ban
 
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
-    public bool IsAccountBan { get; set; } = false;
+    public bool IsAccountBan { get; set; } 
 
-    public bool IsCourtBan { get; set; } = false;
+    public bool IsCourtBan { get; set; } 
 
-    public bool IsActive { get; set; } = false;
+    public bool IsActive { get; set; } 
 
     public virtual Account? RefAccountNavigation { get; set; }
 

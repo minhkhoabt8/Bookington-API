@@ -15,7 +15,7 @@ public partial class UserReport
 
     public string Content { get; set; } = null!;
 
-    public bool IsResponsed { get; set; } = false;
+    public bool IsResponded { get; set; }
 
     public virtual UserReportResponse? RefResponseNavigation { get; set; }
 

@@ -29,9 +29,9 @@ public partial class Voucher
 
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
-    public bool IsActive { get; set; } = false;
+    public bool IsActive { get; set; }
 
-    public bool IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; }
 
     public virtual Account CreateByNavigation { get; set; } = null!;
 

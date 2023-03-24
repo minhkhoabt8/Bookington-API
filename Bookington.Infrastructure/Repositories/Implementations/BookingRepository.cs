@@ -20,16 +20,18 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Booking>> GetBookingsOfSubCourt(string subCourtId, bool trackChanges = false) 
         {
-            IQueryable<Booking> dbSet = _context.Set<Booking>();
-            if (trackChanges == false)
-            {
-                dbSet = dbSet.AsNoTracking();
-            }
+            //TODO: Fix Update DB v1.7
+            //IQueryable<Booking> dbSet = _context.Set<Booking>();
+            //if (trackChanges == false)
+            //{
+            //    dbSet = dbSet.AsNoTracking();
+            //}
 
-            return await Task.FromResult(dbSet.Include(b => b.RefSlotNavigation)
-                .Include(b => b.BookByNavigation)                
-                .Where(b => b.RefSlotNavigation.RefSubCourt == subCourtId)
-                .AsEnumerable());
+            //return await Task.FromResult(dbSet.Include(b => b.RefSlotNavigation)
+            //    .Include(b => b.BookByNavigation)                
+            //    .Where(b => b.RefSlotNavigation.RefSubCourt == subCourtId)
+            //    .AsEnumerable());
+            throw new NotImplementedException();
         }
 
         public Task<IEnumerable<Booking>> GetBookingsOfSubCourts(List<string> subCourtIds, bool trackChanges = false)
@@ -76,16 +78,17 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public Task<IEnumerable<Booking>> GetIncomingMatchesFromBookingOfUser(string userId)
         {
+            //TODO: Fix Update DB v1.7
             //Get All Booking Of A User
-            IQueryable<Booking> dbSet = _context.Set<Booking>()
-                .Include(b=>b.RefSlotNavigation)
-                .Include(b=>b.RefSlotNavigation.RefSubCourtNavigation)
-                .Include(b=>b.RefSlotNavigation.RefSubCourtNavigation.ParentCourt)
-                .Where(d=>d.BookBy==userId)
-                .OrderByDescending(b=>b.PlayDate.Date);
+            //IQueryable<Booking> dbSet = _context.Set<Booking>()
+            //    .Include(b=>b.RefSlotNavigation)
+            //    .Include(b=>b.RefSlotNavigation.RefSubCourtNavigation)
+            //    .Include(b=>b.RefSlotNavigation.RefSubCourtNavigation.ParentCourt)
+            //    .Where(d=>d.BookBy==userId)
+            //    .OrderByDescending(b=>b.PlayDate.Date);
 
-            return Task.FromResult(dbSet.AsEnumerable());
-
-        }        
+            //return Task.FromResult(dbSet.AsEnumerable());
+            throw new NotImplementedException();
+        }
     }
 }

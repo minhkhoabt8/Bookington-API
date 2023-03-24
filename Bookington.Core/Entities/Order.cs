@@ -17,15 +17,15 @@ public partial class Order
 
     public double TotalPrice { get; set; }
 
-    public bool IsPaid { get; set; } = false;
+    public bool IsPaid { get; set; }
 
-    public bool IsCanceled { get; set; } = false;
+    public bool IsCanceled { get; set; }
 
-    public bool IsRefunded { get; set; } = false;
+    public bool IsRefunded { get; set; }
 
     public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
 
-    public virtual TransactionHistory? Transaction { get; set; }
+    public virtual Transaction? Transaction { get; set; }
 
     public virtual Voucher? VoucherCodeNavigation { get; set; }
 }

@@ -21,6 +21,8 @@ public partial class Booking
 
     public virtual Account BookByNavigation { get; set; } = null!;
 
+    public virtual ICollection<Match> Matches { get; } = new List<Match>();
+
     public virtual Order RefOrderNavigation { get; set; } = null!;
 
     public virtual Slot RefSlotNavigation { get; set; } = null!;

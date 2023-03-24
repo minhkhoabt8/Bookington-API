@@ -61,15 +61,17 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Booking, CourtBookingHistoryReadDTO>()
             .ForMember(des => des.TimeSlot, act => act.MapFrom(src => src.RefSlotNavigation.StartTime.ToString() + " - " + src.RefSlotNavigation.EndTime.ToString()))
             .ForMember(des => des.Customer, act => act.MapFrom(src => src.BookByNavigation.FullName))
-            .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone));    
-            CreateMap<Booking, IncomingMatchReadDTO>()
-                .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.Name))
-                .ForMember(des => des.CourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.ParentCourt.Name))
-                .ForMember(des => des.PlayDate, act => act.MapFrom(src => src.PlayDate.ToString()));
+            .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone));
+            CreateMap<Booking, IncomingMatchReadDTO>();
+            //TODO: Fix Update DB v1.7
+            //.ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.Name))
+            //.ForMember(des => des.CourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.ParentCourt.Name))
+            //.ForMember(des => des.PlayDate, act => act.MapFrom(src => src.PlayDate.ToString()));
             // Slot
             CreateMap<Slot, SlotReadDTO>();
-            CreateMap<Slot, SlotForBookingReadDTO>()
-                .ForMember(dest => dest.IsAvailable, options => options.MapFrom(src => src.IsActive));
+            CreateMap<Slot, SlotForBookingReadDTO>();
+            //TODO: Fix Update DB v1.7
+            //.ForMember(dest => dest.IsAvailable, options => options.MapFrom(src => src.IsActive));
             CreateMap<SlotWriteDTO, Slot>();
             // Voucher
             CreateMap<Voucher, VoucherReadDTO>();

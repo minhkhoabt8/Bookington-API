@@ -16,27 +16,29 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public Task<IEnumerable<TransactionHistory>> GetTransactionHistoryOfCustomer(string userId, int page)
         {
-            var dbSet = _context.TransactionHistories.Include(th => th.RefFromNavigation).Include(th => th.RefToNavigation).ToList();
+            //TODO: Fix Update DB v1.7
+            //var dbSet = _context.TransactionHistories.Include(th => th.RefFromNavigation).Include(th => th.RefToNavigation).ToList();
 
-            var trans = dbSet.Where(sc => sc.RefFrom == userId).OrderByDescending(sc => sc.CreateAt).AsEnumerable();
+            //var trans = dbSet.Where(sc => sc.RefFrom == userId).OrderByDescending(sc => sc.CreateAt).AsEnumerable();
 
-            var resultTrans = trans;
+            //var resultTrans = trans;
 
-            if (trans.Count() >= NUM_OF_RECORDS_FOR_A_PAGE)
-            {
-                resultTrans = new List<TransactionHistory>();
+            //if (trans.Count() >= NUM_OF_RECORDS_FOR_A_PAGE)
+            //{
+            //    resultTrans = new List<TransactionHistory>();
 
-                for (int i = 0 + NUM_OF_RECORDS_FOR_A_PAGE * (page - 1); i < NUM_OF_RECORDS_FOR_A_PAGE * page; i++)
-                {
-                    var t = trans.ElementAt(i);
+            //    for (int i = 0 + NUM_OF_RECORDS_FOR_A_PAGE * (page - 1); i < NUM_OF_RECORDS_FOR_A_PAGE * page; i++)
+            //    {
+            //        var t = trans.ElementAt(i);
 
-                    if (t == null) break;
-                        
-                    resultTrans.Append(trans.ElementAt(i));
-                }
-            }
+            //        if (t == null) break;
 
-            return Task.FromResult(resultTrans.AsEnumerable());
+            //        resultTrans.Append(trans.ElementAt(i));
+            //    }
+            //}
+
+            //return Task.FromResult(resultTrans.AsEnumerable());
+            throw new NotImplementedException();
         }
     }
 }

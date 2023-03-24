@@ -30,62 +30,64 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public Task<IEnumerable<SubCourt>> GetSubCourtsForBooking(SubCourtQueryForBooking dto, bool trackChanges = false)
         {
-            IQueryable<SubCourt> subCourts = _context.Set<SubCourt>();
-            IQueryable<Slot> slots = _context.Set<Slot>();
-            if (trackChanges == false)
-            {
-                subCourts = subCourts.AsNoTracking();
-                slots = slots.AsNoTracking();
-            }
+            //TODO: Fix Update DB v1.7
+            //IQueryable<SubCourt> subCourts = _context.Set<SubCourt>();
+            //IQueryable<Slot> slots = _context.Set<Slot>();
+            //if (trackChanges == false)
+            //{
+            //    subCourts = subCourts.AsNoTracking();
+            //    slots = slots.AsNoTracking();
+            //}
 
-            var dotw = dto.PlayDate.DayOfWeek.ToString();
-            var startTime = dto.StartTime.ToTimeSpan();
-            var endTime = dto.EndTime.ToTimeSpan();
+            //var dotw = dto.PlayDate.DayOfWeek.ToString();
+            //var startTime = dto.StartTime.ToTimeSpan();
+            //var endTime = dto.EndTime.ToTimeSpan();
 
-            // Get available slots that fits with time frame (between StartTime and EndTime)
-            var activeSubCourts = subCourts.Where(sc => sc.IsActive && sc.ParentCourtId == dto.CourtId).ToList();
+            //// Get available slots that fits with time frame (between StartTime and EndTime)
+            //var activeSubCourts = subCourts.Where(sc => sc.IsActive && sc.ParentCourtId == dto.CourtId).ToList();
 
-            var avSlots = slots.Where(s => (s.IsActive && s.DaysInSchedule == dotw &&
-                                            activeSubCourts.Select(sc => sc.Id).Contains(s.RefSubCourt)) &&                                                                                   
-                                            s.StartTime.CompareTo(startTime) >= 0 &&
-                                            s.EndTime.CompareTo(endTime) <= 0)
-                               .ToList();            
+            //var avSlots = slots.Where(s => (s.IsActive && s.DaysInSchedule == dotw &&
+            //                                activeSubCourts.Select(sc => sc.Id).Contains(s.RefSubCourt)) &&                                                                                   
+            //                                s.StartTime.CompareTo(startTime) >= 0 &&
+            //                                s.EndTime.CompareTo(endTime) <= 0)
+            //                   .ToList();            
 
-            var bookings = _context.Bookings.Include(b => b.RefOrderNavigation).Include(b => b.RefSlotNavigation).ToList();
+            //var bookings = _context.Bookings.Include(b => b.RefOrderNavigation).Include(b => b.RefSlotNavigation).ToList();
 
-            var bookingsOnPlayDate = bookings.Where(b => b.PlayDate.DayOfWeek.ToString() == dotw &&
-                                                         b.RefOrderNavigation.IsPaid &&
-                                                        !b.RefOrderNavigation.IsRefunded &&
-                                                        !b.RefOrderNavigation.IsCanceled &&
-                                                         avSlots.Select(s => s.Id).Contains(b.RefSlot))
-                                             .ToList();
+            //var bookingsOnPlayDate = bookings.Where(b => b.PlayDate.DayOfWeek.ToString() == dotw &&
+            //                                             b.RefOrderNavigation.IsPaid &&
+            //                                            !b.RefOrderNavigation.IsRefunded &&
+            //                                            !b.RefOrderNavigation.IsCanceled &&
+            //                                             avSlots.Select(s => s.Id).Contains(b.RefSlot))
+            //                                 .ToList();
 
-            // Get booked slots             
-            var bookedSlots = bookingsOnPlayDate.Select(b => b.RefSlotNavigation).ToList();
+            //// Get booked slots             
+            //var bookedSlots = bookingsOnPlayDate.Select(b => b.RefSlotNavigation).ToList();
 
-            // Remove booked slots from available slots
-            foreach (var bs in bookedSlots)
-            {
-                var findSlot = avSlots.Find(avs => avs.Id == bs.Id);
-                avSlots.Remove(findSlot);
-            }
+            //// Remove booked slots from available slots
+            //foreach (var bs in bookedSlots)
+            //{
+            //    var findSlot = avSlots.Find(avs => avs.Id == bs.Id);
+            //    avSlots.Remove(findSlot);
+            //}
 
-            // Get sub court part from slots to set status later
-            // avscs = available sub courts
-            var avscs = avSlots.Select(s => s.RefSubCourt).ToList();
+            //// Get sub court part from slots to set status later
+            //// avscs = available sub courts
+            //var avscs = avSlots.Select(s => s.RefSubCourt).ToList();
 
-            var hashSetOfavscs = new HashSet<string>(avscs);
+            //var hashSetOfavscs = new HashSet<string>(avscs);
 
-            // For better understanding result 
-            var resultSubCourts = activeSubCourts;
-            
-            // Set IsActive status to map with its available status
-            foreach (var sc in resultSubCourts)
-            {
-                if (!hashSetOfavscs.Contains(sc.Id)) sc.IsActive = false;                
-            }
+            //// For better understanding result 
+            //var resultSubCourts = activeSubCourts;
 
-            return Task.FromResult(resultSubCourts.AsEnumerable());
+            //// Set IsActive status to map with its available status
+            //foreach (var sc in resultSubCourts)
+            //{
+            //    if (!hashSetOfavscs.Contains(sc.Id)) sc.IsActive = false;                
+            //}
+
+            //return Task.FromResult(resultSubCourts.AsEnumerable());
+            throw new NotImplementedException();
         }
 
         /*public Task<IEnumerable<SubCourt>> GetUnavailableSubCourtsForBooking(SubCourtQueryForBooking dto, bool trackChanges = false)
