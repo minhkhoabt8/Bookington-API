@@ -1,9 +1,4 @@
 ﻿using Bookington.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.DTOs.Account
 {
@@ -11,7 +6,7 @@ namespace Bookington.Infrastructure.DTOs.Account
     {
         public string Id { get; set; }
 
-        public string RoleName { get; set; }
+        public Bookington.Core.Entities.Role Role { get; set; }
 
         public string Phone { get; set; }
 

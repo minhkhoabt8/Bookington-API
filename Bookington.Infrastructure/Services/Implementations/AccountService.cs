@@ -285,6 +285,19 @@ namespace Bookington.Infrastructure.Services.Implementations
             }
             else throw new Exception("Confirm Password Not Match");
         }
+        public async Task AssignRoleToUserAsync(string userId, string roleId)
+        {
+            var existAccount = await _unitOfWork.AccountRepository.FindAsync(userId);
 
+            var existRole = await _unitOfWork.RoleRepository.FindAsync(roleId);
+
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(userId);
+
+            if (existRole == null) throw new EntityWithIDNotFoundException<Role>(roleId);
+
+            existAccount.RoleId = roleId;
+
+            await _unitOfWork.CommitAsync();
+        }
     }
 }

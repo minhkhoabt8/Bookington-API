@@ -32,5 +32,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task ReSendVerifyOtp(string phone);
 
         Task ChangePasswordAsync(ChangePasswordDTO dto);
+
+        Task AssignRoleToUserAsync(string userId, string roleId);
     }
 }

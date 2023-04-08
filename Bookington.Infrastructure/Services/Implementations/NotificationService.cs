@@ -79,7 +79,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _hubContext.SendNotificationList(currUserId, notis);
 
             return PaginatedResponse<NotificationReadDTO>.FromEnumerableWithMapping(
-                notifications, query, _mapper);
+                notis, query, _mapper);
         }
     }
 }

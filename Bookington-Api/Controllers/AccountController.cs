@@ -36,14 +36,14 @@ namespace Bookington_Api.Controllers
         /// Get All Account
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        [RoleAuthorize(AccountRole.admin)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            var accounts = await _accountService.GetAllAsync();
-            return ResponseFactory.Ok(accounts);
-        }
+        //[HttpGet]
+        //[RoleAuthorize(AccountRole.admin)]
+        //[ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        //public async Task<IActionResult> GetAllAsync()
+        //{
+        //    var accounts = await _accountService.GetAllAsync();
+        //    return ResponseFactory.Ok(accounts);
+        //}
 
 
         /// <summary>
@@ -167,6 +167,23 @@ namespace Bookington_Api.Controllers
             await _accountService.ChangePasswordAsync(dto);
             return ResponseFactory.NoContent();
         }
+
+        /// <summary>
+        /// Assign Role To Account
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut("assignRole")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> AssignRoleToUser(string userId, string roleId)
+        {
+            await _accountService.AssignRoleToUserAsync(userId, roleId);
+            return ResponseFactory.NoContent();
+        }
+
 
     }
 }

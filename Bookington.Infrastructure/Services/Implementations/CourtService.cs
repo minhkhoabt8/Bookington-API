@@ -53,17 +53,18 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task<IEnumerable<CourtReadDTO>> GetAllCourtByOwnerIdAsync()
+        public async Task<IEnumerable<CourtQueryResponse>> GetAllCourtByOwnerIdAsync(CourtItemQuery query)
         {
 
             var ownerId = _userContextService.AccountID.ToString();
 
-            if(ownerId == null) throw new ForbiddenException();
+            if (ownerId == null) throw new ForbiddenException();
 
             var courts = await _unitOfWork.CourtRepository.GetAllCourtByOwnerIdAsync(ownerId);
 
-            return _mapper.Map<IEnumerable<CourtReadDTO>>(courts);
-            
+            return PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
+                 courts, query, _mapper);
+
         }
 
         public async Task<CourtReadDTO> GetByIdAsync(string id)
