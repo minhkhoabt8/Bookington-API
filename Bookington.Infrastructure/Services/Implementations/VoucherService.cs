@@ -76,5 +76,11 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return _mapper.Map<VoucherReadDTO>(existVoucher);
         }
+
+        public async Task<VoucherReadDTO> CheckVoucherValidAsync(string voucherCode)
+        {
+            //
+            throw new NotImplementedException();
+        }
     }
 }

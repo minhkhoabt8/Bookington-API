@@ -10,6 +10,7 @@ using System;
 using System.Data;
 using System.Globalization;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -53,7 +54,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task<IEnumerable<CourtReadDTO>> GetAllCourtByOwnerIdAsync()
+        public async Task<IEnumerable<CourtQueryResponse>> GetAllCourtByOwnerIdAsync(CourtItemQuery query)
         {
 
             var ownerId = _userContextService.AccountID.ToString();
@@ -62,8 +63,9 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var courts = await _unitOfWork.CourtRepository.GetAllCourtByOwnerIdAsync(ownerId);
 
-            return _mapper.Map<IEnumerable<CourtReadDTO>>(courts);
-            
+            return PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
+                 courts, query, _mapper);
+
         }
 
         public async Task<CourtReadDTO> GetByIdAsync(string id)
@@ -102,5 +104,6 @@ namespace Bookington.Infrastructure.Services.Implementations
             return PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
                 courts, query, _mapper);
         }
+
     }
 }

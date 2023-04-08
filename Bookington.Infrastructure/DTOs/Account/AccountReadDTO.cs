@@ -71,4 +71,7 @@ namespace Bookington.Infrastructure.DTOs.Account
 
         public DateTime DateOfBirth { get; set; }
     }
+
+     
+
 }

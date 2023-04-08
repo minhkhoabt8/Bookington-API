@@ -52,7 +52,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         }
 
         // PHO FIX THIS PLZ
-        // NEEDS VOUCHER CHECK        
+        // TODO: NEEDS VOUCHER CHECK        
         public async Task<string> CheckOutAsync(CheckOutWriteDTO dto)
         {
             // Check if account is valid

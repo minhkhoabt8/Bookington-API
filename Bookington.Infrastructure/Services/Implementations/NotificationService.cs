@@ -71,15 +71,17 @@ namespace Bookington.Infrastructure.Services.Implementations
             var currUserId = _userContextService.AccountID.ToString();
 
             if (query.UserId != currUserId) throw new ForbiddenException();
-
+            
+            //get notification from db
             var notifications = await _unitOfWork.NotificationRepository.QueryAsync(query);
 
             var notis = _mapper.Map<IEnumerable<NotificationReadDTO>>(notifications).ToList();
 
+            //add notification to list and send through signalR
             await _hubContext.SendNotificationList(currUserId, notis);
 
             return PaginatedResponse<NotificationReadDTO>.FromEnumerableWithMapping(
-                notifications, query, _mapper);
+                notis, query, _mapper);
         }
     }
 }

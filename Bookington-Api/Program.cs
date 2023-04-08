@@ -2,6 +2,7 @@
 using Bookington_Api.Extensions;
 using Bookington_Api.Hubs;
 using Bookington_Api.Middlewares;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
 app.UseAuthentication();
 
@@ -53,5 +54,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<NotificationUserHub>("/notificationHub");
+
 
 app.Run();

@@ -23,6 +23,7 @@ namespace Bookington_Api.Hubs
                 await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", notification);
             }
         }
+
         public async Task SendNotificationList(string userId, List<NotificationReadDTO> notifications)
         {
             if (!string.IsNullOrEmpty(userId))

@@ -77,7 +77,7 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
-        /// Update account
+        /// Update current account
         /// </summary>
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
@@ -167,6 +167,27 @@ namespace Bookington_Api.Controllers
             await _accountService.ChangePasswordAsync(dto);
             return ResponseFactory.NoContent();
         }
+
+
+
+        /// <summary>
+        /// Assign Role To Account
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut("assignRole")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> AssignRoleToUser(string userId, AccountRole role)
+        {
+            await _accountService.AssignRoleToUser
+            return ResponseFactory.NoContent();
+        }
+
+
+
 
     }
 }

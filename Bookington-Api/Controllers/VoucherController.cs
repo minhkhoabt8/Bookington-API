@@ -17,7 +17,6 @@ namespace Bookington_Api.Controllers
     /// </summary>
     [ApiController]
     [Route("vouchers")]
-    [RoleAuthorize(AccountRole.owner)]
     public class VoucherController : Controller
     {
         private readonly IVoucherService _voucherService;
@@ -35,6 +34,7 @@ namespace Bookington_Api.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPost]
+        [RoleAuthorize(AccountRole.owner)]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<VoucherReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -52,6 +52,7 @@ namespace Bookington_Api.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [RoleAuthorize(AccountRole.owner)]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<VoucherReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -70,6 +71,8 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+
+        [RoleAuthorize(AccountRole.owner)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -87,6 +90,7 @@ namespace Bookington_Api.Controllers
         /// <param name="courtId"></param>
         /// <returns></returns>
         [HttpGet("court")]
+        [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetAllVoucherOfACourtAsync([FromQuery]string courtId)
         {

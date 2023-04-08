@@ -29,6 +29,8 @@ namespace Bookington.Infrastructure.Services.Interfaces
 
         Task<AccountProfileReadDTO> GetProfileByIdAsync(string accountId);
 
+        Task AssignRoleToUserAsync(string userId, string roleId);
+
         Task ReSendVerifyOtp(string phone);
 
         Task ChangePasswordAsync(ChangePasswordDTO dto);

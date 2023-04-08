@@ -52,4 +52,12 @@ namespace Bookington.Infrastructure.DTOs.Account
         }
     }
 
+    public class AssignRoleAccountModel
+    {
+        [Required]
+        public string UserId { get; set; }
+        [Required]
+        public string RoleId { get; set; }
+    }
+
 }
