@@ -63,12 +63,13 @@ namespace Bookington_Api.Controllers
         /// Create a new booking(s) order
         /// </summary>        
         /// <param name="dtos"></param>
+        /// <param name="courtId"></param>
         /// <returns></returns>        
         [HttpPost]
         [ServiceFilter(typeof(AutoValidateModelState))]
-        public async Task<IActionResult> CreateBookingsAsync(List<BookingWriteDTO> dtos)
+        public async Task<IActionResult> CreateBookingsAsync(string courtId,List<BookingWriteDTO> dtos)
         {
-            var newBookings = await _bookingService.CreateBookingsAsync(dtos);
+            var newBookings = await _bookingService.CreateBookingsAsync(courtId, dtos);
             return ResponseFactory.Created(newBookings);
         }
 

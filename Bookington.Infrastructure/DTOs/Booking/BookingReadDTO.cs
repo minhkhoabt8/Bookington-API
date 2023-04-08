@@ -24,6 +24,20 @@ namespace Bookington.Infrastructure.DTOs.Booking
         public double Price { get; set; }        
     }
 
+
+    public class PaymentReadDto
+    {
+        public DateTime Created { get; set; } = DateTime.Now;
+
+        public string CourtName { get; set; } = null!;
+
+        public string From { get; set; } = null!;
+
+        public string TotalHours { get; set; }
+
+        public IEnumerable<BookingReadDTO> BookingRead { get; set; }
+
+    }
     public class CourtBookingHistoryReadDTO
     {
         public string? Id { get; set; }        

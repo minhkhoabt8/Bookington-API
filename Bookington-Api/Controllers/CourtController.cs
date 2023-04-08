@@ -38,9 +38,10 @@ namespace Bookington_Api.Controllers
         /// Get All Courts Of Owner
         /// </summary>
         /// <returns></returns>
-        [HttpGet]        
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourtReadDTO>))]
+        [RoleAuthorize(AccountRole.owner)]
         public async Task<IActionResult> GetAllCourtByOwnerIdAsync()
         {
             var courts = await _courtService.GetAllCourtByOwnerIdAsync();

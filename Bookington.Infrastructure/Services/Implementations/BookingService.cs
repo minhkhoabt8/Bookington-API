@@ -4,6 +4,7 @@ using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.DTOs.IncomingMatch;
+using Bookington.Infrastructure.Repositories.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +16,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserContextService _userContextService;
+       
 
         public BookingService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService)
         {
@@ -67,7 +69,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         // TODO: PHO FIX THIS PLZ
         // NEEDS CHECK FOR BOOKED SLOTS        
-        public async Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> dtos)
+        public async Task<PaymentReadDto> CreateBookingsAsync(string courtId, IEnumerable<BookingWriteDTO> dtos)
         {
             // Check if account is valid
             var accountId = _userContextService.AccountID.ToString();
@@ -81,7 +83,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             bool isSameDayBooking = false;
 
             // Check if play date is valid
-            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your play date is bullshit!");
+            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your Play Date Is Invalid");
             else if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == 0) isSameDayBooking = true;
 
             var newBookings = _mapper.Map<IEnumerable<Booking>>(dtos);
@@ -157,7 +159,46 @@ namespace Bookington.Infrastructure.Services.Implementations
             // Commit to database
             await _unitOfWork.CommitAsync();
 
-            return _mapper.Map<IEnumerable<BookingReadDTO>>(newBookings);
+
+            var court = await _unitOfWork.CourtRepository.FindAsync(courtId);
+
+            if (court == null) throw new EntityWithIDNotFoundException<Court>(court.Id);
+
+            var bookingDto = _mapper.Map<IEnumerable<BookingReadDTO>>(newBookings);
+
+            var totalHour = "0";
+            //get From time
+            //moi booking chua slot 30p => total hour = tong so slot nhan 30 tat ca chia 60 ra gio
+
+            if (bookingDto.Count() != 0)
+            {
+                totalHour = CaculateTime(bookingDto.Count());
+            }
+
+
+            var payment = new PaymentReadDto
+            {
+                CourtName = court.Name.ToString(),
+
+                BookingRead =  bookingDto,
+
+                From = bookingDto.ElementAt(0).BookAt.ToString(),
+
+                TotalHours = totalHour,
+                
+            };
+
+            return payment;
+        }
+
+        //this method use to caculate minute and return time string
+        private string CaculateTime(int numberOfSlot)
+        {
+            int totalMinutes = numberOfSlot * 30;
+            int hours = totalMinutes / 60;
+            int minutes = totalMinutes % 60;
+            string formattedTime = string.Format("{0}:{1:00}", hours, minutes);
+            return formattedTime;
         }
 
         public async Task DeleteAsync(string id)

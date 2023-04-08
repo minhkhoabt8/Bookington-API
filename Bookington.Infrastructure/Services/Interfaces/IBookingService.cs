@@ -12,7 +12,8 @@ namespace Bookington.Infrastructure.Services.Interfaces
     {
         Task<IEnumerable<BookingReadDTO>> GetAllAsync();
         //Task<BookingReadDTO> CreateAsync(BookingWriteDTO dto);
-        Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> bookings);
+        //Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> bookings);
+        Task<PaymentReadDto> CreateBookingsAsync(string courtId, IEnumerable<BookingWriteDTO> dtos);
         Task<BookingReadDTO> UpdateAsync(string id, BookingWriteDTO dto);
         Task DeleteAsync(string id);
         Task<BookingReadDTO> GetByIdAsync(string id);
