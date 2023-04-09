@@ -19,11 +19,17 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         }
         public async Task<Account?> LoginByPhoneAsync(AccountLoginInputDTO login)
         {
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(login.Password);
+            var account = await _context.Accounts.FirstOrDefaultAsync(c => c.Phone == login.Phone);
 
-            bool verified = BCrypt.Net.BCrypt.Verify(login.Password, passwordHash);
+            bool verified = BCrypt.Net.BCrypt.Verify(login.Password, account.Password);
 
-            return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone && verified == true);
+            if (verified == true)
+            {
+                return account;
+            }
+
+            return null;
+
         }
 
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)
