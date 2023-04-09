@@ -25,8 +25,7 @@ namespace Bookington.Infrastructure.Mapper
         public MappingProfile()
         {
             // Account
-            CreateMap<Account, AccountReadDTO>()
-                .ForMember(dest => dest.RoleName, options => options.MapFrom(src => src.Role.RoleName));
+            CreateMap<Account, AccountReadDTO>();
             CreateMap<Account, AccountProfileReadDTO>();
             CreateMap<AccountWriteDTO, Account>();
             CreateMap<AccountUpdateDTO,Account>()
