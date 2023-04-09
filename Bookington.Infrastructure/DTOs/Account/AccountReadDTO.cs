@@ -26,8 +26,7 @@ namespace Bookington.Infrastructure.DTOs.Account
         public string Phone { get; set; }
          public string Password
          {
-            get { return password; }
-            set { password = EncryptPassword(value); }
+           get; set;
          }
 
         private string password;

@@ -29,7 +29,9 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             }
 
             return null;
-
+            //string passwordHash = BCrypt.Net.BCrypt.HashPassword(login.Password);
+            //bool verified = BCrypt.Net.BCrypt.Verify(login.Password, passwordHash);
+            //return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone && verified == true);
         }
 
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)
