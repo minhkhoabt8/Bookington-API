@@ -4,6 +4,7 @@ using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
@@ -13,9 +14,64 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
 
-        public async Task<IEnumerable<Court?>> GetAllCourtByOwnerIdAsync(string ownerId)
+        public async Task<IEnumerable<Court>> GetAllCourtByOwnerIdAsync(CourtItemQuery query, string ownerId, bool trackChanges = false)
         {
-            return _context.Courts.Where(c => c.OwnerId == ownerId && c.IsDeleted == false);
+            IQueryable<Court> courts = _context.Courts
+               .Include(c => c.District)
+               .Include(c => c.SubCourts)
+               .Include(c => c.Comments)
+               .Include(c => c.District.Province)
+               .Include(c => c.CourtImages)
+               .Where(c =>c.OwnerId == ownerId && c.IsDeleted == false);
+
+            if (!trackChanges)
+            {
+                courts = courts.AsNoTracking();
+            }
+            if (!query.SearchText.IsNullOrEmpty())
+            {
+                courts = courts.Where(c => c.Name.Contains(query.SearchText));
+            }
+            if (!query.District.IsNullOrEmpty())
+            {
+                courts = courts.Where(c => c.District.DistrictName.Contains(query.District));
+            }
+            if (!query.Province.IsNullOrEmpty())
+            {
+                courts = courts.Where(c => c.District.Province.ProvinceName.Contains(query.District));
+            }
+            if (!query.OpenAt.IsNullOrEmpty())
+            {
+                var openAt = TimeSpan.Parse(query.OpenAt);
+                courts = courts.Where(c => c.OpenAt == openAt);
+            }
+            else if (!query.CloseAt.IsNullOrEmpty())
+            {
+                var closeAt = TimeSpan.Parse(query.CloseAt);
+                courts = courts.Where(c => c.CloseAt == closeAt);
+            }
+            else if (!query.OpenAt.IsNullOrEmpty() && !query.CloseAt.IsNullOrEmpty())
+            {
+
+                var openAt = TimeSpan.Parse(query.OpenAt);
+                var closeAt = TimeSpan.Parse(query.CloseAt);
+
+                if (openAt <= closeAt)
+                {
+                    courts = courts.Where(c => c.OpenAt >= openAt && c.CloseAt <= closeAt);
+                }
+
+            }
+            else if (!query.DateOpen.IsNullOrEmpty())
+            {
+                var date = DateTime.Parse(query.DateOpen);
+
+                courts = courts.Where(c => c.SubCourts.All(s => s.Slots.All(slot => !slot.Bookings.Any(b => b.BookAt == date))));
+            }
+            return courts;
+
+
+          
         }
 
         public async Task<IEnumerable<Court>> QueryAsync(CourtItemQuery query, bool trackChanges = false)

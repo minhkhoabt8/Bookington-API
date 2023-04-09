@@ -11,6 +11,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IDelete<Court>,
         IQueryAsync<Court,CourtItemQuery>
     {
-        Task<IEnumerable<Court?>> GetAllCourtByOwnerIdAsync(string ownerId);
+        Task<IEnumerable<Court>> GetAllCourtByOwnerIdAsync(CourtItemQuery query, string ownerId, bool trackChanges = false);
     }
 }

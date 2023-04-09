@@ -60,7 +60,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (ownerId == null) throw new ForbiddenException();
 
-            var courts = await _unitOfWork.CourtRepository.GetAllCourtByOwnerIdAsync(ownerId);
+            var courts = await _unitOfWork.CourtRepository.GetAllCourtByOwnerIdAsync(query, ownerId);
 
             return PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
                  courts, query, _mapper);

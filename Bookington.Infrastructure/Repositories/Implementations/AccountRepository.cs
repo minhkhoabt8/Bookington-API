@@ -23,7 +23,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             bool verified = BCrypt.Net.BCrypt.Verify(login.Password, account.Password);
 
-            if (verified == true)
+            if (verified == true && account != null)
             {
                 return account;
             }
