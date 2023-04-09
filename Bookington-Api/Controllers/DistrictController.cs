@@ -1,8 +1,10 @@
-﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.District;
 using Bookington.Infrastructure.DTOs.Province;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +15,7 @@ namespace Bookington_Api.Controllers
     /// Province Controller
     /// </summary>
     [Route("districts")]
-    [Authorize(Roles = "user,admin,owner")]
+    [RoleAuthorize(AccountRole.owner, AccountRole.admin, AccountRole.customer)]
     [ApiController]
     public class DistrictController : Controller
     {

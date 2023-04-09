@@ -44,12 +44,12 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             {
                 courts = courts.Where(c => c.District.Province.ProvinceName.Contains(query.District));
             }
-            if (!query.OpenAt.IsNullOrEmpty() && query.CloseAt.IsNullOrEmpty())
+            if (!query.OpenAt.IsNullOrEmpty())
             {
                 var openAt = TimeSpan.Parse(query.OpenAt);
                 courts = courts.Where(c => c.OpenAt == openAt);
             }
-            else if (!query.CloseAt.IsNullOrEmpty() && query.OpenAt.IsNullOrEmpty())
+            else if (!query.CloseAt.IsNullOrEmpty())
             {
                 var closeAt = TimeSpan.Parse(query.CloseAt);
                 courts = courts.Where(c => c.CloseAt == closeAt);
@@ -65,6 +65,11 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                     courts = courts.Where(c => c.OpenAt >= openAt && c.CloseAt <= closeAt);
                 }
                
+            }else if (!query.DateOpen.IsNullOrEmpty())
+            {
+                var date = DateTime.Parse(query.DateOpen);
+
+                courts = courts.Where(c => c.SubCourts.All(s => s.Slots.All(slot => !slot.Bookings.Any(b => b.BookAt == date))));
             }
             return courts;
 
