@@ -55,7 +55,7 @@ public partial class Account
 
     public virtual ICollection<Notification> Notifications { get; } = new List<Notification>();
 
-    public virtual AccountAvatar RefAvatarNavigation { get; set; } = null!;
+    public virtual ICollection<Order> Orders { get; } = new List<Order>();    
 
     public virtual Role Role { get; set; } = null!;
 

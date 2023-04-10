@@ -14,8 +14,11 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IUpdate<SubCourt>,        
         IFindAsync<SubCourt>
     {
+        Task<int> GetNumberOfSubCourts(string courtId, bool trackChanges = false);
         Task<IEnumerable<SubCourt>> GetAvailableSubCourtsByCourtId(string courtId, bool trackChanges = false);
-        Task<IEnumerable<SubCourt>> GetSubCourtsForBooking(SubCourtQueryForBooking dto, bool trackChanges = false);
-        //Task<IEnumerable<SubCourt>> GetUnavailableSubCourtsForBooking(SubCourtQueryForBooking dto, bool trackChanges = false);
+        Task<IEnumerable<SubCourt>> GetSubCourtsForBooking(SubCourtQueryForBooking dto);
+        Task<Account> GetCourtOwnerBySubCourtId(string subCourtId);
+        Task<string> GetCourtNameBySubCourtId(string subCourtId);
+        Task<IEnumerable<SubCourt>> GetSubCourtsOfOwner(string ownerId);
     }
 }

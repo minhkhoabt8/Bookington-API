@@ -10,6 +10,7 @@
     <Folder Include="Events\" />
     <Folder Include="Extensions\" />
     <Folder Include="Entities\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,6 +19,8 @@ public partial class SubCourt
 
     public bool IsDeleted { get; set; }
 
+    public virtual ICollection<Booking> Bookings { get; } = new List<Booking>();
+
     public virtual CourtType CourtType { get; set; } = null!;
 
     public virtual Court ParentCourt { get; set; } = null!;

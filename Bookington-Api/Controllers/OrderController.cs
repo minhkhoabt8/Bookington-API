@@ -9,8 +9,6 @@ using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Bookington_Api.Controllers
 {
     /// <summary>
@@ -48,11 +46,11 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>                
         [HttpGet("{id}")]
+        [RoleAuthorize(AccountRole.owner, AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<OrderReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderReadDTO))]
         public async Task<IActionResult> GetDetailsByIdAsync(string id)
-        {
-            // TODO: JSON Needs To Be Fixed Later
+        {            
             var order = await _orderService.GetByIdAsync(id);
             return ResponseFactory.Ok(order);
         }
@@ -70,7 +68,7 @@ namespace Bookington_Api.Controllers
         public async Task<IActionResult> CheckOutAsync(CheckOutWriteDTO dto)
         {            
             var result = await _orderService.CheckOutAsync(dto);
-            return ResponseFactory.Ok("Check out successfully! " + result);
+            return ResponseFactory.Ok(result, "Check out successfully!");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,16 +12,26 @@ namespace Bookington.Infrastructure.DTOs.Court
     {
         public string? Id { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }        
 
-        public string? OwnerId { get; set; }
+        public string? Phone { get; set; }
 
-        public string? DistrictName { get; set; }
+        public string? DistrictName { get; set; }        
 
         public string? Address { get; set; }
+
+        public string? Description { get; set; }
+
+        public double MoneyPerHour { get; set; }
+
+        public int NumberOfSubCourt { get; set; }        
+
+        public double RatingStar { get; set; }
 
         public TimeSpan? OpenAt { get; set; }
 
         public TimeSpan? CloseAt { get; set; }
+
+        public bool IsActive { get; set; }        
     }
 }

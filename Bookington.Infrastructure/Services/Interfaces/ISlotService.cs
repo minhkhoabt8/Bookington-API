@@ -1,5 +1,7 @@
-﻿using Bookington.Infrastructure.DTOs.Role;
+﻿using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.DTOs.Slot;
+using Bookington.Infrastructure.DTOs.SubCourtSlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +12,10 @@ namespace Bookington.Infrastructure.Services.Interfaces
 {
     public interface ISlotService
     {
-        Task<IEnumerable<SlotReadDTO>> GetAllAsync();
-        Task<SlotReadDTO> CreateAsync(SlotWriteDTO dto);
-        Task<SlotReadDTO> UpdateAsync(int id, SlotWriteDTO dto);
-        Task DeleteAsync(int id);
-        Task<SlotReadDTO> GetByIdAsync(string id);
-        Task<SlotsForBookingReadDTO> GetAvailableSlotsForBooking(SlotQueryForBooking dto);
+        Task GenerateDefaultSlots(int slotDuration);
+        Task<string> GenerateDefaultSlotsForSubCourt(DefaultSubCourtSlotWriteDTO dto);
+        Task<IEnumerable<SlotReadDTO>> GetAllDefaultSlotsAsync();
+        Task<IEnumerable<SubCourtSlotScheduleReadDTO>> GetScheduleOfASubCourt(string subCourtId);
+        Task<SlotsForBookingReadDTO> GetAvailableSlotsForBooking(SlotQueryForBooking dto);        
     }
 }

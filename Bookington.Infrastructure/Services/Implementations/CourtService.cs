@@ -10,6 +10,7 @@ using System;
 using System.Data;
 using System.Globalization;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -53,17 +54,17 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task<IEnumerable<CourtReadDTO>> GetAllCourtByOwnerIdAsync()
+        public async Task<PaginatedResponse<CourtReadDTO>> GetAllCourtsByOwnerIdAsync(CourtOfOwnerQuery query)
         {
 
             var ownerId = _userContextService.AccountID.ToString();
 
-            if(ownerId == null) throw new ForbiddenException();
+            if (ownerId == null) throw new ForbiddenException();
 
-            var courts = await _unitOfWork.CourtRepository.GetAllCourtByOwnerIdAsync(ownerId);
+            var courts = await _unitOfWork.CourtRepository.GetAllCourtsByOwnerIdAsync(ownerId);            
 
-            return _mapper.Map<IEnumerable<CourtReadDTO>>(courts);
-            
+            return PaginatedResponse<CourtReadDTO>.FromEnumerableWithMapping(
+                courts, query, _mapper);
         }
 
         public async Task<CourtReadDTO> GetByIdAsync(string id)
@@ -72,9 +73,17 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existCourt?.OwnerId != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
-            else if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(existCourt.Id);
+            else if (existCourt == null || existCourt.IsDeleted) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id);
 
-            return _mapper.Map<CourtReadDTO>(existCourt);
+            var result = _mapper.Map<CourtReadDTO>(existCourt);
+
+            result.NumberOfSubCourt = await _unitOfWork.SubCourtRepository.GetNumberOfSubCourts(existCourt.Id);
+
+            // TODO: Needs rating of courts
+            
+            result.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(existCourt.Id);
+
+            return result;
         }
 
         public async Task<CourtReadDTO> UpdateAsync(string id, CourtWriteDTO dto)
@@ -99,8 +108,27 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var courts = await _unitOfWork.CourtRepository.QueryAsync(query);
 
-            return PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
+            var result = PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
                 courts, query, _mapper);
+            
+            foreach (var court in result.ToList())
+            {
+                // Remove any courts found after query with no sub courts
+                court.NumberOfSubCourt = await _unitOfWork.SubCourtRepository.GetNumberOfSubCourts(court.Id);
+
+                if (court.NumberOfSubCourt == 0)
+                    result.Remove(court);
+
+                // TODO: Needs rating of courts
+
+                // Get the lowest slot's price of each court
+                court.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(court.Id);
+
+                if (court.MoneyPerHour == (double) 0)
+                    result.Remove(court);
+            }
+
+            return result;
         }
     }
 }

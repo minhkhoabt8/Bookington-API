@@ -21,4 +21,8 @@ namespace Bookington.Infrastructure.DTOs.Court
         public string? OpenAt { get; set; }
         public string? CloseAt { get; set; }
     }
+
+    public class CourtOfOwnerQuery : PaginatedQuery
+    {
+    }
 }

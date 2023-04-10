@@ -10,15 +10,11 @@ namespace Bookington.Infrastructure.DTOs.Slot
 {
     public class SlotReadDTO
     {
-        public string Id { get; set; } = null!;
-
-        public string? RefSubCourt { get; set; }
+        public string Id { get; set; } = null!;        
 
         public TimeSpan? StartTime { get; set; }
 
-        public TimeSpan? EndTime { get; set; }
-
-        public bool? IsActive { get; set; }
+        public TimeSpan? EndTime { get; set; }       
     }
 
     public class SlotForBookingReadDTO

@@ -12,6 +12,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
     {        
         Task<IEnumerable<OrderReadDTO>> GetAllAsync();
         Task<OrderReadDTO> GetByIdAsync(string id);
-        Task<string> CheckOutAsync(CheckOutWriteDTO dto);
+        Task<CheckOutResponse> CheckOutAsync(CheckOutWriteDTO dto);
     }
 }

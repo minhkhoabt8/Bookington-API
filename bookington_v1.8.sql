@@ -1,22 +1,18 @@
 CREATE TABLE roles (
-    id VARCHAR(40) PRIMARY KEY,
-    role_name VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE account_avatars (
-	id VARCHAR(40) PRIMARY KEY,
-	ref_image VARCHAR(40) NOT NULL
+        id VARCHAR(40) PRIMARY KEY,
+        role_name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE accounts (
-        id VARCHAR(40) PRIMARY KEY,
-        role_id VARCHAR(40) FOREIGN KEY REFERENCES roles(id) NOT NULL,	
-	ref_avatar VARCHAR(40) FOREIGN KEY REFERENCES account_avatars(id) NOT NULL,
+    id VARCHAR(40) PRIMARY KEY,
+    role_id VARCHAR(40) FOREIGN KEY REFERENCES roles(id) NOT NULL,	
+	ref_avatar VARCHAR(256) NOT NULL,
 	phone VARCHAR(10) UNIQUE NOT NULL,
 	password VARCHAR(100) NOT NULL,
 	full_name NVARCHAR(50),
 	date_of_birth DATE,
 	create_at DATETIME NOT NULL,	
+	is_verified BIT NOT NULL,
 	is_active BIT NOT NULL,
 	is_deleted BIT NOT NULL
 );
@@ -56,7 +52,7 @@ CREATE TABLE courts (
 	id VARCHAR(40) PRIMARY KEY,
 	owner_id VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	district_id VARCHAR(40) FOREIGN KEY REFERENCES districts(id) NOT NULL,
-	name NVARCHAR(100) NOT NULL,
+	name NVARCHAR(250) NOT NULL,
 	address NVARCHAR(200),
 	description NVARCHAR(1000),
 	open_at TIME NOT NULL,
@@ -108,7 +104,7 @@ CREATE TABLE user_reports (
 	reporter_id VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	ref_response VARCHAR(40) FOREIGN KEY REFERENCES user_report_responses(id),
 	content NVARCHAR(1000) NOT NULL,
-	is_responsed BIT NOT NULL
+	is_responded BIT NOT NULL
 );
 
 CREATE TABLE court_types (
@@ -118,25 +114,28 @@ CREATE TABLE court_types (
 
 CREATE TABLE sub_courts (
 	id VARCHAR(40) PRIMARY KEY,
-	name NVARCHAR(100) NOT NULL,
 	parent_court_id VARCHAR(40) FOREIGN KEY REFERENCES courts(id) NOT NULL,
 	court_type_id VARCHAR(40) FOREIGN KEY REFERENCES court_types(id) NOT NULL,
+	name NVARCHAR(100) NOT NULL,
 	create_at DATETIME NOT NULL,
-	slot_duration INT NOT NULL,
 	is_active BIT NOT NULL,
 	is_deleted BIT NOT NULL
 );
 
 CREATE TABLE slots (
 	id VARCHAR(40) PRIMARY KEY,
-	ref_sub_court VARCHAR(40) FOREIGN KEY REFERENCES sub_courts(id) NOT NULL,
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
 	days_in_schedule VARCHAR(20) NOT NULL,
-	price DOUBLE PRECISION NOT NULL,
-	is_active BIT NOT NULL,
-	is_deleted BIT NOT NULL
 );
+
+CREATE TABLE sub_court_slots (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_sub_court VARCHAR(40) FOREIGN KEY REFERENCES sub_courts(id) NOT NULL,
+	ref_slot VARCHAR(40) FOREIGN KEY REFERENCES slots(id) NOT NULL,
+	price DOUBLE PRECISION NOT NULL,
+	is_active BIT NOT NULL
+)
 
 CREATE TABLE vouchers (
 	id VARCHAR(40) PRIMARY KEY,
@@ -155,10 +154,19 @@ CREATE TABLE vouchers (
 	is_deleted BIT NOT NULL
 );
 
-CREATE TABLE transaction_history (
+CREATE TABLE momo_transactions (
+	id VARCHAR(40) PRIMARY KEY,
+	content NVARCHAR(1000) NOT NULL,
+	amount DOUBLE PRECISION NOT NULL,
+	create_at DATETIME NOT NULL,
+	is_successful BIT NOT NULL
+);
+
+CREATE TABLE transactions (
 	id VARCHAR(40) PRIMARY KEY,
 	ref_from VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	ref_to VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	ref_momo_transaction VARCHAR(40) FOREIGN KEY REFERENCES momo_transactions(id),
 	amount DOUBLE PRECISION NOT NULL,
 	reason NVARCHAR(500) NOT NULL,
 	create_at DATETIME NOT NULL	
@@ -166,7 +174,8 @@ CREATE TABLE transaction_history (
 
 CREATE TABLE orders (
 	id VARCHAR(40) PRIMARY KEY,
-	transaction_id VARCHAR(40) FOREIGN KEY REFERENCES transaction_history(id),
+	create_by VARCHAR(40) FOREIGN KEY REFERENCES accounts(id),
+	transaction_id VARCHAR(40) FOREIGN KEY REFERENCES transactions(id),
 	voucher_code VARCHAR(10) FOREIGN KEY REFERENCES vouchers(voucher_code),
 	order_at DATETIME NOT NULL,
 	original_price DOUBLE PRECISION NOT NULL,	
@@ -179,6 +188,7 @@ CREATE TABLE orders (
 CREATE TABLE bookings (
 	id VARCHAR(40) PRIMARY KEY,
 	ref_slot VARCHAR(40) FOREIGN KEY REFERENCES slots(id) NOT NULL,
+	ref_sub_court VARCHAR(40) FOREIGN KEY REFERENCES sub_courts(id) NOT NULL,
 	ref_order VARCHAR(40) FOREIGN KEY REFERENCES orders(id) NOT NULL,
 	book_by VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
 	book_at DATETIME NOT NULL,
@@ -217,7 +227,7 @@ CREATE TABLE notifications (
 	is_read BIT NOT NULL
 );
 
-CREATE TABLE promotions (
+CREATE TABLE ads (
 	id VARCHAR(40) PRIMARY KEY,
 	title NVARCHAR(200) NOT NULL,
 	ref_court VARCHAR(40) FOREIGN KEY REFERENCES courts(id),
@@ -225,8 +235,8 @@ CREATE TABLE promotions (
 	promotion_order INT NOT NULL,
 	start_time DATETIME NOT NULL,
 	end_time DATETIME NOT NULL,
-	link VARCHAR(2048) NOT NULL,
-	is_court_promotion BIT NOT NULL,
+	ad_link VARCHAR(2048) NOT NULL,
+	is_court_ad BIT NOT NULL,
 	is_deleted BIT NOT NULL
 );
 
@@ -241,4 +251,63 @@ CREATE TABLE bans (
 	is_account_ban BIT NOT NULL,
 	is_court_ban BIT NOT NULL,
 	is_active BIT NOT NULL
+);
+
+CREATE TABLE matches (
+	id VARCHAR(40) PRIMARY KEY,
+	host_by VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	ref_booking VARCHAR(40) FOREIGN KEY REFERENCES bookings(id) NOT NULL,
+	num_of_players_allowed INT NOT NULL,
+	num_of_rounds INT NOT NULL,
+	match_code VARCHAR(6),
+	is_payment_splitted BIT NOT NULL
+);
+
+CREATE TABLE competitions (
+	id VARCHAR(40) PRIMARY KEY,
+	host_by VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL,
+	name NVARCHAR(500) NOT NULL,
+	description NVARCHAR(2500) NOT NULL,
+	num_of_teams_allowed INT NOT NULL,
+	competition_code VARCHAR(6) NOT NULL,
+	start_date DATETIME NOT NULL,
+	end_date DATETIME NOT NULL,
+	register_deadline DATETIME NOT NULL,
+	is_started BIT NOT NULL
+);
+
+CREATE TABLE competition_matches (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_competition VARCHAR(40) FOREIGN KEY REFERENCES competitions(id) NOT NULL,
+	ref_match VARCHAR(40) FOREIGN KEY REFERENCES matches(id) NOT NULL,
+	match_position INT NOT NULL
+);
+
+CREATE TABLE teams (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_match VARCHAR(40) FOREIGN KEY REFERENCES matches(id) NOT NULL,
+	ref_competition VARCHAR(40) FOREIGN KEY REFERENCES competitions(id),
+	name NVARCHAR(50) NOT NULL,
+	team_code VARCHAR(6),
+	is_competition_team BIT NOT NULL
+)
+
+CREATE TABLE match_teams (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_match VARCHAR(40) FOREIGN KEY REFERENCES matches(id) NOT NULL,
+	ref_team VARCHAR(40) FOREIGN KEY REFERENCES teams(id) NOT NULL
+);
+
+CREATE TABLE rounds (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_match VARCHAR(40) FOREIGN KEY REFERENCES matches(id) NOT NULL,
+	ref_team VARCHAR(40) FOREIGN KEY REFERENCES teams(id) NOT NULL,
+	round_num INT NOT NULL,
+	point INT NOT NULL
+);
+
+CREATE TABLE team_players (
+	id VARCHAR(40) PRIMARY KEY,
+	ref_team VARCHAR(40) FOREIGN KEY REFERENCES teams(id) NOT NULL,
+	ref_account VARCHAR(40) FOREIGN KEY REFERENCES accounts(id) NOT NULL
 );

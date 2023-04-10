@@ -155,7 +155,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ICourtReportRepository, CourtReportRepository>();
             services.AddScoped<IUserReportRepository, UserReportRepository>();
             services.AddScoped<IUserBalanceRepository, UserBalanceRepository>();
-            services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
@@ -163,6 +163,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ICourtReportResponseRepository, CourtReportResponseRepository>();
             services.AddScoped<IBanRepository, BanRepository>();
             services.AddScoped<IUserReportResponseRepository, UserReportResponseRepository>();
+            services.AddScoped<ISubCourtSlotRepository, SubCourtSlotRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work

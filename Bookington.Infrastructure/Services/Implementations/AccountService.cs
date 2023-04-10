@@ -188,8 +188,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
             if (existAccount == null || existAccount.IsDeleted == true) throw new EntityWithIDNotFoundException<Account>(id);
-            // Admin can't update themselves via this method
-            else if (existAccount?.Id == _userContextService.AccountID.ToString()) throw new ForbiddenException();
+            // User can't update other people's profile
+            else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new InvalidActionException("You can't update other people's profile!");
 
             _mapper.Map(dto, existAccount);
 

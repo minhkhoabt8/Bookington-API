@@ -2,7 +2,10 @@
 using AutoMapper;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
+using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Booking;
+using Bookington.Infrastructure.DTOs.IncomingBooking;
 using Bookington.Infrastructure.DTOs.IncomingMatch;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
@@ -21,145 +24,110 @@ namespace Bookington.Infrastructure.Services.Implementations
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
-        }
+        }        
+            
+        public async Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> dtos)
+        {            
+            // Check if account is valid
+            var accountId = _userContextService.AccountID.ToString();
 
-        /*//Will have to check status of voucher code and the referenced slot
-        public async Task<BookingReadDTO> CreateAsync(BookingWriteDTO dto)
-        {
-            var newBooking = _mapper.Map<Booking>(dto);
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-            // Check if slot existed
-            var existSlot = await _unitOfWork.SlotRepository.FindAsync(dto.RefSlot);
+            if (dtos.Count() == 0) throw new InvalidActionException("You didn't choose a slot to proceed booking!");
 
-            if (existSlot == null) throw new EntityWithIDNotFoundException<Slot>(dto.RefSlot);
+            var playDate = DateOnly.FromDateTime(dtos.ElementAt(0).PlayDate);
 
-            // Then set original price to booking
-            //newBooking.OriginalPrice = existSlot.Price;
+            bool isSameDayBooking = false;
 
-            // Check if customer includes a voucher code in the booking or not
-            var isVoucherUsed = dto.VoucherCode.IsNullOrEmpty();
+            // Check if play date is valid
+            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your play date is bullshit!");
+            else if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == 0) isSameDayBooking = true;
 
-            if (!isVoucherUsed)
+            var newBookings = _mapper.Map<IEnumerable<Booking>>(dtos);
+
+            var existSubCourtSlots = new List<SubCourtSlot>();
+
+            var IsThereAnySlotBooked = false;
+
+            var slotsBookedErr = "Some slots you chose have already been booked: ";
+
+            foreach (var dto in dtos)
             {
-                var existVoucher = await _unitOfWork.VoucherRepository.FindAsync(dto.VoucherCode);
+                // Check if slot existed
+                var existSlot = await _unitOfWork.SlotRepository.FindAsync(dto.RefSlot);
 
-                if (existVoucher == null) throw new EntityWithIDNotFoundException<Slot>(dto.RefSlot);
+                if (existSlot == null) throw new EntityWithIDNotFoundException<Slot>(dto.RefSlot);
 
-                newBooking.VoucherCode = existVoucher.VoucherCode;                
+                // Check if sub court uses this slot
+                var existSubCourtSlot = await _unitOfWork.SubCourtSlotRepository.FindAsync(dto.RefSubCourt, dto.RefSlot);
 
-                //Since a voucher is used booking's price = original price * (100 - discount from voucher)
-                //newBooking.Price = existSlot.Price * (100 - existVoucher.Discount);                
+                if (existSubCourtSlot == null) throw new EntityNotFoundException("This sub court doesn't have slot (" + existSlot.StartTime + " - " + existSlot.EndTime + ")");
+
+                // Check if slot is still active
+                if (!existSubCourtSlot.IsActive) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " is not active right now!");
+
+                // Check for same day booking
+                if (isSameDayBooking)
+                {
+                    var dateSlot = DateTime.Now.Date.AddMinutes(existSlot.StartTime.TotalMinutes);
+
+                    if (DateTime.Now.CompareTo(dateSlot) > 0) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " has passed the booking window!");
+                }
+
+                // Check if this slot is a booked slot                
+                var isThisSlotBooked = await _unitOfWork.SlotRepository.IsSlotBooked(existSubCourtSlot.RefSlot, playDate.ToDateTime(TimeOnly.MinValue));
+
+                if (isThisSlotBooked)
+                {
+                    if (IsThereAnySlotBooked) slotsBookedErr += " &";
+                    else IsThereAnySlotBooked = true;
+
+                    slotsBookedErr += "(" + existSlot.StartTime + " - " + existSlot.EndTime + ")";
+                }
+
+                existSubCourtSlots.Add(existSubCourtSlot);
             }
-            else 
+
+            // Throw error for booked slots
+            if (IsThereAnySlotBooked) throw new InvalidActionException(slotsBookedErr);
+
+            // Create an order to contain bookings
+            var bookTime = DateTime.Now;
+            var newOrder = new Order()
             {
-                // No voucher used so the price customer has to pay = original price of that slot
-                //newBooking.Price = newBooking.OriginalPrice;
+                CreateBy = accountId!,
+                OrderAt = bookTime
+            };
 
-                newBooking.VoucherCode = null;
-            }            
+            // Assign value to each booking                         
+            int pos = 0;                        
 
-            await _unitOfWork.BookingRepository.AddAsync(newBooking);
+            foreach (var booking in newBookings)
+            {
+                booking.RefOrder = newOrder.Id;                
+                booking.BookBy = accountId!;                
+                booking.PlayDate = playDate.ToDateTime(TimeOnly.MinValue);
+                booking.BookAt = bookTime;
+                booking.Price = existSubCourtSlots[pos].Price;                
 
+                // Update order's total price
+                newOrder.TotalPrice += booking.Price;
+                pos++;
+            }
+
+            // Proceed to add new order to database
+            await _unitOfWork.OrderRepository.AddAsync(newOrder);
+
+            // Proceed to add new bookings to database
+            foreach (var booking in newBookings)
+            {
+                await _unitOfWork.BookingRepository.AddAsync(booking);
+            }
+
+            // Commit to database
             await _unitOfWork.CommitAsync();
 
-            return _mapper.Map<BookingReadDTO>(newBooking);
-        }*/
-
-        // TODO: PHO FIX THIS PLZ
-        // NEEDS CHECK FOR BOOKED SLOTS        
-        public async Task<IEnumerable<BookingReadDTO>> CreateBookingsAsync(IEnumerable<BookingWriteDTO> dtos)
-        {
-            //TODO: Fix Update DB v1.7
-            //// Check if account is valid
-            //var accountId = _userContextService.AccountID.ToString();
-
-            //if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
-
-            //if (dtos.Count() == 0) throw new InvalidActionException("You didn't choose a slot to proceed booking!");
-
-            //var playDate = DateOnly.FromDateTime(dtos.ElementAt(0).PlayDate);            
-
-            //bool isSameDayBooking = false;
-
-            //// Check if play date is valid
-            //if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your play date is bullshit!");
-            //else if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == 0) isSameDayBooking = true;
-
-            //var newBookings = _mapper.Map<IEnumerable<Booking>>(dtos);
-
-            //var existSlots = new List<Slot>();
-
-            //var IsThereAnySlotBooked = false;
-
-            //var slotBookedErr = "Some slots you chose have already been booked: ";
-
-            //foreach (var dto in dtos)
-            //{
-            //    // Check if slot existed
-            //    var existSlot = await _unitOfWork.SlotRepository.FindAsync(dto.RefSlot);
-
-            //    if (existSlot == null) throw new EntityWithIDNotFoundException<Slot>(dto.RefSlot);
-
-            //    // Check if slot is still active
-            //    if (!existSlot.IsActive) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " is not active right now!");
-
-            //    // Check for same day booking
-            //    if (isSameDayBooking)
-            //    {
-            //        var dateSlot = DateTime.Now.Date.AddMinutes(existSlot.StartTime.TotalMinutes);
-
-            //        if (DateTime.Now.CompareTo(dateSlot) > 0) throw new InvalidActionException("Slot " + existSlot.StartTime + "-" + existSlot.EndTime + " has passed the booking window!");
-            //    }
-
-            //    // Check if this slot is a booked slot                
-            //    var isThisSlotBooked = await _unitOfWork.SlotRepository.IsSlotBooked(existSlot.Id, playDate.ToDateTime(TimeOnly.MinValue));
-
-            //    if (isThisSlotBooked)
-            //    {
-            //        IsThereAnySlotBooked = true;
-
-            //    }
-
-            //    existSlots.Add(existSlot);
-            //}
-
-            //// Create an order to contain bookings
-            //var bookTime = DateTime.Now;
-            //var newOrder = new Order()
-            //{
-            //    OrderAt = bookTime
-            //};
-
-            //// Assign value to each booking                         
-            //int pos = 0;                        
-
-            //foreach (var booking in newBookings)
-            //{
-            //    booking.RefOrder = newOrder.Id;
-            //    booking.BookBy = accountId!;                
-            //    booking.PlayDate = playDate.ToDateTime(TimeOnly.MinValue);
-            //    booking.BookAt = bookTime;
-            //    booking.Price = existSlots[pos].Price;                
-
-            //    // Update order's total price
-            //    newOrder.TotalPrice += booking.Price;
-            //    pos++;
-            //}
-
-            //// Proceed to add new order to database
-            //await _unitOfWork.OrderRepository.AddAsync(newOrder);
-
-            //// Proceed to add new bookings to database
-            //foreach (var booking in newBookings)
-            //{
-            //    await _unitOfWork.BookingRepository.AddAsync(booking);
-            //}
-
-            //// Commit to database
-            //await _unitOfWork.CommitAsync();
-
-            //return _mapper.Map<IEnumerable<BookingReadDTO>>(newBookings);
-            throw new NotImplementedException();
+            return _mapper.Map<IEnumerable<BookingReadDTO>>(newBookings);            
         }
 
         public async Task DeleteAsync(string id)
@@ -207,49 +175,73 @@ namespace Bookington.Infrastructure.Services.Implementations
         // Get the whole booking history of a designated court       
         // Not including unpaid booking
         // Order by the most recent booking
-        public async Task<IEnumerable<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(string courtId)
-        {
-            //TODO: Fix Update DB v1.7
-            ////Check if court exists
-            //var existCourt = await _unitOfWork.CourtRepository.FindAsync(courtId);
+        public async Task<PaginatedResponse<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(BookingHistoryQuery query)
+        {            
+            bool isAllQuery = false;
+            
+            if (query.CourtId == "All") isAllQuery = true;
 
-            //if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(courtId);
+            // Check if account is valid
+            var accountId = _userContextService.AccountID.ToString();
 
-            ////Get all available sub courts
-            //var avSubCourts = await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(courtId);
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-            ////From each sub court get its bookings                        
-            //var subCourtIds = new List<string>();
+            //Check if court exists
+            if (!isAllQuery)
+            {
+                var existCourt = await _unitOfWork.CourtRepository.FindAsync(query.CourtId);
 
-            //foreach (var sc in avSubCourts) subCourtIds.Add(sc.Id);
+                if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(query.CourtId);
+            }
 
-            //var bookings = await _unitOfWork.BookingRepository.GetBookingsOfSubCourts(subCourtIds);
+            //Get all available sub courts
+            var avSubCourts = new List<SubCourt>();
 
-            ////Forgot sub court name in database
-            //foreach (var b in bookings)
-            //{
-            //    foreach (var sc in avSubCourts)
-            //    {
-            //        if (sc.Id == b.RefSlotNavigation.RefSubCourt) { }
-            //        //item.SubCourtName = sc.Name + " - " + sc.CourtType.Content;                    
-            //    }
-            //}
+            if (!isAllQuery) avSubCourts = (await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(query.CourtId)).ToList();
+            else avSubCourts = (await _unitOfWork.SubCourtRepository.GetSubCourtsOfOwner(accountId!)).ToList();
 
-            ////Don't know how to include sub court name in mapper without altering database
-            ////so i have to make do with this
-            //var result = _mapper.Map<IEnumerable<CourtBookingHistoryReadDTO>>(bookings);
+            var bookings = await _unitOfWork.BookingRepository.GetBookingsOfSubCourts(avSubCourts.Select(sc => sc.Id).ToList());
 
-            //return result;
-            throw new NotImplementedException();
+            return PaginatedResponse<CourtBookingHistoryReadDTO>.FromEnumerableWithMapping(
+                bookings, query, _mapper);
         }
 
-        public async Task<IEnumerable<IncomingMatchReadDTO>> GetIncomingMatchesFromBookingOfUser(string userId)
+        public async Task<PaginatedResponse<IncomingBookingReadDTO>> GetIncomingBookingsOfCustomer(IncomingBookingQuery query)
         {
-            if(_userContextService.AccountID.ToString() != userId) throw new ForbiddenException(userId);
+            // Check if account is valid
+            var accountId = _userContextService.AccountID.ToString();
 
-            var incomingMatches = await _unitOfWork.BookingRepository.GetIncomingMatchesFromBookingOfUser(userId);
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-            return _mapper.Map<IEnumerable<IncomingMatchReadDTO>>(incomingMatches);
+            // Get Incoming Bookings
+            var incomingBookings = await _unitOfWork.BookingRepository.GetIncomingBookingsOfUser(accountId!);
+
+            var result = PaginatedResponse<IncomingBookingReadDTO>.FromEnumerableWithMapping(
+                incomingBookings, query, _mapper);
+
+            foreach (var b in result)
+            {
+                if (DateTime.Now.CompareTo(b.PlayDate.Add(b.StartTime)) >= 0
+                 && DateTime.Now.CompareTo(b.PlayDate.Add(b.EndTime)) <= 0)
+                    b.Status = "started";
+                else b.Status = "incoming";
+            }
+
+            return result;
+        }
+
+        public async Task<PaginatedResponse<FinishedBookingReadDTO>> GetFinishedBookingsOfCustomer(FinishedBookingQuery query)
+        {
+            // Check if account is valid
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            // Get Incoming Bookings
+            var incomingBookings = await _unitOfWork.BookingRepository.GetFinishedBookingsOfUser(accountId!);
+
+            return PaginatedResponse<FinishedBookingReadDTO>.FromEnumerableWithMapping(
+                incomingBookings, query, _mapper);
         }
     }
 }

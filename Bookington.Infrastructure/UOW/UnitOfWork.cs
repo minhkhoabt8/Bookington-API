@@ -1,4 +1,5 @@
 ﻿using Bookington.Core.Data;
+using Bookington.Infrastructure.Repositories.Implementations;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using System;
 
@@ -37,13 +38,14 @@ namespace Bookington.Infrastructure.UOW
         public ICourtReportRepository CourtReportRepository => GetSingletonRepository<ICourtReportRepository>();
         public IUserReportRepository UserReportRepository => GetSingletonRepository<IUserReportRepository>();
         public IUserBalanceRepository UserBalanceRepository => GetSingletonRepository<IUserBalanceRepository>();
-        public ITransactionHistoryRepository TransactionHistoryRepository => GetSingletonRepository<ITransactionHistoryRepository>();
+        public ITransactionRepository TransactionHistoryRepository => GetSingletonRepository<ITransactionRepository>();
         public IOrderRepository OrderRepository => GetSingletonRepository<IOrderRepository>();
         public INotificationRepository NotificationRepository => GetSingletonRepository<INotificationRepository>();
         public ILoginTokenRepository LoginTokenRepository => GetSingletonRepository<ILoginTokenRepository>();
         public ICourtReportResponseRepository CourtReportResponseRepository => GetSingletonRepository<ICourtReportResponseRepository>();
         public IBanRepository BanRepository => GetSingletonRepository<IBanRepository>();
         public IUserReportResponseRepository UserReportResponseRepository => GetSingletonRepository<IUserReportResponseRepository>();
+        public ISubCourtSlotRepository SubCourtSlotRepository => GetSingletonRepository<ISubCourtSlotRepository>();
 
         private T GetSingletonRepository<T>()
         {

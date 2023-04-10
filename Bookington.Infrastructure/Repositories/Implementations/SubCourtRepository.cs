@@ -8,6 +8,7 @@ using Bookington.Core.Data;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Bookington.Infrastructure.DTOs.SubCourt;
+using System.Xml.Serialization;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
@@ -15,6 +16,17 @@ namespace Bookington.Infrastructure.Repositories.Implementations
     {
         public SubCourtRepository(BookingtonDbContext context) : base(context)
         {
+        }
+
+        public Task<int> GetNumberOfSubCourts(string courtId, bool trackChanges = false) 
+        {
+            IQueryable<SubCourt> dbSet = _context.Set<SubCourt>();
+            if (trackChanges == false)
+            {
+                dbSet = dbSet.AsNoTracking();
+            }
+
+            return Task.FromResult(dbSet.Where(sc => sc.ParentCourtId == courtId).Count());
         }
 
         public Task<IEnumerable<SubCourt>> GetAvailableSubCourtsByCourtId(string courtId, bool trackChanges = false)
@@ -25,104 +37,97 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                 dbSet = dbSet.AsNoTracking();
             }
 
-            return Task.FromResult(dbSet.Include(sc => sc.CourtType).Where(sc => sc.IsActive == true && sc.IsDeleted == false).AsEnumerable());
+            return Task.FromResult(dbSet.Include(sc => sc.CourtType).Where(sc => sc.IsActive == true && sc.IsDeleted == false && sc.ParentCourtId == courtId).AsEnumerable());
         }
 
-        public Task<IEnumerable<SubCourt>> GetSubCourtsForBooking(SubCourtQueryForBooking dto, bool trackChanges = false)
-        {
-            //TODO: Fix Update DB v1.7
-            //IQueryable<SubCourt> subCourts = _context.Set<SubCourt>();
-            //IQueryable<Slot> slots = _context.Set<Slot>();
-            //if (trackChanges == false)
-            //{
-            //    subCourts = subCourts.AsNoTracking();
-            //    slots = slots.AsNoTracking();
-            //}
-
-            //var dotw = dto.PlayDate.DayOfWeek.ToString();
-            //var startTime = dto.StartTime.ToTimeSpan();
-            //var endTime = dto.EndTime.ToTimeSpan();
-
-            //// Get available slots that fits with time frame (between StartTime and EndTime)
-            //var activeSubCourts = subCourts.Where(sc => sc.IsActive && sc.ParentCourtId == dto.CourtId).ToList();
-
-            //var avSlots = slots.Where(s => (s.IsActive && s.DaysInSchedule == dotw &&
-            //                                activeSubCourts.Select(sc => sc.Id).Contains(s.RefSubCourt)) &&                                                                                   
-            //                                s.StartTime.CompareTo(startTime) >= 0 &&
-            //                                s.EndTime.CompareTo(endTime) <= 0)
-            //                   .ToList();            
-
-            //var bookings = _context.Bookings.Include(b => b.RefOrderNavigation).Include(b => b.RefSlotNavigation).ToList();
-
-            //var bookingsOnPlayDate = bookings.Where(b => b.PlayDate.DayOfWeek.ToString() == dotw &&
-            //                                             b.RefOrderNavigation.IsPaid &&
-            //                                            !b.RefOrderNavigation.IsRefunded &&
-            //                                            !b.RefOrderNavigation.IsCanceled &&
-            //                                             avSlots.Select(s => s.Id).Contains(b.RefSlot))
-            //                                 .ToList();
-
-            //// Get booked slots             
-            //var bookedSlots = bookingsOnPlayDate.Select(b => b.RefSlotNavigation).ToList();
-
-            //// Remove booked slots from available slots
-            //foreach (var bs in bookedSlots)
-            //{
-            //    var findSlot = avSlots.Find(avs => avs.Id == bs.Id);
-            //    avSlots.Remove(findSlot);
-            //}
-
-            //// Get sub court part from slots to set status later
-            //// avscs = available sub courts
-            //var avscs = avSlots.Select(s => s.RefSubCourt).ToList();
-
-            //var hashSetOfavscs = new HashSet<string>(avscs);
-
-            //// For better understanding result 
-            //var resultSubCourts = activeSubCourts;
-
-            //// Set IsActive status to map with its available status
-            //foreach (var sc in resultSubCourts)
-            //{
-            //    if (!hashSetOfavscs.Contains(sc.Id)) sc.IsActive = false;                
-            //}
-
-            //return Task.FromResult(resultSubCourts.AsEnumerable());
-            throw new NotImplementedException();
-        }
-
-        /*public Task<IEnumerable<SubCourt>> GetUnavailableSubCourtsForBooking(SubCourtQueryForBooking dto, bool trackChanges = false)
-        {
-            IQueryable<SubCourt> subCourts = _context.Set<SubCourt>();
-            IQueryable<Slot> slots = _context.Set<Slot>();
-            if (trackChanges == false)
-            {
-                subCourts = subCourts.AsNoTracking();
-                slots = slots.AsNoTracking();
-            }
-
+        public Task<IEnumerable<SubCourt>> GetSubCourtsForBooking(SubCourtQueryForBooking dto)
+        {           
             var dotw = dto.PlayDate.DayOfWeek.ToString();
             var startTime = dto.StartTime.ToTimeSpan();
             var endTime = dto.EndTime.ToTimeSpan();
 
-            var activeSubCourts = subCourts.Where(sc => sc.IsActive && sc.ParentCourtId == dto.CourtId).ToList();
+            // Get all active sub courts of court
+            var atvSubCourts = _context.SubCourts.Where(sc => sc.IsActive && sc.ParentCourtId == dto.CourtId).ToList();
 
-            var avSlots = slots.Where(s => s.IsActive && s.DaysInSchedule == dotw
-                                        && activeSubCourts.Select(sc => sc.Id).Contains(s.RefSubCourt)
-                                        && s.StartTime.CompareTo(startTime) >= 0
-                                        && s.EndTime.CompareTo(endTime) <= 0).ToList();
+            // Get all active slots of the sub courts above
+            var atvSlotsOfSubCourts = _context.SubCourtSlots.Include(scs => scs.RefSlotNavigation)
+                                                            .Where(scs => scs.IsActive 
+                                                                       && scs.RefSlotNavigation.DaysInSchedule == dotw
+                                                                       && atvSubCourts.Select(sc => sc.Id).Contains(scs.RefSubCourt))                                                                       
+                                                            .ToList();
 
-            var avscs = avSlots.Select(s => s.RefSubCourt).ToList();
+            // Get all booked slots of the sub courts above on Play Date
+            var bookedSlotsOnPlayDate = _context.Bookings.Include(b => b.RefOrderNavigation)
+                                                         .Include(b => b.RefSlotNavigation)
+                                                         .Where(b => b.RefOrderNavigation.IsPaid
+                                                                 && !b.RefOrderNavigation.IsRefunded
+                                                                 && !b.RefOrderNavigation.IsCanceled
+                                                                 &&  b.PlayDate.CompareTo(dto.PlayDate.ToDateTime(TimeOnly.MinValue)) == 0
+                                                                 &&  atvSubCourts.Select(sc => sc.Id).Contains(b.RefSubCourt)
+                                                                 &&  b.RefSlotNavigation.StartTime.CompareTo(startTime) >= 0
+                                                                 &&  b.RefSlotNavigation.EndTime.CompareTo(endTime) <= 0)
+                                                         .Select(b => new
+                                                         {
+                                                             RefSlot = b.RefSlot,
+                                                             RefSubCourt = b.RefSubCourt
+                                                         }).ToList();
 
-            var unavSubCourts = activeSubCourts;
-
-            // Remove all available slots then what's left is the unavailable ones
-            foreach (var scId in avscs)
+            // Set IsActive status to map with its available status            
+            foreach (var sc in atvSubCourts)
             {
-                var currSc = unavSubCourts.FirstOrDefault(sc => sc.Id == scId);
-                if (currSc != null) unavSubCourts.Remove(currSc);
+                var atvSCSlotsOfCurrSubCourt = atvSlotsOfSubCourts.Where(sl => sl.RefSubCourt == sc.Id);
+                var bookedSlotsOfCurrSubCourt = bookedSlotsOnPlayDate.Where(bs => bs.RefSubCourt == sc.Id);
+
+                if (atvSCSlotsOfCurrSubCourt.Count() == 0
+                 || atvSCSlotsOfCurrSubCourt.Count() == bookedSlotsOfCurrSubCourt.Count())
+                    sc.IsActive = false;
             }
 
-            return Task.FromResult(unavSubCourts.AsEnumerable());
-        }*/
+            return Task.FromResult(atvSubCourts.AsEnumerable());            
+        }
+
+        public Task<Account> GetCourtOwnerBySubCourtId(string subCourtId)
+        {
+            var existSubCourt = _context.SubCourts.Find(subCourtId);
+
+            if (existSubCourt == null) return null!;
+
+            var existCourt = _context.Courts.Find(existSubCourt.ParentCourtId);
+
+            if (existCourt == null) return null!;
+
+            var existOwner = _context.Accounts.Find(existCourt.OwnerId);
+
+            if (existOwner == null) return null!;
+
+            return Task.FromResult(existOwner);
+        }
+
+        public Task<string> GetCourtNameBySubCourtId(string subCourtId)
+        {
+            var existSubCourt = _context.SubCourts.Find(subCourtId);
+
+            if (existSubCourt == null) return null!;
+
+            var existCourt = _context.Courts.Find(existSubCourt.ParentCourtId);
+
+            if (existCourt == null) return null!;
+
+            return Task.FromResult(existCourt.Name);
+        }
+
+        public Task<IEnumerable<SubCourt>> GetSubCourtsOfOwner(string ownerId)
+        {
+            var courtsOfOwner = _context.Courts.Where(c => c.OwnerId == ownerId);
+
+            var subCourtsOfOwner = new List<SubCourt>();
+
+            foreach (var court in courtsOfOwner)
+            {
+                subCourtsOfOwner.AddRange(_context.SubCourts.Where(sc => sc.ParentCourtId == court.Id));
+            }
+
+            return Task.FromResult(subCourtsOfOwner.AsEnumerable());
+        }
     }
 }

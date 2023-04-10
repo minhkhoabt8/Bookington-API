@@ -77,19 +77,19 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
-        /// Update account
+        /// Update Profile
         /// </summary>
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.customer)]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> UpdateAccount(string id, AccountUpdateDTO writeDTO)
         {
-
             var account = await _accountService.UpdateAsync(id, writeDTO);
 
             return ResponseFactory.Ok(account);
