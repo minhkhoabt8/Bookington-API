@@ -175,6 +175,8 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var account = await _unitOfWork.AccountRepository.FindAccountByPhoneNumberAsync(accountOtp.Phone);
 
+            if (account==null) throw new EntityNotFoundException("Phone Number Incorrect");
+
             account.IsActive = true;
 
             accountOtp.IsConfirmed = true;
@@ -243,7 +245,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(
                 accounts, query, _mapper);
         }
-
+        //TODO: Profile
         public async Task<AccountProfileReadDTO> GetProfileAsync()
         {
             // JWT token check (TRUE to proceed)
@@ -258,7 +260,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return _mapper.Map<AccountProfileReadDTO>(profile);
         }
-
+        //TODO: Profile
         public async Task<AccountProfileReadDTO> GetProfileByIdAsync(string accountId)
         {           
             var profile = await _unitOfWork.AccountRepository.FindAsync(accountId);

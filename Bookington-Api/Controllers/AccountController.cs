@@ -1,14 +1,9 @@
 ﻿using Bookington.Core.Enums;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
-using Bookington.Infrastructure.DTOs.Court;
-using Bookington.Infrastructure.DTOs.Role;
-using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 

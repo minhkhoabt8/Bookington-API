@@ -11,7 +11,7 @@ namespace Bookington.Infrastructure.DTOs.Account
     {
         public string Id { get; set; }
 
-        public string RoleName { get; set; }
+        public Bookington.Core.Entities.Role Role { get; set; }
 
         public string Phone { get; set; }
 
@@ -31,16 +31,11 @@ namespace Bookington.Infrastructure.DTOs.Account
         public string Phone { get; set; }
          public string Password
          {
-            get { return password; }
-            set { password = EncryptPassword(value); }
+            get; set;
          }
 
-        private string password;
 
-        public static string EncryptPassword(string pass)
-        {
-            return BCrypt.Net.BCrypt.HashPassword(pass);
-        }
+        
     }
 
     public class AccountLoginOutputDTO
