@@ -183,12 +183,8 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> AssignRoleToUser(string userId, AccountRole role)
         {
-            await _accountService.AssignRoleToUser
-            return ResponseFactory.NoContent();
+           throw new NotImplementedException();
         }
-
-
-
 
     }
 }
