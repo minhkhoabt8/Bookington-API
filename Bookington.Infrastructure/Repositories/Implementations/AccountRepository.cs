@@ -21,11 +21,12 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
             var account = await _context.Accounts.FirstOrDefaultAsync(c => c.Phone == login.Phone);
 
-            bool verified = BCrypt.Net.BCrypt.Verify(login.Password, account.Password);
+           
 
-            if (verified == true && account != null)
+            if (account != null)
             {
-                return account;
+                bool verified = BCrypt.Net.BCrypt.Verify(login.Password, account.Password);
+                if(verified) return account;
             }
 
             return null;

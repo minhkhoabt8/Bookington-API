@@ -48,8 +48,9 @@ namespace Bookington.Infrastructure.Services.Implementations
             var accountOtp = _mapper.Map<AccountOtp>(otp);
             
             accountOtp.Phone = dto.Phone;
+            
 
-            await _unitOfWork.OtpRepository.AddAsync(accountOtp);
+            
 
             //auto mapper
             var account = _mapper.Map<Account>(dto);
@@ -57,9 +58,16 @@ namespace Bookington.Infrastructure.Services.Implementations
             //encrypt password
             //account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
 
+            account.RefAvatar = "1";
+
+            account.RoleId = ((int)AccountRole.customer).ToString();
+
             await _unitOfWork.AccountRepository.AddAsync(account);
             
-            account.RoleId = ((int) AccountRole.customer).ToString();
+
+            accountOtp.RefAccount = account.Id;
+
+            await _unitOfWork.OtpRepository.AddAsync(accountOtp);
 
             //Call Send SMS
             await _smsService.sendSmsAsync(dto.Phone, accountOtp.OtpCode);

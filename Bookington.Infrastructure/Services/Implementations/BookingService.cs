@@ -167,6 +167,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var bookingDto = _mapper.Map<IEnumerable<BookingReadDTO>>(newBookings);
 
             var totalHour = "0";
+            
             //get From time
             //moi booking chua slot 30p => total hour = tong so slot nhan 30 tat ca chia 60 ra gio
 

@@ -17,6 +17,8 @@ namespace Bookington.Infrastructure.DTOs.Account
 
         private string password;
 
+
+
         public static string EncryptPassword(string pass)
         {
               return BCrypt.Net.BCrypt.HashPassword(pass);
