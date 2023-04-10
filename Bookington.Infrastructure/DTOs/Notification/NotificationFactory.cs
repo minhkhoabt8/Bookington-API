@@ -8,8 +8,8 @@ namespace Bookington.Infrastructure.DTOs.Notification
 {
     public static class NotificationFactory
     {
-        public static string SuccessBooking(DateTime date, string location) 
-            => $"Congratulations! Your booking for {date.ToString("yyyy/MM/dd")} at {location} has been confirmed. We look forward to seeing you soon!";
+        public static string SuccessBooking() 
+            => $"Congratulations! Your booking for has been confirmed. We look forward to seeing you soon!";
         public static string Reminder(string date, string location)
             => $"Don't forget, your court booking is coming up soon! {date} at {location}.";
         public static string RecieveNewVoucher(decimal amount, string voucherCode)

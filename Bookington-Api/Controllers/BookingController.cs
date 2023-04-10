@@ -3,14 +3,10 @@ using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.DTOs.Slot;
 using Bookington.Infrastructure.DTOs.SubCourt;
-using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace Bookington_Api.Controllers
 {

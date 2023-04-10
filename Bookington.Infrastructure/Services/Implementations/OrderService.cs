@@ -4,6 +4,7 @@ using Bookington.Core.Enums;
 using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.DTOs.CheckOut;
+using Bookington.Infrastructure.DTOs.Notification;
 using Bookington.Infrastructure.DTOs.Order;
 using Bookington.Infrastructure.DTOs.SubCourt;
 using Bookington.Infrastructure.DTOs.UserBalance;
@@ -24,15 +25,17 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITransactionService _transactionService;
         private readonly IUserContextService _userContextService;
+        private readonly INotificationService _notificationService;
 
         private readonly int PAYMENT_DEADLINE = 5;
 
-        public OrderService(IMapper mapper, IUnitOfWork unitOfWork, ITransactionService transactionService, IUserContextService userContextService)
+        public OrderService(IMapper mapper, IUnitOfWork unitOfWork, ITransactionService transactionService, IUserContextService userContextService, INotificationService notificationService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _transactionService = transactionService;
             _userContextService = userContextService;
+            _notificationService = notificationService;
         }
         
         public async Task<OrderReadDTO> GetByIdAsync(string id)
@@ -85,8 +88,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
         }
-        
-        // TODO: NEEDS VOUCHER CHECK        
+              
         public async Task<CheckOutResponse> CheckOutAsync(CheckOutWriteDTO dto)
         {
             // Check if account is valid
@@ -126,17 +128,18 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var existVoucher = new Voucher() { Discount = 0 };            
 
-            // Check if voucher used exists
+            // Check if voucher used exists and valid
             if (hasUsedVoucher)
             {
                 existVoucher = await _unitOfWork.VoucherRepository.FindByCode(dto.VoucherCode);
 
                 if (existVoucher == null) throw new EntityWithIDNotFoundException<Voucher>(dto.VoucherCode);
-            }
 
-            // TODO: Some other checks involving voucher here ...                     
-            // Like usages
-            // Or Date based
+                var validVoucher = await CheckVoucherValidAsync(existVoucher);
+
+                if (!validVoucher) throw new InvalidActionException("Voucher Is Not Valid");
+
+            }
 
             var courtOwner = await _unitOfWork.SubCourtRepository.GetCourtOwnerBySubCourtId(existOrder.Bookings.ElementAt(0).RefSubCourt);
 
@@ -165,11 +168,55 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             await _unitOfWork.CommitAsync();
 
+            //Create Notification
+            var notification = new NotificationWriteDTO
+            {
+                RefAccount = accountId,
+                Content = NotificationFactory.SuccessBooking(),
+                IsRead = false
+            };
+
+            await _notificationService.CreateNotificationAsync(notification);
+
             return new CheckOutResponse()
             {
                 TransactionId = transId,
                 OrderId = existOrder.Id
             };
+        }
+
+
+        private async Task<bool> CheckVoucherValidAsync(Voucher voucher)
+        {
+
+            // if no voucher with the matching voucherCode was found, return false
+            if (voucher == null)
+            {
+                return false;
+            }
+
+            // check if the voucher has expired
+            if (voucher.EndDate != null && voucher.EndDate < DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            // check if the voucher has exceeded the maximum usage or quantity limits
+            if (voucher.Usages != null && voucher.MaxQuantity != null &&
+                voucher.Usages >= voucher.MaxQuantity)
+            {
+                return false;
+            }
+
+            // check if the voucher is active
+            if (voucher.IsActive != true)
+            {
+                return false;
+            }
+
+            // if all checks passed, return true
+            return true;
+
         }
     }
 }

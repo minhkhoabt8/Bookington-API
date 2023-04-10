@@ -5,6 +5,7 @@ using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.DTOs.Voucher;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,10 +78,6 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<VoucherReadDTO>(existVoucher);
         }
 
-        public async Task<VoucherReadDTO> CheckVoucherValidAsync(string voucherCode)
-        {
-            //
-            throw new NotImplementedException();
-        }
+        
     }
 }
