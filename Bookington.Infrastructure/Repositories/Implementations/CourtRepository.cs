@@ -13,9 +13,9 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
 
-        public async Task<IEnumerable<Court?>> GetAllCourtByOwnerIdAsync(string ownerId)
+        public Task<IEnumerable<Court>> GetAllCourtsByOwnerIdAsync(string ownerId)
         {
-            return _context.Courts.Where(c => c.OwnerId == ownerId && c.IsDeleted == false);
+            return Task.FromResult(_context.Courts.Where(c => c.OwnerId == ownerId && c.IsDeleted == false).Include(c => c.District).AsEnumerable());
         }
 
         public async Task<IEnumerable<Court>> QueryAsync(CourtItemQuery query, bool trackChanges = false)

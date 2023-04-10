@@ -38,7 +38,7 @@ namespace Bookington.Infrastructure.UOW
 
         public IUserBalanceRepository UserBalanceRepository { get; }
 
-        public ITransactionHistoryRepository TransactionHistoryRepository { get; }
+        public ITransactionRepository TransactionHistoryRepository { get; }
 
         public IOrderRepository OrderRepository { get; }
 
@@ -51,6 +51,8 @@ namespace Bookington.Infrastructure.UOW
         public IBanRepository BanRepository { get; }
 
         public IUserReportResponseRepository UserReportResponseRepository { get; }
+
+        public ISubCourtSlotRepository SubCourtSlotRepository { get; }
         Task<int> CommitAsync();
     }
 }

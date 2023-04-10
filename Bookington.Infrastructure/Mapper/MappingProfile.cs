@@ -17,6 +17,8 @@ using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.IncomingMatch;
 using Bookington.Infrastructure.DTOs.Notification;
 using Bookington.Infrastructure.DTOs.ReportResponse;
+using Bookington.Infrastructure.DTOs.SubCourtSlot;
+using Bookington.Infrastructure.DTOs.IncomingBooking;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -30,8 +32,8 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Account, AccountProfileReadDTO>();
             CreateMap<AccountWriteDTO, Account>();
             CreateMap<AccountUpdateDTO,Account>()
-                .ForMember(dest => dest.DateOfBirth, options => options.MapFrom(src => DateTime.Parse(src.DateOfBirth.ToString())));            
-            //Otp
+                .ForMember(dest => dest.DateOfBirth, options => options.MapFrom(src => DateTime.Parse(src.DateOfBirth!.ToString())));            
+            // Otp
             CreateMap<OtpDTO, AccountOtp>();
 
             // Court
@@ -59,56 +61,73 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Booking, BookingReadDTO>();
             CreateMap<BookingWriteDTO, Booking>();
             CreateMap<Booking, CourtBookingHistoryReadDTO>()
-            .ForMember(des => des.TimeSlot, act => act.MapFrom(src => src.RefSlotNavigation.StartTime.ToString() + " - " + src.RefSlotNavigation.EndTime.ToString()))
-            .ForMember(des => des.Customer, act => act.MapFrom(src => src.BookByNavigation.FullName))
-            .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone));
-            CreateMap<Booking, IncomingMatchReadDTO>();
-            //TODO: Fix Update DB v1.7
-            //.ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.Name))
-            //.ForMember(des => des.CourtName, act => act.MapFrom(src => src.RefSlotNavigation.RefSubCourtNavigation.ParentCourt.Name))
-            //.ForMember(des => des.PlayDate, act => act.MapFrom(src => src.PlayDate.ToString()));
+                .ForMember(des => des.TimeSlot, act => act.MapFrom(src => src.RefSlotNavigation.StartTime.ToString() + " - " + src.RefSlotNavigation.EndTime.ToString()))
+                .ForMember(des => des.Customer, act => act.MapFrom(src => src.BookByNavigation.FullName))
+                .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone))
+                .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.Name));
+            CreateMap<Booking, BookingForOrderReadDTO>()
+                .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.Name))
+                .ForMember(des => des.StartTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime))
+                .ForMember(des => des.EndTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime));
+            CreateMap<Booking, IncomingBookingReadDTO>()
+                .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.Name))
+                .ForMember(des => des.CourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.ParentCourt.Name))
+                .ForMember(des => des.StartTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime))
+                .ForMember(des => des.EndTime, act => act.MapFrom(src => src.RefSlotNavigation.EndTime));
+            CreateMap<Booking, FinishedBookingReadDTO>()
+                .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.Name))
+                .ForMember(des => des.CourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.ParentCourt.Name))
+                .ForMember(des => des.StartTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime))
+                .ForMember(des => des.EndTime, act => act.MapFrom(src => src.RefSlotNavigation.EndTime));
             // Slot
-            CreateMap<Slot, SlotReadDTO>();
-            CreateMap<Slot, SlotForBookingReadDTO>();
-            //TODO: Fix Update DB v1.7
-            //.ForMember(dest => dest.IsAvailable, options => options.MapFrom(src => src.IsActive));
+            CreateMap<Slot, SlotReadDTO>();            
             CreateMap<SlotWriteDTO, Slot>();
+            // Sub Court Slot
+            CreateMap<SubCourtSlot, SubCourtSlotScheduleReadDTO>()
+                .ForMember(des => des.StartTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime))
+                .ForMember(des => des.EndTime, act => act.MapFrom(src => src.RefSlotNavigation.EndTime))
+                .ForMember(des => des.DaysInSchedule, act => act.MapFrom(src => src.RefSlotNavigation.DaysInSchedule));
+            CreateMap<SubCourtSlot, SlotForBookingReadDTO>()
+                .ForMember(des => des.Id, act => act.MapFrom(src => src.RefSlot))
+                .ForMember(des => des.StartTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime))
+                .ForMember(des => des.EndTime, act => act.MapFrom(src => src.RefSlotNavigation.EndTime))
+                .ForMember(des => des.IsAvailable, act => act.MapFrom(src => src.IsActive));
             // Voucher
             CreateMap<Voucher, VoucherReadDTO>();
             CreateMap<VoucherWriteDTO, Voucher>();
-            //Province
+            // Province
             CreateMap<Province, ProvinceReadDTO>();
             CreateMap<ProvinceWriteDTO, Province>();
-            //District
+            // District
             CreateMap<District, DistrictReadDTO>();
             CreateMap<DistrictWriteDTO, District>();
-            //Court Report
+            // Court Report
             CreateMap<CourtReport, CourtReportReadDTO>();
             CreateMap<CourtReportWriteDTO, CourtReport>();
-            //Court Report Response
+            // Court Report Response
             CreateMap<CourtReportResponse, CourtReportResponseReadDTO>();
             CreateMap<CourtReportResponseWriteDTO, CourtReportResponse>();           
-            //User Report
+            // User Report
             CreateMap<UserReport, UserReportReadDTO>();
             CreateMap<UserReportCreateDTO, UserReport>();
             CreateMap<UserReportUpdateDTO, UserReport>();
-            //User Report Response
+            // User Report Response
             CreateMap<UserReportResponse, UserReportResponseReadDTO>();
             CreateMap<UserReportResponseWriteDTO, UserReportResponse>();
-            //User Balance
+            // User Balance
             CreateMap<UserBalance, UserBalanceReadDTO>();
             CreateMap<UserBalanceWriteDTO, UserBalance>();
-            //Transaction History
-            CreateMap<TransactionHistory, TransactionHistoryReadDTO>()
+            // Transaction History
+            CreateMap<Transaction, TransactionHistoryReadDTO>()
                 .ForMember(des => des.FromUsername, act => act.MapFrom(src => src.RefFromNavigation.FullName))
                 .ForMember(des => des.ToUsername, act => act.MapFrom(src => src.RefToNavigation.FullName));
-            CreateMap<TransactionHistoryWriteDTO, TransactionHistory>();
-            //Order
+            CreateMap<TransactionHistoryWriteDTO, Transaction>();
+            // Order
             CreateMap<Order, OrderReadDTO>();
-            CreateMap<OrderWriteDTO, Order>();
-            //Notification
+            CreateMap<OrderWriteDTO, Order>();            
+            // Notification
             CreateMap<Notification, NotificationReadDTO>();                
-            CreateMap<NotificationWriteDTO, Notification>();          
+            CreateMap<NotificationWriteDTO, Notification>();             
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<Slot>,
         IDelete<Slot>
     {
-        Task<Account> GetCourtOwnerBySlotId(string slotId, bool trackChanges = false);
-        Task<string> GetCourtNameBySlotId(string slotId, bool trackChanges = false);
-        Task<IEnumerable<Slot>> GetAvailableSlotsForBooking(SlotQueryForBooking dto, bool trackChanges = false);
-        Task<bool> IsSlotBooked(string slotId, DateTime playDate, bool trackChanges = false);
+        Task<IEnumerable<Slot>> GetAllDefaultSlotsAsync();
+        Task<IEnumerable<SubCourtSlot>> GetAvailableSlotsForBooking(SlotQueryForBooking dto);
+        Task<bool> IsSlotBooked(string slotId, DateTime playDate);
+        Task<double> GetTheLowestSlotPriceOfACourt(string courtId, bool trackChanges = false);
     }
 }

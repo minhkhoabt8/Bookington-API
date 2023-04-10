@@ -16,23 +16,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
     {
         public BookingRepository(BookingtonDbContext context) : base(context)
         {
-        }
-
-        public async Task<IEnumerable<Booking>> GetBookingsOfSubCourt(string subCourtId, bool trackChanges = false) 
-        {
-            //TODO: Fix Update DB v1.7
-            //IQueryable<Booking> dbSet = _context.Set<Booking>();
-            //if (trackChanges == false)
-            //{
-            //    dbSet = dbSet.AsNoTracking();
-            //}
-
-            //return await Task.FromResult(dbSet.Include(b => b.RefSlotNavigation)
-            //    .Include(b => b.BookByNavigation)                
-            //    .Where(b => b.RefSlotNavigation.RefSubCourt == subCourtId)
-            //    .AsEnumerable());
-            throw new NotImplementedException();
-        }
+        } 
 
         public Task<IEnumerable<Booking>> GetBookingsOfSubCourts(List<string> subCourtIds, bool trackChanges = false)
         {
@@ -40,17 +24,20 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             if (trackChanges == false)
             {
                 dbSet = dbSet.AsNoTracking();
-            }
-
-            var id = subCourtIds[0];
+            }            
 
             var result = new List<Booking>();
             foreach(var subCourtId in subCourtIds)
             {
                 result.AddRange(dbSet.Include(b => b.RefSlotNavigation)
-                .Include(b => b.BookByNavigation)                
-                .Where(b => b.RefSlotNavigation.Id == id)
-                .ToList());
+                                     .Include(b => b.RefSubCourtNavigation)
+                                     .Include(b => b.BookByNavigation) 
+                                     .Include(b => b.RefOrderNavigation)
+                                     .Where(b => !b.RefOrderNavigation.IsCanceled
+                                              && !b.RefOrderNavigation.IsRefunded
+                                              && b.RefOrderNavigation.IsPaid
+                                              && subCourtId == b.RefSubCourt)                                              
+                                     .ToList());
             }
 
             result = result.OrderByDescending(b => b.BookAt).ToList();
@@ -68,7 +55,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             var result = new List<Booking>();
 
-            result.AddRange(dbSet.Include(b => b.RefSlotNavigation)
+            result.AddRange(dbSet.Include(b => b.RefSlotNavigation).Include(b => b.RefSubCourtNavigation)
                 .Where(b => b.RefOrder == orderId).ToList());
 
             result = result.OrderByDescending(b => b.RefSlotNavigation.StartTime).ToList();
@@ -76,19 +63,42 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             return Task.FromResult(result.AsEnumerable());
         }
 
-        public Task<IEnumerable<Booking>> GetIncomingMatchesFromBookingOfUser(string userId)
+        public Task<IEnumerable<Booking>> GetIncomingBookingsOfUser(string userId)
         {
-            //TODO: Fix Update DB v1.7
-            //Get All Booking Of A User
-            //IQueryable<Booking> dbSet = _context.Set<Booking>()
-            //    .Include(b=>b.RefSlotNavigation)
-            //    .Include(b=>b.RefSlotNavigation.RefSubCourtNavigation)
-            //    .Include(b=>b.RefSlotNavigation.RefSubCourtNavigation.ParentCourt)
-            //    .Where(d=>d.BookBy==userId)
-            //    .OrderByDescending(b=>b.PlayDate.Date);
+            //Get All Incoming Bookings Of A User
+            var dbSet = _context.Bookings
+                .Include(b => b.RefSlotNavigation)
+                .Include(b => b.RefSubCourtNavigation)
+                .Include(b => b.RefSubCourtNavigation.ParentCourt)
+                .Include(b => b.RefOrderNavigation)
+                .ToList()
+                .Where(b => b.BookBy == userId
+                         && b.RefOrderNavigation.IsPaid
+                         && !b.RefOrderNavigation.IsCanceled
+                         && !b.RefOrderNavigation.IsRefunded
+                         && b.PlayDate.Add(b.RefSlotNavigation.EndTime).CompareTo(DateTime.Now) > 0)
+                .OrderBy(b => b.PlayDate.Date).ThenBy(b => b.RefSlotNavigation.StartTime);
 
-            //return Task.FromResult(dbSet.AsEnumerable());
-            throw new NotImplementedException();
+            return Task.FromResult(dbSet.AsEnumerable());            
+        }
+
+        public Task<IEnumerable<Booking>> GetFinishedBookingsOfUser(string userId)
+        {
+            //Get All Finished Bookings Of A User
+            var dbSet = _context.Bookings
+                .Include(b => b.RefSlotNavigation)
+                .Include(b => b.RefSubCourtNavigation)
+                .Include(b => b.RefSubCourtNavigation.ParentCourt)
+                .Include(b => b.RefOrderNavigation)
+                .ToList()
+                .Where(b => b.BookBy == userId
+                         && b.RefOrderNavigation.IsPaid
+                         && !b.RefOrderNavigation.IsCanceled
+                         && !b.RefOrderNavigation.IsRefunded
+                         && b.PlayDate.Add(b.RefSlotNavigation.EndTime).CompareTo(DateTime.Now) <= 0)
+                .OrderByDescending(b => b.PlayDate.Date).ThenByDescending(b => b.RefSlotNavigation.StartTime);
+
+            return Task.FromResult(dbSet.AsEnumerable());
         }
     }
 }

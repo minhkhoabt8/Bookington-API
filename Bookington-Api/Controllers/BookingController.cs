@@ -72,7 +72,6 @@ namespace Bookington_Api.Controllers
             return ResponseFactory.Created(newBookings);
         }
 
-
         /// <summary>
         /// Update a Booking
         /// </summary>
@@ -97,45 +96,17 @@ namespace Bookington_Api.Controllers
         {
             await _bookingService.DeleteAsync(id);
             return ResponseFactory.NoContent();
-        }
-
-        /// <summary>
-        /// Get Booking History Of A Court
-        /// </summary>
-        /// <param name="courtId"></param>
-        /// <returns></returns>
-        [HttpGet("{courtId}")]
-        [RoleAuthorize(AccountRole.owner)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourtBookingHistoryReadDTO>))]
-        public async Task<IActionResult> GetBookingHistoryOfCourt(string courtId)
-        {
-            var bookings = await _bookingService.GetBookingsOfCourt(courtId);
-            return ResponseFactory.Ok(bookings);
-        }
-
-        /// <summary>
-        /// Get Incoming Matches From Booking Of A User
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        [HttpGet("incomingMatch")]
-        [RoleAuthorize(AccountRole.customer)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BookingReadDTO>))]
-        public async Task<IActionResult> GetIncomingMatchesFromBookingOfUser([Required] string userId)
-        {
-            var bookings = await _bookingService.GetIncomingMatchesFromBookingOfUser(userId);
-            return ResponseFactory.Ok(bookings);
-        }
+        }      
 
         /// <summary>
         /// Get Available Sub Courts For Booking
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("subcourts/available")]
+        [HttpGet("available-subcourts")]
         [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SubCourtForBookingReadDTO>>))]
-        public async Task<IActionResult> GetAvailableSubCourtsForBooking([FromBody] SubCourtQueryForBooking dto)
+        public async Task<IActionResult> GetAvailableSubCourtsForBooking([FromQuery] SubCourtQueryForBooking dto)
         {
             var subCourts = await _subCourtService.GetSubCourtsForBooking(dto);
             return ResponseFactory.Ok(subCourts);
@@ -146,10 +117,10 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("slots/available")]
+        [HttpGet("available-slots")]
         [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SlotsForBookingReadDTO>))]
-        public async Task<IActionResult> GetAvailableSlotsForBooking([FromBody] SlotQueryForBooking dto)
+        public async Task<IActionResult> GetAvailableSlotsForBooking([FromQuery] SlotQueryForBooking dto)
         {
             var result = await _slotService.GetAvailableSlotsForBooking(dto);
             return ResponseFactory.Ok(result);

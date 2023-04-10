@@ -21,12 +21,12 @@ namespace Bookington.Infrastructure.DTOs.Booking
 
         public DateTime PlayDate { get; set; }
 
-        public double Price { get; set; }        
+        public double Price { get; set; }
     }
 
     public class CourtBookingHistoryReadDTO
     {
-        public string? Id { get; set; }        
+        public string? Id { get; set; }
 
         public string? SubCourtName { get; set; }
 
@@ -38,12 +38,22 @@ namespace Bookington.Infrastructure.DTOs.Booking
 
         public DateTime? BookAt { get; set; }
 
-        public string? VoucherCode { get; set; }
-
-        public double? VoucherDiscount { get; set; }        
-
         public double? Price { get; set; }
+    }    
 
-        public double? OriginalPrice { get; set; }
+    public class BookingForOrderReadDTO
+    {
+        public string? Id { get; set; }
+
+        public string? SubCourtName { get; set; }
+
+        public DateTime PlayDate { get; set; }
+
+        public TimeSpan StartTime { get; set; }
+
+        public TimeSpan EndTime { get; set; }
+
+        public double Price { get; set; }
     }
+
 }

@@ -1,4 +1,5 @@
 ﻿using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.Booking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,17 @@ namespace Bookington.Infrastructure.DTOs.Order
     {
         public string Id { get; set; } = null!;
 
+        public string CreateBy { get; set; } = null!;
+
         public string TransactionId { get; set; } = string.Empty;
 
+        public string CourtName { get; set; } = null!;
+
+        public string VoucherCode { get; set; } = null!;
+
         public DateTime OrderAt { get; set; }
+
+        public double OriginalPrice { get; set; }
 
         public double TotalPrice { get; set; }
 
@@ -23,6 +32,6 @@ namespace Bookington.Infrastructure.DTOs.Order
 
         public bool IsRefunded { get; set; }
 
-        public IEnumerable<Bookington.Core.Entities.Booking> Bookings { get; set; } = null!;
+        public ICollection<BookingForOrderReadDTO> Bookings { get; set; } = null!;
     }
 }

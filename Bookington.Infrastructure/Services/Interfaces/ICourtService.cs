@@ -6,7 +6,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
 {
     public interface ICourtService
     {
-        Task<IEnumerable<CourtQueryResponse>> GetAllCourtByOwnerIdAsync(CourtItemQuery query);
+        Task<PaginatedResponse<CourtReadDTO>> GetAllCourtsByOwnerIdAsync(CourtOfOwnerQuery query);
         Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto);
         Task<CourtReadDTO> UpdateAsync(string id, CourtWriteDTO dto);
         Task DeleteAsync(string id);

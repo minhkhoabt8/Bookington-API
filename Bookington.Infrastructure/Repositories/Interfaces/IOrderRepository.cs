@@ -1,4 +1,5 @@
 ﻿using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.Slot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,8 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IUpdate<Order>,
         IFindAsync<Order>
     {
+        bool IsOrderYours(string accountId, string orderId);
+        bool IsOrderFromYourCourts(string accountId, string orderId);
+        Order GetOrderDetailsById(string orderId);
     }
 }

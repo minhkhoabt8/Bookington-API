@@ -1,4 +1,5 @@
-﻿using Bookington.Infrastructure.DTOs.TransactionHistory;
+﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.TransactionHistory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task DeleteAsync(string id);
         Task<TransactionHistoryReadDTO> GetByIdAsync(string id);
         Task<string> TransferAsync(double amount, string refTo, string transferReason);
-        Task<IEnumerable<TransactionHistoryReadDTO>> GetSelfTransactionHistory(int page);
+        Task<PaginatedResponse<TransactionHistoryReadDTO>> GetSelfTransactionHistory(TransactionHistoryQuery query);
     }
 }

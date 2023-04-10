@@ -188,8 +188,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
             if (existAccount == null || existAccount.IsDeleted == true) throw new EntityWithIDNotFoundException<Account>(id);
-            // Admin can't update themselves via this method
-            else if (existAccount?.Id == _userContextService.AccountID.ToString()) throw new ForbiddenException();
+            // User can't update other people's profile
+            else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new InvalidActionException("You can't update other people's profile!");
 
             _mapper.Map(dto, existAccount);
 
@@ -225,10 +225,23 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<PaginatedResponse<AccountReadDTO>> QueryAccountsAsync(AccountQuery query)
         {
-            var courts = await _unitOfWork.AccountRepository.QueryAsync(query);
+            var accounts = (await _unitOfWork.AccountRepository.QueryAsync(query)).ToList();
+
+            var currAccountID = _userContextService.AccountID.ToString();
+
+            var currAccount = new Account();
+
+            foreach (var acc in accounts)
+            {
+                if (acc.Id == currAccountID) currAccount = acc;
+            }
+
+            if (currAccount == null) throw new EntityWithIDNotFoundException<Account>(currAccountID!);
+
+            accounts.Remove(currAccount!);
 
             return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(
-                courts, query, _mapper);
+                accounts, query, _mapper);
         }
 
         public async Task<AccountProfileReadDTO> GetProfileAsync()

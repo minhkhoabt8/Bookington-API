@@ -28,21 +28,24 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)
         {
-            IQueryable<Account> accounts = _context.Accounts.Include(a => a.Role).Where(a => a.IsDeleted == false);
+            IQueryable<Account> accounts = _context.Accounts.Include(a => a.Role);
+
             if (!trackChanges)
             {
                 accounts = accounts.AsNoTracking();
             }
+
             if (!query.SearchField.IsNullOrEmpty() )
             {
-                accounts = accounts.Where(c => c.FullName.Contains(query.SearchField) || c.Phone.Contains(query.SearchField));
+                accounts = accounts.Where(c => c.FullName!.Contains(query.SearchField!) || c.Phone.Contains(query.SearchField!));
             }
+
             //if( query.Role != null)
             //{
             //    accounts = accounts.Where(a => a.RoleId == query.Role.ToString());
             //}
 
-            return accounts;
+            return await Task.FromResult(accounts);
         }
     }
 }

@@ -9,6 +9,8 @@ public partial class Booking
 
     public string RefSlot { get; set; } = null!;
 
+    public string RefSubCourt { get; set; } = null!;
+
     public string RefOrder { get; set; } = null!;
 
     public string BookBy { get; set; } = null!;
@@ -26,4 +28,6 @@ public partial class Booking
     public virtual Order RefOrderNavigation { get; set; } = null!;
 
     public virtual Slot RefSlotNavigation { get; set; } = null!;
+
+    public virtual SubCourt RefSubCourtNavigation { get; set; } = null!;
 }

@@ -2,6 +2,8 @@
 using Bookington.Core.Entities;
 using Bookington.Core.Enums;
 using Bookington.Core.Exceptions;
+using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
@@ -24,7 +26,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<TransactionHistoryReadDTO> CreateAsync(TransactionHistoryWriteDTO dto)
         {
-            var transaction = _mapper.Map<TransactionHistory>(dto);
+            var transaction = _mapper.Map<Transaction>(dto);
 
             await _unitOfWork.TransactionHistoryRepository.AddAsync(transaction);
 
@@ -44,7 +46,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existTransaction = await _unitOfWork.TransactionHistoryRepository.FindAsync(id);
 
-            if (existTransaction == null) throw new EntityWithIDNotFoundException<TransactionHistory>(id);
+            if (existTransaction == null) throw new EntityWithIDNotFoundException<Transaction>(id);
 
             return _mapper.Map<TransactionHistoryReadDTO>(existTransaction);
         }
@@ -53,9 +55,9 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existTransaction = await _unitOfWork.TransactionHistoryRepository.FindAsync(id);
 
-            if (existTransaction == null) throw new EntityWithIDNotFoundException<TransactionHistory>(id);
+            if (existTransaction == null) throw new EntityWithIDNotFoundException<Transaction>(id);
 
-            var updatedTransaction = _mapper.Map<TransactionHistory>(dto);
+            var updatedTransaction = _mapper.Map<Transaction>(dto);
 
             _unitOfWork.TransactionHistoryRepository.Update(updatedTransaction);
 
@@ -68,7 +70,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existTransaction = await _unitOfWork.TransactionHistoryRepository.FindAsync(id);
 
-            if (existTransaction == null) throw new EntityWithIDNotFoundException<TransactionHistory>(id);
+            if (existTransaction == null) throw new EntityWithIDNotFoundException<Transaction>(id);
 
             _unitOfWork.TransactionHistoryRepository.Delete(existTransaction);
 
@@ -99,7 +101,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             _unitOfWork.UserBalanceRepository.Update(toBal);
 
             // Proceed to create a transaction history
-            var newTrans = new TransactionHistory()
+            var newTrans = new Transaction()
             {
                 RefFrom = fromBal.RefUser,
                 RefTo = toBal.RefUser,
@@ -108,27 +110,20 @@ namespace Bookington.Infrastructure.Services.Implementations
             };
             await _unitOfWork.TransactionHistoryRepository.AddAsync(newTrans);
 
-            // Commit to database
-            await _unitOfWork.CommitAsync();
+            // Other functions will commit to database             
 
             return newTrans.Id;
         }
-
-        // TODO: Fix database first to proceed
-        public async Task<IEnumerable<TransactionHistoryReadDTO>> GetSelfTransactionHistory(int page)
+                
+        public async Task<PaginatedResponse<TransactionHistoryReadDTO>> GetSelfTransactionHistory(TransactionHistoryQuery query)
         {
             // Check if account is valid
             var accountId = _userContextService.AccountID.ToString();
 
             if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-            // Get customer's transaction history
-            // 10 RECORDS EACH PAGE
-
-            // default all wrong page num to be 1
-            if (page < 1) page = 1;
-
-            var trans = await _unitOfWork.TransactionHistoryRepository.GetTransactionHistoryOfCustomer(accountId!, page);
+            // Get customer's transaction history                        
+            var trans = await _unitOfWork.TransactionHistoryRepository.GetTransactionHistoryOfCustomer(accountId!);
 
             var result = _mapper.Map<IEnumerable<TransactionHistoryReadDTO>>(trans);
 
@@ -147,8 +142,7 @@ namespace Bookington.Infrastructure.Services.Implementations
                     if (otherParty.RoleId == AccountRole.admin.ToString()) record.FromUsername = "System";
                     else if (otherParty.RoleId == AccountRole.owner.ToString())
                     {
-                        record.FromUsername += " (Court Owner)";
-                        // TODO: there's a missing FK 'transaction_id' in table 'orders'
+                        record.FromUsername += " (Court Owner)";                        
                     }
                 }
                 if (accountId == record.RefTo) record.ToUsername = "You";
@@ -162,13 +156,13 @@ namespace Bookington.Infrastructure.Services.Implementations
                     if (otherParty.RoleId == AccountRole.admin.ToString()) record.FromUsername = "System";
                     else if (otherParty.RoleId == AccountRole.owner.ToString())
                     {
-                        record.FromUsername += " (Court Owner)";
-                        // TODO: there's a missing FK 'transaction_id' in table 'orders'
+                        record.FromUsername += " (Court Owner)";                         
                     }
                 }
             }
 
-            return result;
+            return PaginatedResponse<TransactionHistoryReadDTO>.FromEnumerableWithMapping(
+                result, query, _mapper);
         }
     }
 }

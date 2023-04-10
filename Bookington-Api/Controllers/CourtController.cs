@@ -37,15 +37,16 @@ namespace Bookington_Api.Controllers
         /// <summary>
         /// Get All Courts Of Owner
         /// </summary>
+        /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet]
         [RoleAuthorize(AccountRole.owner)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtQueryResponse>))]
-        public async Task<IActionResult> GetAllCourtByOwnerIdAsync([FromQuery] CourtItemQuery query)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtReadDTO>))]
+        public async Task<IActionResult> GetAllCourtsByOwnerIdAsync([FromQuery] CourtOfOwnerQuery query)
         {
-            var courts = await _courtService.GetAllCourtByOwnerIdAsync(query);
-            return ResponseFactory.Ok(courts);
+            var courts = await _courtService.GetAllCourtsByOwnerIdAsync(query);
+            return ResponseFactory.PaginatedOk(courts);
         }
 
         /// <summary>

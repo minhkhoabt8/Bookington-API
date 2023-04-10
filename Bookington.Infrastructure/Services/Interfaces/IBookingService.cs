@@ -1,4 +1,6 @@
-﻿using Bookington.Infrastructure.DTOs.Booking;
+﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Booking;
+using Bookington.Infrastructure.DTOs.IncomingBooking;
 using Bookington.Infrastructure.DTOs.IncomingMatch;
 using System;
 using System.Collections.Generic;
@@ -16,7 +18,8 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<BookingReadDTO> UpdateAsync(string id, BookingWriteDTO dto);
         Task DeleteAsync(string id);
         Task<BookingReadDTO> GetByIdAsync(string id);
-        Task<IEnumerable<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(string courtId);
-        Task<IEnumerable<IncomingMatchReadDTO>> GetIncomingMatchesFromBookingOfUser(string userId);
+        Task<PaginatedResponse<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(BookingHistoryQuery query);
+        Task<PaginatedResponse<IncomingBookingReadDTO>> GetIncomingBookingsOfCustomer(IncomingBookingQuery query);
+        Task<PaginatedResponse<FinishedBookingReadDTO>> GetFinishedBookingsOfCustomer(FinishedBookingQuery query);
     }
 }
