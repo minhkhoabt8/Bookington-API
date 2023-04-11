@@ -13,7 +13,6 @@ namespace Bookington_Api.Controllers
     /// Province Controller
     /// </summary>
     [Route("districts")]
-    [Authorize(Roles = "user,admin,owner")]
     [ApiController]
     public class DistrictController : Controller
     {
