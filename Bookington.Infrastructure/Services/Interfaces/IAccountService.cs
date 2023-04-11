@@ -1,6 +1,8 @@
 ﻿using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.File;
 using Bookington.Infrastructure.DTOs.Role;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington.Infrastructure.Services.Interfaces
@@ -34,5 +36,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task ReSendVerifyOtp(string phone);
 
         Task ChangePasswordAsync(ChangePasswordDTO dto);
+
+        Task UpdateAccountAvatar(FileUploadDTO dto);
     }
 }

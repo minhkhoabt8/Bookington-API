@@ -1,9 +1,11 @@
 ﻿using Bookington.Core.Enums;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.File;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -173,7 +175,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpPut("assignRole")]
         [ServiceFilter(typeof(AutoValidateModelState))]
-        
+        [RoleAuthorize(AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> AssignRoleToUser(string userId, AccountRole role)
@@ -181,5 +183,18 @@ namespace Bookington_Api.Controllers
            throw new NotImplementedException();
         }
 
+
+        /// <summary>
+        /// Upload File
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("upload")]
+        [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.customer)]
+        public async Task<IActionResult> UpdateAccountAvatar([FromForm] FileUploadDTO dto)
+        {
+            await _accountService.UpdateAccountAvatar(dto);
+
+            return ResponseFactory.NoContent();
+        }
     }
 }

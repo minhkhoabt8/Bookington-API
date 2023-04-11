@@ -133,6 +133,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IVoucherService, VoucherService>();
             services.AddScoped<ISlotService, SlotService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IUploadFileService, FileUploadService>();
         }
 
         ///<Summary>

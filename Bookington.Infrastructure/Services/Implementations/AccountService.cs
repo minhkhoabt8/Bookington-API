@@ -8,6 +8,9 @@ using Bookington.Core.Enums;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Bookington.Infrastructure.DTOs.File;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -20,8 +23,9 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly ISmsService _smsService;
         private readonly IUserBalanceService _userBalanceService;
         private readonly IUserContextService _userContextService;
+        private readonly IUploadFileService _uploadFileService;
 
-        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService, ISmsService smsService, IUserBalanceService userBalanceService, IUserContextService userContextService)
+        public AccountService(IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService, ISmsService smsService, IUserBalanceService userBalanceService, IUserContextService userContextService, IUploadFileService uploadFileService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -29,6 +33,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             _smsService = smsService;
             _userBalanceService = userBalanceService;
             _userContextService = userContextService;
+            _uploadFileService = uploadFileService;
         }
 
         public async Task<IEnumerable<AccountReadDTO>> GetAllAsync()
@@ -46,7 +51,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var otp = OtpDTO.GenerateOTP();
 
             var accountOtp = _mapper.Map<AccountOtp>(otp);
-            
+
             accountOtp.Phone = dto.Phone;
 
             await _unitOfWork.OtpRepository.AddAsync(accountOtp);
@@ -58,8 +63,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             //account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
 
             await _unitOfWork.AccountRepository.AddAsync(account);
-            
-            account.RoleId = ((int) AccountRole.customer).ToString();
+
+            account.RoleId = ((int)AccountRole.customer).ToString();
 
             //Call Send SMS
             await _smsService.sendSmsAsync(dto.Phone, accountOtp.OtpCode);
@@ -81,7 +86,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var existAccount = await _unitOfWork.AccountRepository.LoginByPhoneAsync(dto);
 
             if (existAccount == null) throw new EntityNotFoundException("User Phone Or Password Incorrect");
-            
+
             if (existAccount.IsActive == false) throw new InvalidActionException("Account Not Yet Verify");
 
             if (existAccount.IsDeleted == true) throw new InvalidActionException("Account Is Deleted!");
@@ -175,7 +180,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var account = await _unitOfWork.AccountRepository.FindAccountByPhoneNumberAsync(accountOtp.Phone);
 
-            if (account==null) throw new EntityNotFoundException("Phone Number Incorrect");
+            if (account == null) throw new EntityNotFoundException("Phone Number Incorrect");
 
             account.IsActive = true;
 
@@ -202,9 +207,9 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task DeleteAsync(string id)
         {
-            var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);            
-            
-            if (existAccount == null || existAccount.IsDeleted == true ) throw new EntityWithIDNotFoundException<Account>(id);
+            var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
+
+            if (existAccount == null || existAccount.IsDeleted == true) throw new EntityWithIDNotFoundException<Account>(id);
             // Admin can't delete themselves
             else if (existAccount?.Id == _userContextService.AccountID.ToString()) throw new InvalidActionException("Can't delete self!");
 
@@ -220,7 +225,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(id);
 
             if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(id);
-            
+
             return _mapper.Map<AccountReadDTO>(existAccount);
         }
 
@@ -262,10 +267,10 @@ namespace Bookington.Infrastructure.Services.Implementations
         }
         //TODO: Profile
         public async Task<AccountProfileReadDTO> GetProfileByIdAsync(string accountId)
-        {           
+        {
             var profile = await _unitOfWork.AccountRepository.FindAsync(accountId);
 
-            if (profile == null) throw new EntityWithIDNotFoundException<Account>(accountId);            
+            if (profile == null) throw new EntityWithIDNotFoundException<Account>(accountId);
 
             return _mapper.Map<AccountProfileReadDTO>(profile);
         }
@@ -305,12 +310,44 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(userId);
 
-            if(existAccount == null) throw new EntityWithIDNotFoundException<Account>(userId);
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(userId);
 
             existAccount.RoleId = roleId;
-            
+
 
             await _unitOfWork.CommitAsync();
         }
-    }
+
+        public async Task UpdateAccountAvatar(FileUploadDTO dto)
+        {
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            var existAccount = await  _unitOfWork.AccountRepository.FindAsync(accountId);
+
+            //check  if exist account aldready contain a file. if so, delete that file and upload a new file
+
+            if (existAccount.RefAvatar != null)
+            {
+                await _uploadFileService.DeleteFileAsync(existAccount.RefAvatar);
+            }
+
+            if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(accountId);
+
+            var fileName = await _uploadFileService.UploadFileAsyncReturnFileName(dto.File, dto.IsAccount);
+
+            existAccount.RefAvatar = fileName;
+
+            _unitOfWork.AccountRepository.Update(existAccount);
+
+            await _unitOfWork.CommitAsync();
+
+        }
+
+
+    }  
 }
+    
+
+

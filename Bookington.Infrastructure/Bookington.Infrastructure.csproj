@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <Folder Include="Mapper\" />
+    <Folder Include="Storages\Courts\" />
+    <Folder Include="Storages\Accounts\" />
   </ItemGroup>
 
   <ItemGroup>
