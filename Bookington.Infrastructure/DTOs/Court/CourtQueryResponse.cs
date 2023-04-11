@@ -19,6 +19,6 @@ namespace Bookington.Infrastructure.DTOs.Court
         public TimeSpan OpenAt { get; set; }
         public TimeSpan CloseAt { get; set; }
 
-        public List<IFormFile> CourtPicture { get; set; }
+        public List<IFormFile> CourtPictures { get; set; }
     }
 }

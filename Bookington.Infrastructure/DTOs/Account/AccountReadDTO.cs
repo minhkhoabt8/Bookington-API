@@ -62,7 +62,7 @@ namespace Bookington.Infrastructure.DTOs.Account
 
         public string FullName { get; set; } = null!;
 
-        public virtual AccountAvatar RefAvatarNavigation { get; set; }
+        
 
         public DateTime DateOfBirth { get; set; }
     }

@@ -53,6 +53,9 @@ namespace Bookington.Infrastructure.UOW
         public IUserReportResponseRepository UserReportResponseRepository { get; }
 
         public ISubCourtSlotRepository SubCourtSlotRepository { get; }
+
+        public ICourtImageRepository CourtImageRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

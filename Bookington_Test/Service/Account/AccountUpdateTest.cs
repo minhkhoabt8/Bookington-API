@@ -36,7 +36,7 @@ namespace Bookington_Test.Service.Account
                 null!,
                 null!,
                 null!,
-                userContextServiceMock.Object);
+                userContextServiceMock.Object, null!);
 
             // Act & Assert
             await Assert.ThrowsAsync<EntityWithIDNotFoundException<Bookington.Core.Entities.Account>>(
@@ -71,7 +71,7 @@ namespace Bookington_Test.Service.Account
                  null!,
                  null!,
                  null!,
-                 userContextServiceMock.Object);
+                 userContextServiceMock.Object, null!);
 
             // Act & Assert
             await Assert.ThrowsAsync<ForbiddenException>(
@@ -121,7 +121,7 @@ namespace Bookington_Test.Service.Account
                  null!,
                  null!,
                  null!,
-                 userContextServiceMock.Object);
+                 userContextServiceMock.Object, null!);
 
             // Act
             var result = await service.UpdateAsync(id, dto);

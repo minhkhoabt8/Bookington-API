@@ -47,7 +47,7 @@ namespace Bookington.Infrastructure.Mapper
                 .ForMember(dest => dest.ProvinceName, options => options.MapFrom(src => src.District.Province.ProvinceName))
                 .ForMember(dest => dest.NumberOfSubCourt, options => options.MapFrom(src => src.SubCourts.Count()))
                 //.ForMember(dest => dest.RatingStar, options => options.MapFrom(src => src.Comments.Sum(a => a.Rating) / src.Comments.Where(c=>c.Id == src.Id).Count()))
-                .ForMember(des => des.CourtPicture, act => act.MapFrom(src => src.CourtImages.Where(c=>c.Id==src.Id)));
+                .ForMember(des => des.CourtPictures, act => act.MapFrom(src => src.CourtImages.Where(c=>c.Id==src.Id)));
             // Sub Court
             CreateMap<SubCourt, SubCourtReadDTO>();
             CreateMap<SubCourtWriteDTO, SubCourt>();

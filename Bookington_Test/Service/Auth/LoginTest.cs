@@ -28,6 +28,8 @@ namespace Bookington_Test.Service.Auth
             var userBalanceServiceMock = new Mock<IUserBalanceService>();
             var userContextServiceMock = new Mock<IUserContextService>();
 
+            var uplaodfileService = new Mock<IUserContextService>();
+
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockTokenService = new Mock<ITokenService>();
             _accountService = new AccountService(
@@ -36,7 +38,8 @@ namespace Bookington_Test.Service.Auth
                 tokenService: _mockTokenService.Object,
                 smsService: null,
                 userBalanceService: null,
-                userContextService: null);
+                userContextService: null,
+                uploadFileService: null);
         }
 
         

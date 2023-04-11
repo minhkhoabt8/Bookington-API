@@ -1,16 +1,11 @@
 ﻿using Bookington.Core.Enums;
-using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Court;
-using Bookington.Infrastructure.DTOs.Slot;
-using Bookington.Infrastructure.DTOs.SubCourt;
-using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bookington_Api.Controllers
 {
@@ -72,9 +67,9 @@ namespace Bookington_Api.Controllers
         [HttpPost]
         [RoleAuthorize(AccountRole.owner)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CreateAsync(CourtWriteDTO dto)
+        public async Task<IActionResult> CreateAsync([FromForm] CourtWriteDTO dto, [Required] IEnumerable<IFormFile> courtImages)
         {
-            var createdCourt = await _courtService.CreateAsync(dto);
+            var createdCourt = await _courtService.CreateAsync(dto, courtImages);
             return ResponseFactory.Created(createdCourt);
         }
 
@@ -84,19 +79,20 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="dto"></param>
+        /// <param name="courtImages"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
         [RoleAuthorize(AccountRole.owner)]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> UpdateAsync(string id, CourtWriteDTO dto)
+        public async Task<IActionResult> UpdateAsync(string id, [FromForm] CourtWriteDTO dto, IEnumerable<IFormFile> courtImages)
         {
-            var updatedTag = await _courtService.UpdateAsync(id, dto);
+            var updatedTag = await _courtService.UpdateAsync(id, dto, courtImages);
             return ResponseFactory.Ok(updatedTag);
         }
 
         /// <summary>
-        /// Delete a court
+        /// Delete a court   
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

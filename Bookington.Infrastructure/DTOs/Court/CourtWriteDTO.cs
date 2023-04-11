@@ -1,11 +1,7 @@
-﻿using Bookington.Infrastructure.Constants;
-using System;
-using System.Collections.Generic;
+﻿
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Bookington.Infrastructure.Constants.TimeMapping;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookington.Infrastructure.DTOs.Court
 {
@@ -18,11 +14,14 @@ namespace Bookington.Infrastructure.DTOs.Court
         public string DistrictId { get; set; }
         [Required]
         public string Name { get; set; }
+        [Required]
         public string Address { get; set; }
+        [Required]
+        public string Description { get; set; }
         [Required]
         public string OpenAt { get; set; }
         [Required]
         public string CloseAt { get; set; }
-        
+
     }
 }

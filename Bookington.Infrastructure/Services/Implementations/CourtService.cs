@@ -6,6 +6,7 @@ using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Data;
 using System.Globalization;
@@ -19,20 +20,37 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserContextService _userContextService;
+        private readonly IUploadFileService _uploadFileService;
 
-        public CourtService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService)
+        public CourtService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService, IUploadFileService uploadFileService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
+            _uploadFileService = uploadFileService;
         }
 
-        public async Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto)
+        public async Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto, IEnumerable<IFormFile> courtImages)
         {
             
+            //add court
             var court = _mapper.Map<Court>(dto);
 
             await _unitOfWork.CourtRepository.AddAsync(court);
+
+            //add court image
+
+            foreach(var item in courtImages) 
+            {
+                //Call Upload File Async
+                var filename = await _uploadFileService.UploadFileAsyncReturnFileName(item, false);
+                var courtImage = new CourtImage
+                {
+                    CourtId = court.Id,
+                    RefImage = filename
+                };
+                await _unitOfWork.CourtImageRepository.AddAsync(courtImage);
+            }
 
             await _unitOfWork.CommitAsync();
 
@@ -86,7 +104,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             return result;
         }
 
-        public async Task<CourtReadDTO> UpdateAsync(string id, CourtWriteDTO dto)
+        public async Task<CourtReadDTO> UpdateAsync(string id, CourtWriteDTO dto, IEnumerable<IFormFile> courtImages)
         {
 
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id);
@@ -96,6 +114,32 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(id);
 
+            //get all picture of a court
+            var images = await _unitOfWork.CourtImageRepository.GetImagesOfCourtByIdAsync(existCourt.Id);
+
+            //delete old court imgs in system
+            foreach (var img in images)
+            {
+                //delete in local
+                await _uploadFileService.DeleteFileAsync(img.RefImage, false);
+                //delete in db
+                _unitOfWork.CourtImageRepository.Delete(img);
+            }
+
+            //add new court imgs to system
+            foreach (var image in courtImages)
+            {
+                //Call Upload File Async
+                var filename = await _uploadFileService.UploadFileAsyncReturnFileName(image, false);
+                var courtImage = new CourtImage
+                {
+
+                    CourtId = existCourt.Id,
+                    RefImage = filename
+                };
+                await _unitOfWork.CourtImageRepository.AddAsync(courtImage);
+            }
+            
             _mapper.Map(dto, existCourt);
 
             await _unitOfWork.CommitAsync();

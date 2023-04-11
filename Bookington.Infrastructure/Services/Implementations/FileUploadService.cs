@@ -26,8 +26,6 @@ namespace Bookington.Infrastructure.Services.Implementations
                     Directory.CreateDirectory(path);
                 }
 
-                
-
                 //change file name to a guid
                 string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
@@ -44,8 +42,6 @@ namespace Bookington.Infrastructure.Services.Implementations
         public async Task DeleteFileAsync(string fileName, bool isAccount)
         {
             string path = "";
-
-            
 
             if (!isAccount)
             {

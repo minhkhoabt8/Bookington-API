@@ -47,6 +47,8 @@ namespace Bookington.Infrastructure.UOW
         public IUserReportResponseRepository UserReportResponseRepository => GetSingletonRepository<IUserReportResponseRepository>();
         public ISubCourtSlotRepository SubCourtSlotRepository => GetSingletonRepository<ISubCourtSlotRepository>();
 
+        public ICourtImageRepository CourtImageRepository => GetSingletonRepository<ICourtImageRepository>();
+
         private T GetSingletonRepository<T>()
         {
             if (!_singletonRepositories.ContainsKey(typeof(T).Name))

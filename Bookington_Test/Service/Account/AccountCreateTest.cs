@@ -19,7 +19,7 @@ namespace Bookington_Test.Service.Account
             var existAccount = CreateTestAccount(phone);
             
             var mockUOW = new Mock<IUnitOfWork>();
-            var accountService = new AccountService(null!, mockUOW.Object, null!,null!,null! ,null!);
+            var accountService = new AccountService(null!, mockUOW.Object, null!,null!,null! ,null!, null!);
             mockUOW.Setup(uow => uow.AccountRepository.FindAccountByPhoneNumberAsync(existAccount.Phone)).ReturnsAsync(existAccount);
             await Assert.ThrowsAsync<UniqueConstraintException<Bookington.Core.Entities.Account>>(() =>
                accountService.CreateAsync(new AccountWriteDTO { Phone = existAccount.Phone }));
