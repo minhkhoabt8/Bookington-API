@@ -185,10 +185,10 @@ namespace Bookington_Api.Controllers
 
 
         /// <summary>
-        /// Upload File
+        /// Update Avatar Img
         /// </summary>
         /// <returns></returns>
-        [HttpPost("upload")]
+        [HttpPut("upload")]
         [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.customer)]
         public async Task<IActionResult> UpdateAccountAvatar([FromForm] FileUploadDTO dto)
         {

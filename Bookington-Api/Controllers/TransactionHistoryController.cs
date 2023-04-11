@@ -36,7 +36,7 @@ namespace Bookington_Api.Controllers
         [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<TransactionHistoryReadDTO>>))]
-        public async Task<IActionResult> GetSelfTransactionHistory(TransactionHistoryQuery query)
+        public async Task<IActionResult> GetSelfTransactionHistory([FromQuery] TransactionHistoryQuery query)
         {           
             var trans = await _transactionService.GetSelfTransactionHistory(query);
             return ResponseFactory.Ok(trans);
