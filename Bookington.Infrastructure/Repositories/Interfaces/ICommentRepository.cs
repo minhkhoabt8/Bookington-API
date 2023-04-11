@@ -14,5 +14,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<Comment>,
         IDelete<Comment>
     {
+        //get the average rating of all comments
+        Task<double> GetAverageRatingOfCommentsOfACourtAsync(string courtId);
     }
 }

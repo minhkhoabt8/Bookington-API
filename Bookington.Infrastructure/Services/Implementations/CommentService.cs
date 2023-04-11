@@ -69,5 +69,12 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return _mapper.Map<CommentReadDTO>(existComment);
         }
+
+
+        public async Task<double> GetAverageRatingOfCommentsOfACourtAsync(string courtId)
+        {
+            var result = await _unitOfWork.CommentRepository.GetAverageRatingOfCommentsOfACourtAsync(courtId);
+            return result;
+        }
     }
 }

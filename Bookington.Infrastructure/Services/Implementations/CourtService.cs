@@ -21,13 +21,15 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserContextService _userContextService;
         private readonly IUploadFileService _uploadFileService;
+        private readonly ICommentService _commentService;
 
-        public CourtService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService, IUploadFileService uploadFileService)
+        public CourtService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService, IUploadFileService uploadFileService, ICommentService commentService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
             _uploadFileService = uploadFileService;
+            _commentService = commentService;
         }
 
         public async Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto, IEnumerable<IFormFile> courtImages)
@@ -98,6 +100,13 @@ namespace Bookington.Infrastructure.Services.Implementations
             result.NumberOfSubCourt = await _unitOfWork.SubCourtRepository.GetNumberOfSubCourts(existCourt.Id);
 
             // TODO: Needs rating of courts
+
+            var owner = await  _unitOfWork.AccountRepository.FindAsync(existCourt.OwnerId);
+
+            result.Phone = owner.Phone;
+
+            result.RatingStar = await _commentService.GetAverageRatingOfCommentsOfACourtAsync(existCourt.Id);
+
             
             result.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(existCourt.Id);
 
