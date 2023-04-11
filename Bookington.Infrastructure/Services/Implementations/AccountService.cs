@@ -261,11 +261,21 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-            // I'll do the avatar thing later
+            //TODO: I'll do the avatar thing later
 
             var profile = await _unitOfWork.AccountRepository.FindAsync(accountId);
 
-            return _mapper.Map<AccountProfileReadDTO>(profile);
+            var listImage = new List<string>();
+
+            listImage.Add(profile.RefAvatar);
+
+            var imageFiles = await _uploadFileService.GetImageFilesAsync(listImage, true);
+
+            var accountProfile =  _mapper.Map<AccountProfileReadDTO>(profile);
+
+            accountProfile.File = imageFiles.ElementAt(0);
+
+            return accountProfile;
         }
         //TODO: Profile
         public async Task<AccountProfileReadDTO> GetProfileByIdAsync(string accountId)

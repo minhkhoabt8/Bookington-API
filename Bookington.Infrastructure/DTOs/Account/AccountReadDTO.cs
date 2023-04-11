@@ -1,4 +1,6 @@
 ﻿using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.File;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,11 +64,9 @@ namespace Bookington.Infrastructure.DTOs.Account
 
         public string FullName { get; set; } = null!;
 
-        
-
         public DateTime DateOfBirth { get; set; }
-    }
 
-     
+        public ImageFile File { get; set; }
+    }
 
 }

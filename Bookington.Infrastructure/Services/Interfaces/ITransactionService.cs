@@ -17,5 +17,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<TransactionHistoryReadDTO> GetByIdAsync(string id);
         Task<string> TransferAsync(double amount, string refTo, string transferReason);
         Task<PaginatedResponse<TransactionHistoryReadDTO>> GetSelfTransactionHistory(TransactionHistoryQuery query);
+
     }
 }

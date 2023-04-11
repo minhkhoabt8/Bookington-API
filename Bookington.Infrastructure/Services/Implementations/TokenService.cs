@@ -29,7 +29,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             {
                 Token = Convert.ToBase64String(randomBytes),
                 // Last for 15 minute
-                ExpireAt = DateTime.UtcNow.AddMinutes(15),
+                ExpireAt = DateTime.UtcNow.AddDays(1),
                 RefAccount = account.Id
             };
 
@@ -51,7 +51,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddDays(1),
                 Issuer = _configuration["JWT:Issuer"],
                 SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha384Signature)
             };

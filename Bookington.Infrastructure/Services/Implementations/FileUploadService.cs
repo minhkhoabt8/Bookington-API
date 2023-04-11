@@ -1,4 +1,5 @@
-﻿using Bookington.Infrastructure.Services.Interfaces;
+﻿using Bookington.Infrastructure.DTOs.File;
+using Bookington.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 
@@ -52,8 +53,6 @@ namespace Bookington.Infrastructure.Services.Implementations
                 path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "..", "Bookington.Infrastructure", "Storages/Accounts"));
             }
 
-             
-
             string filePath = Path.Combine(path, fileName);
 
             if (File.Exists(filePath))
@@ -72,6 +71,44 @@ namespace Bookington.Infrastructure.Services.Implementations
             return File.Exists(filePath);
         }
 
+
+        public async Task<IEnumerable<ImageFile>> GetImageFilesAsync(List<string> fileNames, bool isAccount)
+        {
+            var files = new List<ImageFile>();
+
+            foreach (var fileName in fileNames)
+            {
+                var path = "";
+                if (isAccount)
+                {
+                    path = Path.Combine(Environment.CurrentDirectory, "..", "Bookington.Infrastructure", "Storages/Accounts", fileName);
+                }
+                else
+                {
+                    path = Path.Combine(Environment.CurrentDirectory, "..", "Bookington.Infrastructure", "Storages/Courts", fileName);
+                }
+
+                // Check if the file exists
+                if (File.Exists(path))
+                {
+                    // Read the file as a byte array
+                    var fileBytes = await File.ReadAllBytesAsync(path);
+
+                    // Create a File object with the file name and byte array
+                    var file = new ImageFile
+                    {
+                        Name = fileName,
+                        Content = fileBytes
+                    };
+
+                    // Add the File object to the list of files
+                    files.Add(file);
+                }
+            }
+
+            return files;
+
+        }
         
     }
 }

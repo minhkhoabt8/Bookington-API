@@ -19,5 +19,14 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return Task.FromResult(trans);            
         }
+
+        public Task<IEnumerable<Transaction>> GetTransactionHistoryOfOwner(string ownerId)
+        {
+            var dbSet = _context.Transactions.Include(th => th.RefFromNavigation).Include(th => th.RefToNavigation).ToList();
+
+            var trans = dbSet.Where(sc => sc.RefFromNavigation.Id == ownerId).OrderByDescending(sc => sc.CreateAt).AsEnumerable();
+
+            return Task.FromResult(trans);
+        }
     }
 }
