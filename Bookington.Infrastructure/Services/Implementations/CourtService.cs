@@ -89,9 +89,9 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existCourt = await _unitOfWork.CourtRepository.FindAsync(id, include: "District");
 
-            if (existCourt?.OwnerId != _userContextService.AccountID.ToString()) throw new ForbiddenException();
+            //if (existCourt?.OwnerId != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
-            else if (existCourt == null || existCourt.IsDeleted) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id);
+            if (existCourt == null || existCourt.IsDeleted) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id);
 
             var result = _mapper.Map<CourtReadDTO>(existCourt);
 

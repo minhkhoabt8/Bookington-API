@@ -47,6 +47,16 @@ namespace Bookington.Infrastructure.Services.Implementations
             //check account phone exist
             var existAccount = await _unitOfWork.AccountRepository.FindAccountByPhoneNumberAsync(dto.Phone);
             if (existAccount != null) throw new UniqueConstraintException<Account>(nameof(Account.Phone), dto.Phone);
+            
+            //add account
+            var account = _mapper.Map<Account>(dto);
+
+            account.RefAvatar = "";
+
+            await _unitOfWork.AccountRepository.AddAsync(account);
+
+            account.RoleId = ((int)AccountRole.customer).ToString();
+
             //generate otp and add to OTP table
             var otp = OtpDTO.GenerateOTP();
 
@@ -54,17 +64,9 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             accountOtp.Phone = dto.Phone;
 
+            accountOtp.RefAccount = account.Id;
+
             await _unitOfWork.OtpRepository.AddAsync(accountOtp);
-
-            //auto mapper
-            var account = _mapper.Map<Account>(dto);
-
-            //encrypt password
-            //account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
-
-            await _unitOfWork.AccountRepository.AddAsync(account);
-
-            account.RoleId = ((int)AccountRole.customer).ToString();
 
             //Call Send SMS
             await _smsService.sendSmsAsync(dto.Phone, accountOtp.OtpCode);

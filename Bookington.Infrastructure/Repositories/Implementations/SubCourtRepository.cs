@@ -31,13 +31,18 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public Task<IEnumerable<SubCourt>> GetAvailableSubCourtsByCourtId(string courtId, bool trackChanges = false)
         {
-            IQueryable<SubCourt> dbSet = _context.Set<SubCourt>();
+            IQueryable<SubCourt> dbSet = _context.Set<SubCourt>()
+                .Include(sc => sc.CourtType)
+                .Where(sc => sc.IsActive == true 
+                && sc.IsDeleted == false 
+                && sc.ParentCourtId == courtId);
+
             if (trackChanges == false)
             {
                 dbSet = dbSet.AsNoTracking();
             }
 
-            return Task.FromResult(dbSet.Include(sc => sc.CourtType).Where(sc => sc.IsActive == true && sc.IsDeleted == false && sc.ParentCourtId == courtId).AsEnumerable());
+            return Task.FromResult(dbSet.AsEnumerable());
         }
 
         public Task<IEnumerable<SubCourt>> GetSubCourtsForBooking(SubCourtQueryForBooking dto)
