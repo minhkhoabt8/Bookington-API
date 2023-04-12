@@ -14,7 +14,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<CourtImage>,
         IDelete<CourtImage>
     {
-
-        Task<IEnumerable<CourtImage>> GetImagesOfCourtByIdAsync(string courtId);
+        Task<List<CourtImage>> GetImagesOfCourtByIdAsync(string courtId);
     }
 }

@@ -89,8 +89,9 @@ namespace Bookington.Infrastructure.Services.Implementations
             var courtReads =  PaginatedResponse<CourtReadDTO>.FromEnumerableWithMapping(
                 courts, query, _mapper);
 
-            
-            foreach(var court in courtReads) 
+            var listImages = new List<string>();
+
+            foreach (var court in courtReads) 
             {
                 court.Phone = owner.Phone;
 
@@ -101,6 +102,16 @@ namespace Bookington.Infrastructure.Services.Implementations
                 court.NumOfReview = await _commentService.GetReviewsNumberOfCourt(court.Id);
 
                 court.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(court.Id);
+
+                //Add  image to court
+                var images = await _unitOfWork.CourtImageRepository.GetImagesOfCourtByIdAsync(court.Id);
+
+                foreach (var item in images)
+                {
+                    listImages.Add(item.RefImage);
+                }
+
+                court.CourtPictures = await _uploadFileService.GetImageFilesAsync(listImages, false);
             }
 
             return courtReads;
@@ -113,7 +124,9 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             //if (existCourt?.OwnerId != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
-            if (existCourt == null || existCourt.IsDeleted) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id);
+            if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id);
+
+            if(existCourt.IsDeleted) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id); ;
 
             var result = _mapper.Map<CourtReadDTO>(existCourt);
 
@@ -129,6 +142,18 @@ namespace Bookington.Infrastructure.Services.Implementations
             result.NumOfReview = await _commentService.GetReviewsNumberOfCourt(existCourt.Id);
             
             result.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(existCourt.Id);
+
+            //Add  image to court
+            var images = await _unitOfWork.CourtImageRepository.GetImagesOfCourtByIdAsync(existCourt.Id);
+
+            var listImages = new List<string>();
+
+            foreach(var item in images)
+            {
+                listImages.Add(item.RefImage);
+            }
+
+            result.CourtPictures = await _uploadFileService.GetImageFilesAsync(listImages, false);
 
             return result;
         }
@@ -183,8 +208,8 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var result = PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
                 courts, query, _mapper);
-            
 
+            var listImages = new List<string>();
 
             foreach (var court in result.ToList())
             {
@@ -204,6 +229,17 @@ namespace Bookington.Infrastructure.Services.Implementations
 
                 if (court.MoneyPerHour == (double) 0)
                     result.Remove(court);
+
+                //Add  image to court
+                var images = await _unitOfWork.CourtImageRepository.GetImagesOfCourtByIdAsync(court.Id);
+
+                foreach (var item in images)
+                {
+                    listImages.Add(item.RefImage);
+                }
+
+                court.CourtPictures = await _uploadFileService.GetImageFilesAsync(listImages, false);
+
             }
 
             return result;

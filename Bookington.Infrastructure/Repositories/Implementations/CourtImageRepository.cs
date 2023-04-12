@@ -1,6 +1,7 @@
 ﻿using Bookington.Core.Data;
 using Bookington.Core.Entities;
 using Bookington.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,9 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
 
-        public async Task<IEnumerable<CourtImage?>> GetImagesOfCourtByIdAsync(string courtId)
+        public async Task<List<CourtImage>> GetImagesOfCourtByIdAsync(string courtId)
         {
-            return _context.CourtImages.Where(im => im.CourtId == courtId);
+            return await _context.CourtImages.Where(im => im.CourtId == courtId).ToListAsync();
         }
     }
 }

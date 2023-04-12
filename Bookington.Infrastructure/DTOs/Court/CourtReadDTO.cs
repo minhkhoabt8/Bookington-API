@@ -1,4 +1,5 @@
 ﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.File;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -34,6 +35,8 @@ namespace Bookington.Infrastructure.DTOs.Court
 
         public TimeSpan? CloseAt { get; set; }
 
-        public bool IsActive { get; set; }        
+        public bool IsActive { get; set; }
+
+        public IEnumerable<ImageFile>? CourtPictures { get; set; }
     }
 }

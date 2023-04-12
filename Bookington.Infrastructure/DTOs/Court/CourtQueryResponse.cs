@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Bookington.Infrastructure.DTOs.File;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,6 @@ namespace Bookington.Infrastructure.DTOs.Court
         public int NumOfReview { get; set; }
         public TimeSpan OpenAt { get; set; }
         public TimeSpan CloseAt { get; set; }
-
-        public List<IFormFile> CourtPictures { get; set; }
+        public IEnumerable<ImageFile>? CourtPictures { get; set; }
     }
 }
