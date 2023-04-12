@@ -28,6 +28,8 @@ namespace Bookington.Infrastructure.DTOs.Court
 
         public double RatingStar { get; set; }
 
+        public int NumOfReview { get; set; }
+
         public TimeSpan? OpenAt { get; set; }
 
         public TimeSpan? CloseAt { get; set; }

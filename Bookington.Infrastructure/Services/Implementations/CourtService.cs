@@ -7,6 +7,7 @@ using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data;
 using System.Globalization;
@@ -81,10 +82,29 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (ownerId == null) throw new ForbiddenException();
 
-            var courts = await _unitOfWork.CourtRepository.GetAllCourtsByOwnerIdAsync(ownerId);            
+            var courts = await _unitOfWork.CourtRepository.GetAllCourtsByOwnerIdAsync(ownerId);
 
-            return PaginatedResponse<CourtReadDTO>.FromEnumerableWithMapping(
+            var owner = await _unitOfWork.AccountRepository.FindAsync(ownerId);
+
+            var courtReads =  PaginatedResponse<CourtReadDTO>.FromEnumerableWithMapping(
                 courts, query, _mapper);
+
+            
+            foreach(var court in courtReads) 
+            {
+                court.Phone = owner.Phone;
+
+                court.NumberOfSubCourt = await _unitOfWork.SubCourtRepository.GetNumberOfSubCourts(court.Id);
+
+                court.RatingStar = await _commentService.GetAverageRatingOfCommentsOfACourtAsync(court.Id);
+
+                court.NumOfReview = await _commentService.GetReviewsNumberOfCourt(court.Id);
+
+                court.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(court.Id);
+            }
+
+            return courtReads;
+            
         }
 
         public async Task<CourtReadDTO> GetByIdAsync(string id)
@@ -99,7 +119,6 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             result.NumberOfSubCourt = await _unitOfWork.SubCourtRepository.GetNumberOfSubCourts(existCourt.Id);
 
-            // TODO: Needs rating of courts
 
             var owner = await  _unitOfWork.AccountRepository.FindAsync(existCourt.OwnerId);
 
@@ -107,6 +126,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             result.RatingStar = await _commentService.GetAverageRatingOfCommentsOfACourtAsync(existCourt.Id);
 
+            result.NumOfReview = await _commentService.GetReviewsNumberOfCourt(existCourt.Id);
             
             result.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(existCourt.Id);
 
@@ -164,15 +184,20 @@ namespace Bookington.Infrastructure.Services.Implementations
             var result = PaginatedResponse<CourtQueryResponse>.FromEnumerableWithMapping(
                 courts, query, _mapper);
             
+
+
             foreach (var court in result.ToList())
             {
+                
                 // Remove any courts found after query with no sub courts
                 court.NumberOfSubCourt = await _unitOfWork.SubCourtRepository.GetNumberOfSubCourts(court.Id);
 
                 if (court.NumberOfSubCourt == 0)
                     result.Remove(court);
 
-                // TODO: Needs rating of courts
+                court.RatingStar = await _commentService.GetAverageRatingOfCommentsOfACourtAsync(court.Id);
+
+                court.NumOfReview = await _commentService.GetReviewsNumberOfCourt(court.Id);
 
                 // Get the lowest slot's price of each court
                 court.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(court.Id);

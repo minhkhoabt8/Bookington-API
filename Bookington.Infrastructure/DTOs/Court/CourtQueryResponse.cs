@@ -9,13 +9,14 @@ namespace Bookington.Infrastructure.DTOs.Court
 {
     public class CourtQueryResponse
     {
-        public string Id { get; set; } = null!;
-        public string Name { get; set; } = null!;
+        public string Id { get; set; }
+        public string Name { get; set; }
         public double RatingStar { get; set; }
-        public string DistrictName { get; set; } = null!;
-        public string ProvinceName { get; set; } = null!;
+        public string DistrictName { get; set; }
+        public string ProvinceName { get; set; }
         public double MoneyPerHour { get; set; }
         public int NumberOfSubCourt { get; set; }
+        public int NumOfReview { get; set; }
         public TimeSpan OpenAt { get; set; }
         public TimeSpan CloseAt { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using Bookington.Core.Data;
 using Bookington.Core.Entities;
 using Bookington.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,8 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         public CourtReportRepository(BookingtonDbContext context) : base(context)
         {
         }
+
+        
+
     }
 }

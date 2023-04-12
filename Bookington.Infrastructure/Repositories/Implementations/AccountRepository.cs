@@ -13,6 +13,8 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
 
+
+
         public async Task<Account?> FindAccountByPhoneNumberAsync(string phoneNumber)
         {
             return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == phoneNumber && a.IsDeleted == false);
@@ -58,5 +60,6 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return await Task.FromResult(accounts);
         }
+
     }
 }

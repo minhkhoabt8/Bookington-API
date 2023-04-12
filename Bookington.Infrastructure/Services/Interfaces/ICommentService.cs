@@ -16,5 +16,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task DeleteAsync(string id);
         Task<CommentReadDTO> GetByIdAsync(string id);
         Task<double> GetAverageRatingOfCommentsOfACourtAsync(string courtId);
+
+        Task<int> GetReviewsNumberOfCourt(string courtId);
     }
 }

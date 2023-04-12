@@ -76,5 +76,10 @@ namespace Bookington.Infrastructure.Services.Implementations
             var result = await _unitOfWork.CommentRepository.GetAverageRatingOfCommentsOfACourtAsync(courtId);
             return result;
         }
+
+        public async Task<int> GetReviewsNumberOfCourt(string courtId)
+        {
+            return await _unitOfWork.CommentRepository.GetReviewsNumberOfCourt(courtId);
+        }
     }
 }

@@ -7,6 +7,7 @@ using Bookington.Core.Entities;
 using Bookington.Core.Data;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
@@ -28,6 +29,14 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             }
 
             return 0;
+        }
+
+        public async Task<int> GetReviewsNumberOfCourt(string courtId)
+        {
+            var count = await _context.Comments
+                .Where(c => c.RefCourt == courtId && !c.IsDeleted && c.Rating != 0)
+                .CountAsync();
+            return count;
         }
     }
 }
