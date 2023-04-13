@@ -1,5 +1,6 @@
 ﻿using Bookington.Core.Data;
 using Bookington.Infrastructure.BackgroundServices;
+using Bookington.Infrastructure.Helpers;
 using Bookington.Infrastructure.Hubs;
 using Bookington.Infrastructure.Mapper;
 using Bookington.Infrastructure.Repositories.Implementations;
@@ -134,7 +135,9 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ISlotService, SlotService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IUploadFileService, FileUploadService>();
-            
+            services.AddScoped<IMomoPaymentService, MomoPaymentService>();
+            //Add MomoHelpers
+            services.AddScoped<IMomoHelpers, MomoHelpers>();
         }
 
         ///<Summary>

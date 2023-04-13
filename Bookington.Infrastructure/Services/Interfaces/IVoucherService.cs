@@ -14,6 +14,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<VoucherReadDTO> UpdateAsync(string id, VoucherWriteDTO dto);
         Task DeleteAsync(string id);
         Task<IEnumerable<VoucherReadDTO>> GetAllVoucherOfACourtAsync(string courtId);
-
+        Task<VoucherReadDTO> GetVoucherByCodeAsync(string voucherCode);
     }
 }

@@ -23,6 +23,7 @@ namespace Bookington.Infrastructure.Services.Implementations
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IVoucherService _voucherService;
         private readonly ITransactionService _transactionService;
         private readonly IUserContextService _userContextService;
         private readonly INotificationService _notificationService;
@@ -124,7 +125,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             // Check if voucher there is a voucher in request
             bool hasUsedVoucher = true;
 
-            if (!dto.VoucherCode.IsNullOrEmpty()) hasUsedVoucher = false;
+            if (dto.VoucherCode.IsNullOrEmpty()) hasUsedVoucher = false;
 
             var existVoucher = new Voucher() { Discount = 0 };            
 
@@ -138,6 +139,12 @@ namespace Bookington.Infrastructure.Services.Implementations
                 var validVoucher = await CheckVoucherValidAsync(existVoucher);
 
                 if (!validVoucher) throw new InvalidActionException("Voucher Is Not Valid");
+
+                //update Voucher Usage
+
+                existVoucher.Usages ++;
+
+                _unitOfWork.VoucherRepository.Update(existVoucher);
 
             }
 

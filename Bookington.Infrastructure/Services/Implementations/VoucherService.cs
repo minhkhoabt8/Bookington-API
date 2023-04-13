@@ -78,6 +78,12 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<VoucherReadDTO>(existVoucher);
         }
 
+        public async Task<VoucherReadDTO> GetVoucherByCodeAsync(string voucherCode)
+        {
+            var voucher = await _unitOfWork.VoucherRepository.FindByCode(voucherCode);
+            if (voucher == null) throw new EntityWithAttributeNotFoundException<Voucher>(nameof(Voucher.VoucherCode), voucher);
+            return _mapper.Map<VoucherReadDTO>(voucher);
+        }
         
     }
 }
