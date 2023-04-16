@@ -48,8 +48,7 @@ app.UseHttpsRedirection();
 app.UseCors(opt => opt
         .WithOrigins("https://localhost:7216")
         .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials());
+        .AllowAnyHeader());
 
 app.UseAuthentication();
 

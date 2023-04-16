@@ -67,6 +67,8 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             foreach (var day in daysOfWeek)
             {
+                currDaySlots.Clear();
+
                 currDaySlots = slots.Where(s => s.RefSlotNavigation.DaysInSchedule == day).ToList();
 
                 result.AddRange(currDaySlots.OrderBy(s => s.RefSlotNavigation.StartTime));
