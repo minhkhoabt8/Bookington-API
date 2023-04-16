@@ -1,4 +1,5 @@
-﻿using Bookington.Infrastructure.DTOs.Comment;
+﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Comment;
 using Bookington.Infrastructure.DTOs.Court;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task DeleteAsync(string id);
         Task<CommentReadDTO> GetByIdAsync(string id);
         Task<double> GetAverageRatingOfCommentsOfACourtAsync(string courtId);
-
+        Task<PaginatedResponse<CommentReadDTO>> GetAllCommentsOfCourt(CommentQuery query);
         Task<int> GetReviewsNumberOfCourt(string courtId);
     }
 }

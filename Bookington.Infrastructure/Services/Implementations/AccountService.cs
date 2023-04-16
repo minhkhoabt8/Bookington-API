@@ -277,6 +277,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return accountProfile;
         }
+
         //TODO: Profile
         public async Task<AccountProfileReadDTO> GetProfileByIdAsync(string accountId)
         {

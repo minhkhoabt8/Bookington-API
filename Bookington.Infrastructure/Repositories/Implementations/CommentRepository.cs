@@ -8,6 +8,7 @@ using Bookington.Core.Data;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
+using Bookington.Infrastructure.DTOs.Comment;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
@@ -15,6 +16,13 @@ namespace Bookington.Infrastructure.Repositories.Implementations
     {
         public CommentRepository(BookingtonDbContext context) : base(context)
         {
+        }
+
+        public async Task<IEnumerable<Comment>> GetAllCommentsOfCourtAsync(CommentQuery query, bool trackChanges = false)
+        {
+            IQueryable<Comment> comments = _context.Comments.Where(a => a.RefCourtNavigation.Id == query.CourtId && a.IsDeleted == false && a.IsActive == true);
+
+            return await Task.FromResult(comments);
         }
 
         public async Task<double> GetAverageRatingOfCommentsOfACourtAsync(string courtId)

@@ -16,6 +16,9 @@ builder.Services.AddServices();
 builder.Services.AddRepositories();
 builder.Services.AddUOW();
 builder.Services.AddSignalR();
+builder.Services.AddCors(options => {
+    options.AddPolicy("CORSPolicy", builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((hosts) => true));
+});
 builder.Services.AddAutoMapper();
 builder.Services.AddSignalRService();
 builder.Services.AddEvents();

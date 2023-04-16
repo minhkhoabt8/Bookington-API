@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
+using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Comment;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
@@ -81,5 +83,15 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             return await _unitOfWork.CommentRepository.GetReviewsNumberOfCourt(courtId);
         }
+
+        public async Task<PaginatedResponse<CommentReadDTO>> GetAllCommentsOfCourt(CommentQuery query)
+        {
+
+            var comments = await _unitOfWork.CommentRepository.GetAllCommentsOfCourtAsync(query);
+
+            return PaginatedResponse<CommentReadDTO>.FromEnumerableWithMapping(
+                comments, query, _mapper);
+        }
+
     }
 }

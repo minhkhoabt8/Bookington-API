@@ -13,7 +13,7 @@ namespace Bookington.Infrastructure.DTOs.Account
     {
         public string Id { get; set; }
 
-        public Bookington.Core.Entities.Role Role { get; set; }
+        public string RoleName { get; set; }
 
         public string Phone { get; set; }
 

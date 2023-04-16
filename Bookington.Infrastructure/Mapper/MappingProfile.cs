@@ -19,6 +19,7 @@ using Bookington.Infrastructure.DTOs.Notification;
 using Bookington.Infrastructure.DTOs.ReportResponse;
 using Bookington.Infrastructure.DTOs.SubCourtSlot;
 using Bookington.Infrastructure.DTOs.IncomingBooking;
+using Bookington.Infrastructure.DTOs.Comment;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -27,8 +28,8 @@ namespace Bookington.Infrastructure.Mapper
         public MappingProfile()
         {
             // Account
-            CreateMap<Account, AccountReadDTO>();
-                //.ForMember(dest => dest.RoleName, options => options.MapFrom(src => src.Role.RoleName));
+            CreateMap<Account, AccountReadDTO>()
+                .ForMember(dest => dest.RoleName, options => options.MapFrom(src => src.Role.RoleName));
             CreateMap<Account, AccountProfileReadDTO>();
             CreateMap<AccountWriteDTO, Account>();
             CreateMap<AccountUpdateDTO,Account>()
@@ -53,7 +54,7 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<SubCourtWriteDTO, SubCourt>();
             CreateMap<SubCourt, SubCourtForBookingReadDTO>()
                 .ForMember(dest => dest.IsAvailable, options => options.MapFrom(src => src.IsActive));
-
+            
             // Role
             CreateMap<Role, RoleReadDTO>();
             CreateMap<RoleWriteDTO, Role>();
@@ -127,7 +128,10 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<OrderWriteDTO, Order>();            
             // Notification
             CreateMap<Notification, NotificationReadDTO>();                
-            CreateMap<NotificationWriteDTO, Notification>();             
+            CreateMap<NotificationWriteDTO, Notification>();
+            //Comment
+            CreateMap<Comment, CommentReadDTO>();
+            CreateMap<CommentWriteDTO,Comment>();   
         }
     }
 }
