@@ -83,5 +83,25 @@ namespace Bookington.Infrastructure.Services.Implementations
             return PaginatedResponse<NotificationReadDTO>.FromEnumerableWithMapping(
                 notis, query, _mapper);
         }
+
+
+
+        public async Task SendNotificationToAll()
+        {
+            await _hubContext.SendNotificationToAll();
+        }
+
+        public async Task SendNotificationToAUser(string userId)
+        {
+            var noti = new NotificationReadDTO
+            {
+                Content = "This should send to user: " + userId,
+                CreateAt = DateTime.Now,
+                Id = Guid.NewGuid().ToString(),   
+                IsRead = true,
+                RefAccount = userId,
+            };
+            await _hubContext.SendNotification(userId, noti);
+        }
     }
 }

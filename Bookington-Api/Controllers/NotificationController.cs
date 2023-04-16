@@ -54,7 +54,7 @@ namespace Bookington_Api.Controllers
         /// Mark notifications as read
         /// </summary>
         /// <returns></returns>
-        [HttpPut("")]
+        [HttpPut("/markAllAsRead")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(List<NotificationReadDTO>))]
         public async Task<IActionResult> MarkAsReadAsync(List<NotificationReadDTO> notifications)
@@ -63,6 +63,29 @@ namespace Bookington_Api.Controllers
 
             return ResponseFactory.NoContent();
         }
+
+        /// <summary>
+        /// Push notifications to all uer (Test)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("/sendAll")]
+        public async Task<IActionResult>PushNotificationsToAllUser()
+        {
+            await _notificationService.SendNotificationToAll();
+
+            return ResponseFactory.NoContent();
+        }
+        /// <summary>
+        /// Pushy notifications to A User (Test)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> SendNotificationToAUser(string userId)
+        {
+            await _notificationService.SendNotificationToAUser(userId);
+            return ResponseFactory.NoContent();
+        }
+
 
     }
 }

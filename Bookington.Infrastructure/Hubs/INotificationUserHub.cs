@@ -11,5 +11,6 @@ namespace Bookington.Infrastructure.Hubs
     {
         Task SendNotification(string userId, NotificationReadDTO notification);
         Task SendNotificationList(string userId, List<NotificationReadDTO> notifications);
+        Task SendNotificationToAll();
     }
 }

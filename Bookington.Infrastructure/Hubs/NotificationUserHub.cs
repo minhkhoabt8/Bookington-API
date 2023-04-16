@@ -24,6 +24,15 @@ namespace Bookington_Api.Hubs
             }
         }
 
+        public async Task SendNotificationToAll()
+        {
+            var msg = "Hello! This Msg is Push To All Client";
+            
+            await _hubContext.Clients.All.SendAsync("NotificationForAllUser", msg);
+            
+        }
+
+
         public async Task SendNotificationList(string userId, List<NotificationReadDTO> notifications)
         {
             if (!string.IsNullOrEmpty(userId))
