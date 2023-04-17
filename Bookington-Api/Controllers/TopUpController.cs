@@ -35,5 +35,16 @@ namespace Bookington_Api.Controllers
             return ResponseFactory.Ok(data);
         }
 
+        /// <summary>
+        /// Handles the Momo checkout response to confirm a top-up.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("/confirmTopUpWithMomo")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MomoResponseDTO))]
+        public async Task<IActionResult> ConfirmTopUp([FromBody] MomoCheckoutResponseDTO dto)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

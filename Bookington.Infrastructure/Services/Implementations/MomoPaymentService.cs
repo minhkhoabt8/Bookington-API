@@ -145,5 +145,12 @@ namespace Bookington.Infrastructure.Services.Implementations
             return null;
         }
 
+
+        public async Task QueryPaymentStatus()
+        {
+            throw new NotImplementedException();
+           
+        }
+
     }
 }

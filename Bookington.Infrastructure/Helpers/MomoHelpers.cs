@@ -52,7 +52,7 @@ namespace Bookington.Infrastructure.Helpers
         }
 
 
-        public string BuildQueryHash(string partnerCode, string merchantRefId,
+        public async Task<string> BuildQueryHash(string partnerCode, string merchantRefId,
             string requestid, string publicKey)
         {
             string json = "{\"partnerCode\":\"" +
@@ -68,7 +68,7 @@ namespace Bookington.Infrastructure.Helpers
                 {
                     // client encrypting data with public key issued by server
                     rsa.FromXmlString(publicKey);
-                    var encryptedData = rsa.Encrypt(data, false);
+                    var encryptedData = await Task.Run(() => rsa.Encrypt(data, false));
                     var base64Encrypted = Convert.ToBase64String(encryptedData);
                     result = base64Encrypted;
                 }

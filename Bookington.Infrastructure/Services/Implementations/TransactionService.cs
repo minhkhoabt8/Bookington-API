@@ -165,6 +165,17 @@ namespace Bookington.Infrastructure.Services.Implementations
                 result, query, _mapper);
         }
 
+        public async Task<TransactionHistoryReadDTO> CreateWithMomoAsync(TransactionHistoryWriteDTO dto)
+        {
+            var transaction = _mapper.Map<Transaction>(dto);
+
+            await _unitOfWork.TransactionHistoryRepository.AddAsync(transaction);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<TransactionHistoryReadDTO>(transaction);
+        }
+
 
         //public async Task<PaginatedResponse<TransactionHistoryReadDTO>> GetOwnerTransactionHistory(TransactionHistoryQuery query)
         //{
