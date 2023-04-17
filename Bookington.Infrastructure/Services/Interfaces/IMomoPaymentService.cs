@@ -10,6 +10,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
     public interface IMomoPaymentService
     {
         //Task<string> SendPaymentRequest(string endpoint, string postJsonString);
-        Task<MomoResponseDTO> CreatePaymentRequestToMomo(int amount, string orderInfo, string extraData);
+        Task<MomoResponseDTO> CreatePaymentRequestToMomo(MomoPaymentInfo info);
     }
 }

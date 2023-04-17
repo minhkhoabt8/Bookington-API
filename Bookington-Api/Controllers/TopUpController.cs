@@ -28,13 +28,9 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpPost()]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MomoResponseDTO))]
-        public async Task<IActionResult> TopUp()
+        public async Task<IActionResult> TopUp(MomoPaymentInfo info)
         {
-            int amount = 12000;
-            var orderInfo = "TestMomoPayment";
-            var extraData = "";
-
-            var data = await _paymentService.CreatePaymentRequestToMomo(amount,orderInfo,extraData);
+            var data = await _paymentService.CreatePaymentRequestToMomo(info);
 
             return ResponseFactory.Ok(data);
         }

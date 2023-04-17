@@ -3,6 +3,7 @@ using Bookington.Infrastructure.DTOs.Momo;
 using Bookington.Infrastructure.Helpers;
 using Bookington.Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -77,7 +78,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<MomoResponseDTO> CreatePaymentRequestToMomo(int amount, string orderInfo, string extraData = "")
+        public async Task<MomoResponseDTO> CreatePaymentRequestToMomo(MomoPaymentInfo info)
         {
 
             string partnerCode = _configuration.GetValue<string>("Momo:PartnerCode");
@@ -93,22 +94,22 @@ namespace Bookington.Infrastructure.Services.Implementations
             //Before sign HMAC SHA256 signature
 
             string rawHash = "accessKey=" + accessKey +
-                "&amount=" + amount.ToString() +
-                "&extraData=" + extraData +
+                "&amount=" +   info.Amount.ToString() +
+                "&extraData=" + info.ExtraData +
                 "&ipnUrl=" + notifiUrl +
                 "&orderId=" + orderId +
-                "&orderInfo=" + orderInfo +
+                "&orderInfo=" + info.OrderInfo +
                 "&partnerCode=" + partnerCode +
                 "&redirectUrl=" + returnUrl +
                 "&requestId=" + requestId +
                 "&requestType=" + requestType
                 ;
 
-            System.Diagnostics.Debug.WriteLine("\n[MOMO Log] - RAW HASH: " + rawHash + "\n\n");
+            //System.Diagnostics.Debug.WriteLine("\n[MOMO Log] - RAW HASH: " + rawHash + "\n\n");
 
             string signature = await _momoHelpers.SignSHA256(rawHash, secretKey);
 
-            System.Diagnostics.Debug.WriteLine("\n[MOMO Log] - SIGNATURE: " + signature + "\n\n");
+            //System.Diagnostics.Debug.WriteLine("\n[MOMO Log] - SIGNATURE: " + signature + "\n\n");
 
             //build body json request
             JObject message = new JObject
@@ -117,30 +118,31 @@ namespace Bookington.Infrastructure.Services.Implementations
                 { "partnerName", "Test" },
                 { "storeId", "MomoTestStore" },
                 { "requestId", requestId },
-                { "amount", amount },
+                { "amount", info.Amount },
                 { "orderId", orderId },
-                { "orderInfo", orderInfo },
+                { "orderInfo", info.OrderInfo },
                 { "redirectUrl", returnUrl },
-                //{ "redirectUrl", redirectUrl },
-                //{ "ipnUrl", ipnUrl },
                 { "ipnUrl", notifiUrl },
                 { "lang", "en" },
-                { "extraData", extraData },
+                { "extraData", info.ExtraData.ToString() },
                 { "requestType", requestType },
                 { "signature", signature }
             };
 
-            System.Diagnostics.Debug.WriteLine("\n[MOMO Log] - JSON REQUEST TO MOMO: " + message + "\n\n");
+           //System.Diagnostics.Debug.WriteLine("\n[MOMO Log] - JSON REQUEST TO MOMO: " + message + "\n\n");
             
             var responseFromMomo = await SendPaymentRequest(endpoint, message.ToString());
 
-            JObject jmessage = JObject.Parse(responseFromMomo);
+            //System.Diagnostics.Debug.WriteLine("\n[MOMO Log] - RESPONSE FROM MOMO: " + message + "\n\n");
 
-            System.Diagnostics.Debug.WriteLine("\n[MOMO Log] - RESPONSE FROM MOMO: " + message + "\n\n");
+            if (!responseFromMomo.IsNullOrEmpty())
+            {
+                MomoResponseDTO momoResponse = JsonConvert.DeserializeObject<MomoResponseDTO>(responseFromMomo);
 
-            MomoResponseDTO momoResponse = JsonConvert.DeserializeObject<MomoResponseDTO>(responseFromMomo);
+                return momoResponse;
+            }
 
-            return momoResponse;
+            return null;
         }
 
     }
