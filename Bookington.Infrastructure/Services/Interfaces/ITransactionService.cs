@@ -1,4 +1,5 @@
 ﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Momo;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<TransactionHistoryReadDTO> GetByIdAsync(string id);
         Task<string> TransferAsync(double amount, string refTo, string transferReason);
         Task<PaginatedResponse<TransactionHistoryReadDTO>> GetSelfTransactionHistory(TransactionHistoryQuery query);
-
         Task<MomoTransactionReadDTO> CreateMomoTransactionAsync(MomoTransactionWriteDTO dto);
-
+        Task<MomoTransactionReadDTO> ConfirmTopUp(MomoCheckoutResponseDTO dto);
     }
 }

@@ -28,5 +28,12 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return Task.FromResult(trans);
         }
+
+        public async Task<Transaction?> GetTransactionHstoryByMomoOrderId(string momoOrderId)
+        {
+            return await _context.Transactions
+                    .Include(t => t.RefMomoTransactionNavigation)
+                    .FirstOrDefaultAsync(t => t.RefMomoTransaction == momoOrderId);
+        }
     }
 }
