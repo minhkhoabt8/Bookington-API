@@ -7,6 +7,7 @@ using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Bookington.Infrastructure.Services.Implementations
@@ -176,6 +177,43 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<TransactionHistoryReadDTO>(transaction);
         }
 
+
+        public async Task<MomoTransactionReadDTO> CreateMomoTransactionAsync(MomoTransactionWriteDTO dto)
+        {
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            //Add MomotransactionTable
+
+            var momoTransaction = _mapper.Map<MomoTransaction>(dto);
+
+            momoTransaction.Content = "Top Up Balance";
+
+            momoTransaction.IsSuccessful = false;
+
+            await _unitOfWork.MomoTransactionRepository.AddAsync(momoTransaction);
+
+            //Add transactionTable
+
+            var transaction = _mapper.Map<Transaction>(dto);
+
+            transaction.RefFrom = "00000000000000000000000000000000000";
+
+            transaction.RefTo = accountId;
+
+            transaction.Reason = "Top Up Balance";
+
+            transaction.RefMomoTransaction = momoTransaction.Id; // it should be its own id or Momo's order id or momo's RequestId???
+
+            await _unitOfWork.TransactionHistoryRepository.AddAsync(transaction);
+
+            // SaveChange DB
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<MomoTransactionReadDTO>(transaction);
+        }
 
         //public async Task<PaginatedResponse<TransactionHistoryReadDTO>> GetOwnerTransactionHistory(TransactionHistoryQuery query)
         //{

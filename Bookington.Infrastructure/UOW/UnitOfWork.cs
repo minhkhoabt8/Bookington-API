@@ -49,6 +49,8 @@ namespace Bookington.Infrastructure.UOW
 
         public ICourtImageRepository CourtImageRepository => GetSingletonRepository<ICourtImageRepository>();
 
+        public IMomoTransactionRepository MomoTransactionRepository => GetSingletonRepository<IMomoTransactionRepository>();
+
         private T GetSingletonRepository<T>()
         {
             if (!_singletonRepositories.ContainsKey(typeof(T).Name))

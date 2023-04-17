@@ -170,6 +170,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IUserReportResponseRepository, UserReportResponseRepository>();
             services.AddScoped<ISubCourtSlotRepository, SubCourtSlotRepository>();
             services.AddScoped<ICourtImageRepository, CourtImageRepository>();
+            services.AddScoped<IMomoTransactionRepository, MomoTransactionRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work

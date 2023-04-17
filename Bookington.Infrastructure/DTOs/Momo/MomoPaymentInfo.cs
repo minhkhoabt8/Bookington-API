@@ -13,8 +13,5 @@ namespace Bookington.Infrastructure.DTOs.Momo
         public int Amount { get; set; }
         [Required]
         public string OrderInfo { get; set; }
-        //Thông tin bổ sung cho order theo định dạng <key>=<value>;<key>=<value>
-        //mặc định là ""
-        public object[]? ExtraData { get; set; }
     }
 }

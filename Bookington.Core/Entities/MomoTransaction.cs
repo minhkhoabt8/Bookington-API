@@ -5,7 +5,7 @@ namespace Bookington.Core.Entities;
 
 public partial class MomoTransaction
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = Guid.NewGuid().ToString(); 
 
     public string Content { get; set; } = null!;
 
@@ -13,7 +13,7 @@ public partial class MomoTransaction
 
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
-    public bool IsSuccessful { get; set; }
+    public bool IsSuccessful { get; set; } = false;
 
     public virtual ICollection<Transaction> Transactions { get; } = new List<Transaction>();
 }

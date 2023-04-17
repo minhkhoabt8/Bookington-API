@@ -56,6 +56,8 @@ namespace Bookington.Infrastructure.UOW
 
         public ICourtImageRepository CourtImageRepository { get; }
 
+        public IMomoTransactionRepository MomoTransactionRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

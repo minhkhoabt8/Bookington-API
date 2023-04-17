@@ -1,5 +1,6 @@
 ﻿using BCrypt.Net;
 using Bookington.Infrastructure.DTOs.Momo;
+using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.Helpers;
 using Bookington.Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -20,11 +21,13 @@ namespace Bookington.Infrastructure.Services.Implementations
     {
         private readonly IConfiguration _configuration;
         private readonly IMomoHelpers _momoHelpers;
+        private readonly ITransactionService _transactionService;
 
-        public MomoPaymentService(IConfiguration configuration, IMomoHelpers momoHelpers)
+        public MomoPaymentService(IConfiguration configuration, IMomoHelpers momoHelpers, ITransactionService transactionService)
         {
             _configuration = configuration;
             _momoHelpers = momoHelpers;
+            _transactionService = transactionService;
         }
 
         public async Task<string> SendPaymentRequest(string endpoint, string postJsonString)
@@ -91,11 +94,12 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             string orderId = Guid.NewGuid().ToString();
             string requestId = Guid.NewGuid().ToString();
+
             //Before sign HMAC SHA256 signature
 
             string rawHash = "accessKey=" + accessKey +
                 "&amount=" +   info.Amount.ToString() +
-                "&extraData=" + info.ExtraData +
+                "&extraData=" +
                 "&ipnUrl=" + notifiUrl +
                 "&orderId=" + orderId +
                 "&orderInfo=" + info.OrderInfo +
@@ -124,7 +128,7 @@ namespace Bookington.Infrastructure.Services.Implementations
                 { "redirectUrl", returnUrl },
                 { "ipnUrl", notifiUrl },
                 { "lang", "en" },
-                { "extraData", info.ExtraData.ToString() },
+                { "extraData", "" },
                 { "requestType", requestType },
                 { "signature", signature }
             };
@@ -138,6 +142,21 @@ namespace Bookington.Infrastructure.Services.Implementations
             if (!responseFromMomo.IsNullOrEmpty())
             {
                 MomoResponseDTO momoResponse = JsonConvert.DeserializeObject<MomoResponseDTO>(responseFromMomo);
+
+                //check if RequestSuccess, status = 0
+                if(momoResponse.ResultCode == 0)
+                {
+                    var momoTransactionWrite = new MomoTransactionWriteDTO
+                    {
+                        Amount = momoResponse.Amount,
+                        OrderId = momoResponse.OrderId,
+                        TransactionId = momoResponse.RequestId
+                    };
+                    //call service to save transaction to db with momo transaction table -  IsSuccessful = false
+                    //call query status of payment to momo => success - update  IsSuccessful = true
+                    //call another service to update balance of account
+                    await _transactionService.CreateMomoTransactionAsync(momoTransactionWrite);
+                }
 
                 return momoResponse;
             }

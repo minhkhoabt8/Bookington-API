@@ -123,6 +123,15 @@ namespace Bookington.Infrastructure.Mapper
                 .ForMember(des => des.FromUsername, act => act.MapFrom(src => src.RefFromNavigation.FullName))
                 .ForMember(des => des.ToUsername, act => act.MapFrom(src => src.RefToNavigation.FullName));
             CreateMap<TransactionHistoryWriteDTO, Transaction>();
+
+            CreateMap<Transaction, MomoTransactionReadDTO>()
+                .ForMember(des => des.FromUsername, act => act.MapFrom(src => src.RefFromNavigation.FullName))
+                .ForMember(des => des.ToUsername, act => act.MapFrom(src => src.RefToNavigation.FullName))
+                .ForMember(des => des.MomoTransaction, act => act.MapFrom(src => src.RefMomoTransactionNavigation));
+            CreateMap<MomoTransactionWriteDTO, Transaction>();
+            //Momo Transaction History
+            CreateMap<MomoTransaction, MomoTransactionReadDTO>();
+            CreateMap<MomoTransactionWriteDTO,MomoTransaction>();
             // Order
             CreateMap<Order, OrderReadDTO>();
             CreateMap<OrderWriteDTO, Order>();            
