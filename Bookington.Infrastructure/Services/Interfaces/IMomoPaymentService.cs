@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bookington.Infrastructure.DTOs.Momo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
 {
     public interface IMomoPaymentService
     {
-        Task<string> SendPaymentRequest(string endpoint, string postJsonString);
-        Task<string> CreatePaymentRequestToMomo(decimal amount, string orderInfo, string extraData);
+        //Task<string> SendPaymentRequest(string endpoint, string postJsonString);
+        Task<MomoResponseDTO> CreatePaymentRequestToMomo(int amount, string orderInfo, string extraData);
     }
 }

@@ -9,18 +9,15 @@ namespace Bookington.Infrastructure.DTOs.Momo
     public class MomoResponseDTO
     {
         //https://developers.momo.vn/v3/vi/docs/payment/api/wallet/onetime
-        public string PartnerCode { get; set; }
-        //public string Accesskey { get; set; }
-        //public string RequestId { get; set; }
-        //public string Amount { get; set; }
-        public string OrderId { get; set; }
-        public string RequestId { get; set; }
-        public string Amount { get; set; }
-        public string ResponseTime { get; set; }
-        public string Message { get; set; }
-        public string ResultCode { get; set; }
-        public string PayUrl { get; set; }
-        public string DeepLink { get; set; }
-        public string QrCodeUrl { get; set; }
+        public string partnerCode { get; set; }
+        public string orderId { get; set; }
+        public string requestId { get; set; }
+        public decimal amount { get; set; }
+        public long responseTime { get; set; }
+        public string message { get; set; }
+        public int resultCode { get; set; }
+        public string payUrl { get; set; }
+        public string deeplink { get; set; }
+        public string deeplinkMiniApp { get; set; }
     }
 }

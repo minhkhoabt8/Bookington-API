@@ -8,7 +8,6 @@ namespace Bookington.Infrastructure.DTOs.Comment
 {
     public class CommentWriteDTO
     {
-        public string Id { get; set; } = null!;
 
         // will be disposed later after authorization implementation
         public string CommentWriterId { get; set; } = null!;

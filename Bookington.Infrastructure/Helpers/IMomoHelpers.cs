@@ -14,6 +14,6 @@ namespace Bookington.Infrastructure.Helpers
             string requestid, string publicKey);
         string BuildRefundHash(string partnerCode, string merchantRefId,
             string momoTranId, long amount, string description, string publicKey);
-        string signSHA256(string message, string key);
+        Task<string> SignSHA256(string message, string key);
     }
 }
