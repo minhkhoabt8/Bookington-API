@@ -16,16 +16,10 @@ namespace Bookington.Infrastructure.Helpers
             //encrypt and decrypt password using secure
         }
 
-        public string GetHash(string partnerCode, string merchantRefId,
+        public async Task<string> GetHash(string partnerCode, string merchantRefId,
            string amount, string paymentCode, string storeId, string storeName, string publicKeyXML)
         {
-            string json = "{\"partnerCode\":\"" +
-               partnerCode + "\",\"partnerRefId\":\"" +
-               merchantRefId + "\",\"amount\":" +
-               amount + ",\"paymentCode\":\"" +
-               paymentCode + "\",\"storeId\":\"" +
-               storeId + "\",\"storeName\":\"" +
-               storeName + "\"}";
+            string json = "{\"partnerCode\":\"" + partnerCode + "\",\"partnerRefId\":\"" + merchantRefId + "\",\"amount\":" + amount + ",\"paymentCode\":\"" + paymentCode + "\",\"storeId\":\"" + storeId + "\",\"storeName\":\"" + storeName + "\"}";
 
             byte[] data = Encoding.UTF8.GetBytes(json);
             string result = null;
@@ -47,8 +41,7 @@ namespace Bookington.Infrastructure.Helpers
 
             }
 
-            return result;
-
+            return await Task.FromResult(result);
         }
 
 
@@ -83,15 +76,10 @@ namespace Bookington.Infrastructure.Helpers
 
         }
 
-        public string BuildRefundHash(string partnerCode, string merchantRefId,
+        public async Task<string> BuildRefundHash(string partnerCode, string merchantRefId,
             string momoTranId, long amount, string description, string publicKey)
         {
-            string json = "{\"partnerCode\":\"" +
-                partnerCode + "\",\"partnerRefId\":\"" +
-                merchantRefId + "\",\"momoTransId\":\"" +
-                momoTranId + "\",\"amount\":" +
-                amount + ",\"description\":\"" +
-                description + "\"}";
+            string json = "{\"partnerCode\":\"" + partnerCode + "\",\"partnerRefId\":\"" + merchantRefId + "\",\"momoTransId\":\"" + momoTranId + "\",\"amount\":" + amount + ",\"description\":\"" + description + "\"}";
 
             byte[] data = Encoding.UTF8.GetBytes(json);
             string result = null;
@@ -109,11 +97,9 @@ namespace Bookington.Infrastructure.Helpers
                 {
                     rsa.PersistKeyInCsp = false;
                 }
-
             }
 
-            return result;
-
+            return await Task.FromResult(result);
         }
 
 

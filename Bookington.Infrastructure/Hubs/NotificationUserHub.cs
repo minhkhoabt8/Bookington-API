@@ -32,7 +32,6 @@ namespace Bookington_Api.Hubs
             
         }
 
-
         public async Task SendNotificationList(string userId, List<NotificationReadDTO> notifications)
         {
             if (!string.IsNullOrEmpty(userId))
