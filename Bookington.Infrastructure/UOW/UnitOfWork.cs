@@ -38,7 +38,7 @@ namespace Bookington.Infrastructure.UOW
         public ICourtReportRepository CourtReportRepository => GetSingletonRepository<ICourtReportRepository>();
         public IUserReportRepository UserReportRepository => GetSingletonRepository<IUserReportRepository>();
         public IUserBalanceRepository UserBalanceRepository => GetSingletonRepository<IUserBalanceRepository>();
-        public ITransactionRepository TransactionHistoryRepository => GetSingletonRepository<ITransactionRepository>();
+        public ITransactionRepository TransactionRepository => GetSingletonRepository<ITransactionRepository>();
         public IOrderRepository OrderRepository => GetSingletonRepository<IOrderRepository>();
         public INotificationRepository NotificationRepository => GetSingletonRepository<INotificationRepository>();
         public ILoginTokenRepository LoginTokenRepository => GetSingletonRepository<ILoginTokenRepository>();
@@ -46,9 +46,7 @@ namespace Bookington.Infrastructure.UOW
         public IBanRepository BanRepository => GetSingletonRepository<IBanRepository>();
         public IUserReportResponseRepository UserReportResponseRepository => GetSingletonRepository<IUserReportResponseRepository>();
         public ISubCourtSlotRepository SubCourtSlotRepository => GetSingletonRepository<ISubCourtSlotRepository>();
-
         public ICourtImageRepository CourtImageRepository => GetSingletonRepository<ICourtImageRepository>();
-
         public IMomoTransactionRepository MomoTransactionRepository => GetSingletonRepository<IMomoTransactionRepository>();
 
         private T GetSingletonRepository<T>()

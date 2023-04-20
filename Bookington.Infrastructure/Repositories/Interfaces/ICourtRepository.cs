@@ -12,5 +12,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IQueryAsync<Court,CourtItemQuery>
     {
         Task<IEnumerable<Court>> GetAllCourtsByOwnerIdAsync(string ownerId);
+        Task<Court?> GetCourtFromTransactionId(string transactionId);
     }
 }

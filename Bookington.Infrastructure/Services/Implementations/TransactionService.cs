@@ -32,7 +32,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var transaction = _mapper.Map<Transaction>(dto);
 
-            await _unitOfWork.TransactionHistoryRepository.AddAsync(transaction);
+            await _unitOfWork.TransactionRepository.AddAsync(transaction);
 
             await _unitOfWork.CommitAsync();
 
@@ -41,14 +41,14 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<IEnumerable<TransactionHistoryReadDTO>> GetAllAsync()
         {
-            var transactions = await _unitOfWork.TransactionHistoryRepository.GetAllAsync();
+            var transactions = await _unitOfWork.TransactionRepository.GetAllAsync();
 
             return _mapper.Map<IEnumerable<TransactionHistoryReadDTO>>(transactions);
         }
 
         public async Task<TransactionHistoryReadDTO> GetByIdAsync(string id)
         {
-            var existTransaction = await _unitOfWork.TransactionHistoryRepository.FindAsync(id);
+            var existTransaction = await _unitOfWork.TransactionRepository.FindAsync(id);
 
             if (existTransaction == null) throw new EntityWithIDNotFoundException<Transaction>(id);
 
@@ -57,13 +57,13 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<TransactionHistoryReadDTO> UpdateAsync(string id, TransactionHistoryWriteDTO dto)
         {
-            var existTransaction = await _unitOfWork.TransactionHistoryRepository.FindAsync(id);
+            var existTransaction = await _unitOfWork.TransactionRepository.FindAsync(id);
 
             if (existTransaction == null) throw new EntityWithIDNotFoundException<Transaction>(id);
 
             var updatedTransaction = _mapper.Map<Transaction>(dto);
 
-            _unitOfWork.TransactionHistoryRepository.Update(updatedTransaction);
+            _unitOfWork.TransactionRepository.Update(updatedTransaction);
 
             await _unitOfWork.CommitAsync();
 
@@ -72,11 +72,11 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task DeleteAsync(string id)
         {
-            var existTransaction = await _unitOfWork.TransactionHistoryRepository.FindAsync(id);
+            var existTransaction = await _unitOfWork.TransactionRepository.FindAsync(id);
 
             if (existTransaction == null) throw new EntityWithIDNotFoundException<Transaction>(id);
 
-            _unitOfWork.TransactionHistoryRepository.Delete(existTransaction);
+            _unitOfWork.TransactionRepository.Delete(existTransaction);
 
             await _unitOfWork.CommitAsync();
         }
@@ -112,7 +112,7 @@ namespace Bookington.Infrastructure.Services.Implementations
                 Amount = amount,
                 Reason = transferReason
             };
-            await _unitOfWork.TransactionHistoryRepository.AddAsync(newTrans);
+            await _unitOfWork.TransactionRepository.AddAsync(newTrans);
 
             // Other functions will commit to database             
 
@@ -127,42 +127,58 @@ namespace Bookington.Infrastructure.Services.Implementations
             if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
             // Get customer's transaction history                        
-            var trans = await _unitOfWork.TransactionHistoryRepository.GetTransactionHistoryOfCustomer(accountId!);
+            var trans = await _unitOfWork.TransactionRepository.GetTransactionHistoryOfUser(accountId!);
 
             var result = _mapper.Map<IEnumerable<TransactionHistoryReadDTO>>(trans);
+
+            int currRecord = 0;
 
             foreach (var record in result)
             {
                 var otherParty = new Account();
 
-                if (accountId == record.RefFrom) record.FromUsername = "You";
-                else
+                if (accountId == record.RefFrom)
                 {
+                    record.FromUsername = "You";
+
                     otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefFrom);
                     if (otherParty == null) throw new EntityWithIDNotFoundException<Account>(record.RefFrom);
 
                     // If the other party is an admin the transaction from in transaction will be "System"
                     // Else if they are an owner get their name and the court they own
-                    if (otherParty.RoleId == AccountRole.admin.ToString()) record.FromUsername = "System";
-                    else if (otherParty.RoleId == AccountRole.owner.ToString())
+                    if (int.Parse(otherParty.RoleId) == (int) AccountRole.admin) record.ToUsername = "System";
+                    else if (int.Parse(otherParty.RoleId) == (int) AccountRole.owner)
                     {
-                        record.FromUsername += " (Court Owner)";                        
+                        var court = await _unitOfWork.CourtRepository.GetCourtFromTransactionId(record.Id);
+                        if (court == null) throw new EntityNotFoundException("There is something wrong with transaction " + record.Id);
+
+                        record.ToUsername = "Court Owner of " + court.Name + " - " + otherParty.Phone;
                     }
                 }
-                if (accountId == record.RefTo) record.ToUsername = "You";
-                else
+                else if (accountId == record.RefTo)
                 {
-                    otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefTo);
+                    record.ToUsername = "You";
+
+                    otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefFrom);
                     if (otherParty == null) throw new EntityWithIDNotFoundException<Account>(record.RefFrom);
 
-                    // If the other party is an admin the transaction to in transaction will be "System"
+                    // If the other party is an admin the transaction from in transaction will be "System"
                     // Else if they are an owner get their name and the court they own
-                    if (otherParty.RoleId == AccountRole.admin.ToString()) record.FromUsername = "System";
-                    else if (otherParty.RoleId == AccountRole.owner.ToString())
+                    if (int.Parse(otherParty.RoleId) == (int)AccountRole.admin) record.FromUsername = "System";
+                    else if (int.Parse(otherParty.RoleId) == (int)AccountRole.owner)
                     {
-                        record.FromUsername += " (Court Owner)";                         
+                        var court = await _unitOfWork.CourtRepository.GetCourtFromTransactionId(record.Id);
+                        if (court == null) throw new EntityNotFoundException("There is something wrong with transaction " + record.Id);
+
+                        record.FromUsername = "Court Owner of " + court.Name + " - " + otherParty.Phone;
                     }
-                }
+                }     
+                
+                var order = trans.ElementAt(currRecord).Orders.FirstOrDefault();
+
+                if (order != null) record.OrderId = order.Id;
+
+                currRecord++;
             }
 
             return PaginatedResponse<TransactionHistoryReadDTO>.FromEnumerableWithMapping(
@@ -173,7 +189,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var transaction = _mapper.Map<Transaction>(dto);
 
-            await _unitOfWork.TransactionHistoryRepository.AddAsync(transaction);
+            await _unitOfWork.TransactionRepository.AddAsync(transaction);
 
             await _unitOfWork.CommitAsync();
 
@@ -211,7 +227,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             transaction.RefMomoTransaction = dto.OrderId; // it should be its own id or Momo's order id or momo's RequestId???
 
-            await _unitOfWork.TransactionHistoryRepository.AddAsync(transaction);
+            await _unitOfWork.TransactionRepository.AddAsync(transaction);
 
             // SaveChange DB
 
@@ -235,7 +251,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             //3.Get User Account Balance from OrderId of Transaction
 
-            var transaction = await _unitOfWork.TransactionHistoryRepository.GetTransactionHstoryByMomoOrderId(existMomoTransaction.Id);
+            var transaction = await _unitOfWork.TransactionRepository.GetTransactionHstoryByMomoOrderId(existMomoTransaction.Id);
 
             if (transaction == null) throw new EntityWithIDNotFoundException<Transaction>(existMomoTransaction.Id);
 
@@ -256,64 +272,81 @@ namespace Bookington.Infrastructure.Services.Implementations
         }
 
 
-        //public async Task<PaginatedResponse<TransactionHistoryReadDTO>> GetOwnerTransactionHistory(TransactionHistoryQuery query)
-        //{
-        //    // Check if account is valid and is an owner
-        //    var accountId = _userContextService.AccountID.ToString();
+        public async Task<PaginatedResponse<TransactionHistoryReadDTO>> GetOwnerTransactionHistory(TransactionHistoryQuery query)
+        {
+            // Check if account is valid and is an owner
+            var accountId = _userContextService.AccountID.ToString();
 
-        //    if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-        //    var account = await _unitOfWork.AccountRepository.FindAsync(accountId);
-        //    if (account == null) throw new EntityWithIDNotFoundException<Account>(accountId);
-        //    if (account.RoleId != AccountRole.owner.ToString()) throw new ForbiddenException();
+            var account = await _unitOfWork.AccountRepository.FindAsync(accountId!);
+            if (account == null) throw new EntityWithIDNotFoundException<Account>(accountId!);            
 
-        //    // Get owner's transaction history                        
-        //    var trans = await _unitOfWork.TransactionHistoryRepository.GetTransactionHistoryOfOwner(accountId);
+            // Get owner's transaction history                        
+            var trans = await _unitOfWork.TransactionRepository.GetTransactionHistoryOfUser(accountId!);
 
-        //    var result = _mapper.Map<IEnumerable<TransactionHistoryReadDTO>>(trans);
+            var result = _mapper.Map<IEnumerable<TransactionHistoryReadDTO>>(trans);
 
-        //    foreach (var record in result)
-        //    {
-        //        var otherParty = new Account();
+            int currRecord = 0;
 
-        //        if (accountId == record.RefFrom) record.FromUsername = "You";
-        //        else
-        //        {
-        //            otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefFrom);
-        //            if (otherParty == null) throw new EntityWithIDNotFoundException<Account>(record.RefFrom);
+            foreach (var record in result)
+            {
+                var otherParty = new Account();
 
-        //            // If the other party is an admin the transaction from in transaction will be "System"
-        //            // Else if they are an owner get their name and the court they own
-        //            if (otherParty.RoleId == AccountRole.admin.ToString()) record.FromUsername = "System";
-        //            else if (otherParty.RoleId == AccountRole.owner.ToString())
-        //            {
-        //                var court = await _unitOfWork.CourtRepository.FindAsync(otherParty.CourtId.ToString());
-        //                if (court == null) throw new EntityWithIDNotFoundException<Court>(otherParty.CourtId.ToString());
+                // You are ref from and customer or system is ref to
+                if (accountId == record.RefFrom)
+                {
+                    otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefTo);
+                    if (otherParty == null) throw new EntityWithIDNotFoundException<Account>(record.RefTo);
 
-        //                record.FromUsername = $"{court.Name} ({otherParty.Phone})";
-        //            }
-        //        }
-        //        if (accountId == record.RefTo) record.ToUsername = "You";
-        //        else
-        //        {
-        //            otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefTo);
-        //            if (otherParty == null) throw new EntityWithIDNotFoundException<Account>(record.RefFrom);
+                    // If the other party is an admin the transaction from in transaction will be "System"
+                    // Else if they are an owner get their name and the court they own
+                    if (int.Parse(otherParty.RoleId) == (int)AccountRole.admin)
+                    {
+                        record.FromUsername = "You";
+                        record.ToUsername = "System";
+                    }
+                    else if (int.Parse(otherParty.RoleId) == (int)AccountRole.customer)
+                    {
+                        var court = await _unitOfWork.CourtRepository.GetCourtFromTransactionId(record.Id);
+                        if (court == null) throw new EntityNotFoundException("There is something wrong with transaction" + record.Id);
 
-        //            // If the other party is an admin the transaction to in transaction will be "System"
-        //            // Else if they are an owner get their name and the court they own
-        //            if (otherParty.RoleId == AccountRole.admin.ToString()) record.ToUsername = "System";
-        //            else if (otherParty.RoleId == AccountRole.owner.ToString())
-        //            {
-        //                var court = await _unitOfWork.CourtRepository.FindAsync(otherParty.Id.ToString());
-        //                if (court == null) throw new EntityWithIDNotFoundException<Court>(otherParty.Id.ToString());
+                        record.FromUsername = "You - " + court.Name;
+                        record.ToUsername = otherParty.FullName + " - " + otherParty.Phone;                        
+                    }
+                }
+                // You are ref to and customer or system is ref from
+                else
+                {
+                    otherParty = await _unitOfWork.AccountRepository.FindAsync(record.RefFrom);
+                    if (otherParty == null) throw new EntityWithIDNotFoundException<Account>(record.RefFrom);
 
-        //                record.ToUsername = $"{court.Name} ({otherParty.Phone})";
-        //            }
-        //        }
-        //    }
+                    // If the other party is an admin the transaction from in transaction will be "System"
+                    // Else if they are an owner get their name and the court they own
+                    if (int.Parse(otherParty.RoleId) == (int)AccountRole.admin)
+                    {
+                        record.FromUsername = "System";
+                        record.ToUsername = "You";
+                    }
+                    else if (int.Parse(otherParty.RoleId) == (int)AccountRole.customer)
+                    {
+                        var court = await _unitOfWork.CourtRepository.GetCourtFromTransactionId(record.Id);
+                        if (court == null) throw new EntityNotFoundException("There is something wrong with transaction " + record.Id);
 
-        //    return PaginatedResponse<TransactionHistoryReadDTO>.FromEnumerableWithMapping(
-        //        result, query, _mapper);
-        //}
+                        record.FromUsername = otherParty.FullName + " - " + otherParty.Phone;
+                        record.ToUsername = "You - " + court.Name;
+                    }
+                }
+
+                var order = trans.ElementAt(currRecord).Orders.FirstOrDefault();
+
+                if (order != null) record.OrderId = order.Id;
+
+                currRecord++;
+            }
+
+            return PaginatedResponse<TransactionHistoryReadDTO>.FromEnumerableWithMapping(
+                result, query, _mapper);
+        }
     }
 }

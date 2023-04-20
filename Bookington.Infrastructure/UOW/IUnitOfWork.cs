@@ -38,7 +38,7 @@ namespace Bookington.Infrastructure.UOW
 
         public IUserBalanceRepository UserBalanceRepository { get; }
 
-        public ITransactionRepository TransactionHistoryRepository { get; }
+        public ITransactionRepository TransactionRepository { get; }
 
         public IOrderRepository OrderRepository { get; }
 
