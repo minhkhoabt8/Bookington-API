@@ -19,6 +19,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
             return await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == phoneNumber && a.IsDeleted == false);
         }
+
         public async Task<Account?> LoginByPhoneAsync(AccountLoginInputDTO login)
         {
             //Get Hash Password from db
@@ -28,9 +29,9 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(login.Password);
                 //Verify 
-                bool verified = BCrypt.Net.BCrypt.Verify(login.Password, account.Password);
+                bool verified = BCrypt.Net.BCrypt.Verify(account.Password, login.Password);
 
-                if(verified)
+                if (verified)
                 {
                     return account;
                 }

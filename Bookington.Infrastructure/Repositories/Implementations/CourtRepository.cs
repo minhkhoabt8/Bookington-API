@@ -18,6 +18,16 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             return Task.FromResult(_context.Courts.Where(c => c.OwnerId == ownerId && c.IsDeleted == false).Include(c => c.District).AsEnumerable());
         }
 
+        public Task<Court?> GetCourtFromTransactionId(string transactionId)
+        {
+            var booking = _context.Bookings.Include(b => b.RefSubCourtNavigation).Include(b => b.RefOrderNavigation)
+                                            .FirstOrDefault(b => b.RefOrderNavigation.TransactionId == transactionId);
+
+            if (booking == null) return null!;
+
+            return Task.FromResult(_context.Courts.SingleOrDefault(c => c.Id == booking.RefSubCourtNavigation.ParentCourtId));
+        }
+
         public async Task<IEnumerable<Court>> QueryAsync(CourtItemQuery query, bool trackChanges = false)
         {
             IQueryable<Court> courts = _context.Courts

@@ -119,7 +119,7 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<UserBalance, UserBalanceReadDTO>();
             CreateMap<UserBalanceWriteDTO, UserBalance>();
             // Transaction History
-            CreateMap<Transaction, TransactionHistoryReadDTO>()
+            CreateMap<Transaction, TransactionHistoryReadDTO>()                
                 .ForMember(des => des.FromUsername, act => act.MapFrom(src => src.RefFromNavigation.FullName))
                 .ForMember(des => des.ToUsername, act => act.MapFrom(src => src.RefToNavigation.FullName));
             CreateMap<TransactionHistoryWriteDTO, Transaction>();

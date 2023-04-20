@@ -10,6 +10,8 @@ namespace Bookington.Infrastructure.DTOs.TransactionHistory
     {
         public string Id { get; set; } = null!;
 
+        public string OrderId { get; set; } = null!;
+
         public string RefFrom { get; set; } = null!;
 
         public string FromUsername { get; set; } = null!;

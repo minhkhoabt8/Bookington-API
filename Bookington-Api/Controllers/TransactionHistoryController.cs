@@ -14,7 +14,7 @@ namespace Bookington_Api.Controllers
     /// <summary>
     /// Transaction History Controller
     /// </summary>
-    [Route("transactionhistory")]    
+    [Route("transaction-history")]    
     [ApiController]
     public class TransactionHistoryController : ControllerBase
     {
@@ -35,11 +35,26 @@ namespace Bookington_Api.Controllers
         [HttpGet("self")]
         [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<TransactionHistoryReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiPaginatedOkResponse<IEnumerable<TransactionHistoryReadDTO>>))]
         public async Task<IActionResult> GetSelfTransactionHistory([FromQuery] TransactionHistoryQuery query)
         {           
             var trans = await _transactionService.GetSelfTransactionHistory(query);
-            return ResponseFactory.Ok(trans);
+            return ResponseFactory.PaginatedOk(trans);
+        }
+
+        /// <summary>
+        /// Get Court Owner's Transaction History
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>        
+        [HttpGet("owner")]
+        [RoleAuthorize(AccountRole.owner)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiPaginatedOkResponse<IEnumerable<TransactionHistoryReadDTO>>))]
+        public async Task<IActionResult> GetOwnerTransactionHistory([FromQuery] TransactionHistoryQuery query)
+        {
+            var trans = await _transactionService.GetOwnerTransactionHistory(query);
+            return ResponseFactory.PaginatedOk(trans);
         }
     }
 }

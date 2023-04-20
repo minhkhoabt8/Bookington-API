@@ -14,8 +14,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IUpdate<Transaction>,        
         IDelete<Transaction>
     {
-        Task<IEnumerable<Transaction>> GetTransactionHistoryOfCustomer(string userId);
-        Task<IEnumerable<Transaction>> GetTransactionHistoryOfOwner(string ownerId);
+        Task<IEnumerable<Transaction>> GetTransactionHistoryOfUser(string userId);        
         Task<Transaction?>GetTransactionHstoryByMomoOrderId(string momoOrderId);
     }
 }

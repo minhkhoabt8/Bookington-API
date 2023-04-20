@@ -11,22 +11,13 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
         
-        public Task<IEnumerable<Transaction>> GetTransactionHistoryOfCustomer(string userId)
+        public Task<IEnumerable<Transaction>> GetTransactionHistoryOfUser(string userId)
         {
-            var dbSet = _context.Transactions.Include(th => th.RefFromNavigation).Include(th => th.RefToNavigation).ToList();
+            var dbSet = _context.Transactions.Include(th => th.RefFromNavigation).Include(th => th.RefToNavigation).Include(th => th.Orders).ToList();
 
-            var trans = dbSet.Where(sc => sc.RefFrom == userId).OrderByDescending(sc => sc.CreateAt).AsEnumerable();            
+            var trans = dbSet.Where(sc => sc.RefFrom == userId || sc.RefTo == userId).OrderByDescending(sc => sc.CreateAt).AsEnumerable();            
 
             return Task.FromResult(trans);            
-        }
-
-        public Task<IEnumerable<Transaction>> GetTransactionHistoryOfOwner(string ownerId)
-        {
-            var dbSet = _context.Transactions.Include(th => th.RefFromNavigation).Include(th => th.RefToNavigation).ToList();
-
-            var trans = dbSet.Where(sc => sc.RefFromNavigation.Id == ownerId).OrderByDescending(sc => sc.CreateAt).AsEnumerable();
-
-            return Task.FromResult(trans);
         }
 
         public async Task<Transaction?> GetTransactionHstoryByMomoOrderId(string momoOrderId)

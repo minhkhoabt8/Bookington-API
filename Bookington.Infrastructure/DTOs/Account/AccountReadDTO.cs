@@ -31,13 +31,7 @@ namespace Bookington.Infrastructure.DTOs.Account
     public class AccountLoginInputDTO
     {
         public string Phone { get; set; }
-         public string Password
-         {
-            get; set;
-         }
-
-
-        
+        public string Password { get; set; }        
     }
 
     public class AccountLoginOutputDTO

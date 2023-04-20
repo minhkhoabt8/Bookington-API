@@ -75,6 +75,10 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             // This field will be used for mapping to SlotForBookingReadDTO
             foreach (var slot in activeSCSlots)
             {
+                // Slot before current time will be marked as false as well
+                if (slot.RefSlotNavigation.StartTime.CompareTo(DateTime.Now.TimeOfDay) <= 0)
+                    slot.IsActive = false;
+
                 foreach (var bookedSlot in bookedSlotsOnPlayDate)
                 {
                     if (slot.RefSlot == bookedSlot)
