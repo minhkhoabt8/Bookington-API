@@ -24,12 +24,10 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
             //Get Hash Password from db
             var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Phone == login.Phone);
-
             if (account != null) 
             {
-                string passwordHash = BCrypt.Net.BCrypt.HashPassword(login.Password);
                 //Verify 
-                bool verified = BCrypt.Net.BCrypt.Verify(account.Password, login.Password);
+                bool verified =  BCrypt.Net.BCrypt.Verify(login.Password, account.Password);
 
                 if (verified)
                 {
