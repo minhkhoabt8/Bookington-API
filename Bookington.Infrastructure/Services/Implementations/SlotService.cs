@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Bookington.Core.Entities;
 using Bookington.Core.Exceptions;
+using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.Role;
 using Bookington.Infrastructure.DTOs.Slot;
 using Bookington.Infrastructure.DTOs.SubCourtSlot;
@@ -193,6 +194,34 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             // Get sub court's schedule
             return _mapper.Map<IEnumerable<SubCourtSlotScheduleReadDTO>>(await _unitOfWork.SubCourtSlotRepository.GetScheduleOfASubCourt(subCourtId));            
+        }
+
+
+        public async Task UpdateSlot(string subCourtId, IEnumerable<SlotUpdateDTO> slots)
+        {
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            var subCourtOwner = await _unitOfWork.SubCourtRepository.GetCourtOwnerBySubCourtId(subCourtId);
+
+            if (subCourtOwner.Id != accountId) throw new InvalidActionException("You are not the owner of this sub court to do this action!");
+
+            var subCourt = await _unitOfWork.SubCourtRepository.FindAsync(subCourtId);
+
+            if (subCourt == null) throw new EntityWithIDNotFoundException<SubCourt>(subCourtId);
+
+            foreach (var slot in slots)
+            {
+                var existSlot = await _unitOfWork.SubCourtSlotRepository.FindAsync(slot.Id);
+
+                if (existSlot == null) throw new EntityWithIDNotFoundException<SubCourtSlot>(slot.Id);
+
+                _mapper.Map(slot, existSlot);
+            }
+
+            await _unitOfWork.CommitAsync();
+
         }
     }
 }

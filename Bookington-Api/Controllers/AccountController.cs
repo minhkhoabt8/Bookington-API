@@ -157,7 +157,7 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpPut("change-password")]
         [ServiceFilter(typeof(AutoValidateModelState))]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ChangePasswordDTO>))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> UpdatePassword(ChangePasswordDTO dto)
@@ -190,6 +190,9 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpPut("upload")]
         [RoleAuthorize(AccountRole.admin, AccountRole.owner, AccountRole.customer)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> UpdateAccountAvatar([FromForm] FileUploadDTO dto)
         {
             await _accountService.UpdateAccountAvatar(dto);

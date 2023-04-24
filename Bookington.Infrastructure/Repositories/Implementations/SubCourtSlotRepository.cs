@@ -76,5 +76,10 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return Task.FromResult(result.AsEnumerable());
         }
+
+        public async Task<IEnumerable<SubCourtSlot?>> GetListSubCourtSlotsBySubCourtId(string subCourtId)
+        {
+            return await Task.FromResult(_context.SubCourtSlots.Where(c => c.RefSubCourt == subCourtId).AsEnumerable());
+        }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Slot;
 using Bookington.Infrastructure.DTOs.SubCourtSlot;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Authorizers;
+using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington_Api.Controllers
@@ -79,6 +82,25 @@ namespace Bookington_Api.Controllers
         {
             var schedule = await _slotService.GetScheduleOfASubCourt(subCourtId);
             return ResponseFactory.Ok(schedule);
+        }
+
+        /// <summary>
+        /// Update Slot
+        /// </summary>
+        /// <param name="subCourtId"></param>
+        /// <param name="dtos"></param>
+        /// <returns></returns>
+        [HttpPut("updateSlot/ref-subCourt")]
+        [RoleAuthorize(AccountRole.owner)]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> UpdateAccount([FromQuery] string subCourtId, IEnumerable<SlotUpdateDTO> dtos)
+        {
+            await _slotService.UpdateSlot(subCourtId, dtos);
+
+            return ResponseFactory.NoContent();
         }
     }
 }

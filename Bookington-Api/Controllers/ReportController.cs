@@ -93,6 +93,8 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpDelete("courtreports/{id}")]                
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> DeleteCourtReportAsync(string id)
         {
             await _reportService.DeleteCourtReportAsync(id);
@@ -179,6 +181,8 @@ namespace Bookington_Api.Controllers
         /// <returns></returns>
         [HttpDelete("userreports/{id}")]               
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> DeleteUserReportAsync(string id)
         {
             await _reportService.DeleteUserReportAsync(id);

@@ -16,6 +16,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<string> GenerateDefaultSlotsForSubCourt(DefaultSubCourtSlotWriteDTO dto);
         Task<IEnumerable<SlotReadDTO>> GetAllDefaultSlotsAsync();
         Task<IEnumerable<SubCourtSlotScheduleReadDTO>> GetScheduleOfASubCourt(string subCourtId);
-        Task<SlotsForBookingReadDTO> GetAvailableSlotsForBooking(SlotQueryForBooking dto);        
+        Task<SlotsForBookingReadDTO> GetAvailableSlotsForBooking(SlotQueryForBooking dto);
+        Task UpdateSlot(string subCourtId, IEnumerable<SlotUpdateDTO> slots);
     }
 }

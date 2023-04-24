@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
     public interface ISubCourtSlotRepository :
+        IFindAsync<SubCourtSlot>,
         IGetAllAsync<SubCourtSlot>,
         IAddAsync<SubCourtSlot>,
         IUpdate<SubCourtSlot>,        
@@ -18,5 +19,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         Task FlushSlotsOfSubCourt(string subCourtId);
         public Task<SubCourtSlot> FindAsync(string subCourtId, string slotId, bool trackChanges = true);
         public Task<IEnumerable<SubCourtSlot>> GetScheduleOfASubCourt(string subCourtId);
+        public Task<IEnumerable<SubCourtSlot?>> GetListSubCourtSlotsBySubCourtId(string subCourtId);
     }
 }
