@@ -273,7 +273,14 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var accountProfile =  _mapper.Map<AccountProfileReadDTO>(profile);
 
-            accountProfile.File = imageFiles.ElementAt(0);
+            if (imageFiles.Any())
+            {
+                accountProfile.File = imageFiles.ElementAt(0);
+            }
+            else
+            {
+                accountProfile.File = null; // or some other default value
+            }
 
             return accountProfile;
         }
