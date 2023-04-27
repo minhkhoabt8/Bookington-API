@@ -76,14 +76,22 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             foreach (var slot in activeSCSlots)
             {
                 // Slot before current time will be marked as false as well
-                if (slot.RefSlotNavigation.StartTime.CompareTo(DateTime.Now.TimeOfDay) <= 0)
-                    slot.IsActive = false;
-
-                foreach (var bookedSlot in bookedSlotsOnPlayDate)
+                // Check if slot is before current time of today
+                var slotStartTime = new DateTime(dto.PlayDate.Year, dto.PlayDate.Month, dto.PlayDate.Day, slot.RefSlotNavigation.StartTime.Hours, slot.RefSlotNavigation.StartTime.Minutes, slot.RefSlotNavigation.StartTime.Seconds);
+                var currentDateTime = DateTime.Now;
+                var currentTimeOfDay = currentDateTime.TimeOfDay;
+                if (slotStartTime.Date == currentDateTime.Date && slotStartTime.TimeOfDay.CompareTo(currentTimeOfDay) <= 0)
                 {
-                    if (slot.RefSlot == bookedSlot)
+                    slot.IsActive = false;
+                }
+                else
+                {
+                    foreach (var bookedSlot in bookedSlotsOnPlayDate)
                     {
-                        slot.IsActive = false;
+                        if (slot.RefSlot == bookedSlot)
+                        {
+                            slot.IsActive = false;
+                        }
                     }
                 }
             }

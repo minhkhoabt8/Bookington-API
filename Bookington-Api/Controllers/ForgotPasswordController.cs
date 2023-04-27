@@ -29,7 +29,6 @@ namespace Bookington_Api.Controllers
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
         [HttpPost("verify-phone")]
-        [RoleAuthorize(AccountRole.owner, AccountRole.customer, AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> VerifyAccount([Required] string phoneNumber)
@@ -48,7 +47,6 @@ namespace Bookington_Api.Controllers
         /// <param name="otp"></param>
         /// <returns></returns>
         [HttpPost("verify-otp")]
-        [RoleAuthorize(AccountRole.owner, AccountRole.customer, AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -67,7 +65,6 @@ namespace Bookington_Api.Controllers
         /// <param name="newPassword"></param>
         /// <returns></returns>
         [HttpPut()]
-        [RoleAuthorize(AccountRole.owner, AccountRole.customer, AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> NewPassword([Required] string phoneNumber, [Required] string newPassword)

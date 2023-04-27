@@ -114,15 +114,9 @@ namespace Bookington.Infrastructure.Services.Implementations
             if (dto.EndTime.CompareTo(dto.StartTime) <= 0) throw new Exception("End time must be greater than start time!");
 
             var scs = await _unitOfWork.SubCourtRepository.GetSubCourtsForBooking(dto);
-            //var unavSubCourts = await _unitOfWork.SubCourtRepository.GetUnavailableSubCourtsForBooking(dto);
-
+            
             var subCourts = _mapper.Map<IEnumerable<SubCourtForBookingReadDTO>>(scs);            
-
-            /*var unavSCs = _mapper.Map<IEnumerable<SubCourtForBookingReadDTO>>(unavSubCourts);
-            foreach (var sc in unavSCs) sc.IsAvailable = false;*/
-
-            //var subCourts = avSCs.Concat(unavSCs).OrderBy(sc => sc.Name);            
-
+        
             return subCourts;            
         }
     }
