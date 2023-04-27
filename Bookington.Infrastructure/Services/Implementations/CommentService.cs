@@ -13,11 +13,15 @@ namespace Bookington.Infrastructure.Services.Implementations
     public class CommentService : ICommentService
     {
         private readonly IMapper _mapper;
+        private readonly IUploadFileService _uploadFileService;
+        private readonly IAccountService _accountService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CommentService(IMapper mapper, IUnitOfWork unitOfWork)
+        public CommentService(IMapper mapper, IUnitOfWork unitOfWork, IUploadFileService uploadFileService, IAccountService accountService)
         {
             _mapper = mapper;
+            _uploadFileService = uploadFileService;
+            _accountService = accountService;
             _unitOfWork = unitOfWork;
         }
 
@@ -89,8 +93,20 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var comments = await _unitOfWork.CommentRepository.GetAllCommentsOfCourtAsync(query);
 
-            return PaginatedResponse<CommentReadDTO>.FromEnumerableWithMapping(
+            
+            var commentDtos= PaginatedResponse<CommentReadDTO>.FromEnumerableWithMapping(
                 comments, query, _mapper);
+
+            foreach(var comment in commentDtos) 
+            {
+                var account = await _unitOfWork.AccountRepository.FindAsync(comment.CommentWriterId);
+                
+                comment.CommentWriter.File = await _uploadFileService.GetImageFileAsync(account.RefAvatar, true);
+            }
+
+
+            return commentDtos;
+
         }
 
     }

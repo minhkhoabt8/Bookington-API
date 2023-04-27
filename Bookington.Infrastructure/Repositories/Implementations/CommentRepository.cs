@@ -20,7 +20,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Comment>> GetAllCommentsOfCourtAsync(CommentQuery query, bool trackChanges = false)
         {
-            IQueryable<Comment> comments = _context.Comments.Where(a => a.RefCourtNavigation.Id == query.CourtId && a.IsDeleted == false && a.IsActive == true);
+            IQueryable<Comment> comments = _context.Comments.Include(c=>c.CommentWriter).Where(a => a.RefCourtNavigation.Id == query.CourtId && a.IsDeleted == false && a.IsActive == true);
 
             return await Task.FromResult(comments);
         }

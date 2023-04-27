@@ -142,7 +142,8 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Notification, NotificationReadDTO>();                
             CreateMap<NotificationWriteDTO, Notification>();
             //Comment
-            CreateMap<Comment, CommentReadDTO>();
+            CreateMap<Comment, CommentReadDTO>()
+                 .ForMember(des => des.CommentWriter, act => act.MapFrom(src => src.CommentWriter));
             CreateMap<CommentWriteDTO,Comment>();   
         }
     }

@@ -13,6 +13,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<IEnumerable<ImageFile>> GetImageFilesAsync(List<string> fileNames, bool isAccount);
         Task<string> UploadFileAsyncReturnFileName(IFormFile file, bool isAccount = true);
 
+        Task<ImageFile> GetImageFileAsync(string fileName, bool isAccount);
         Task DeleteFileAsync(string fileName, bool isAccount = true);
     }
 }

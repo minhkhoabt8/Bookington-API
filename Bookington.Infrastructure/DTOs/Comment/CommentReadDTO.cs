@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bookington.Infrastructure.DTOs.Account;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,13 @@ namespace Bookington.Infrastructure.DTOs.Comment
 {
     public class CommentReadDTO
     {
-        public string Id { get; set; } = null!;
+        public string Id { get; set; }
 
-        public string CommentWriterId { get; set; } = null!;
+        public string CommentWriterId { get; set; } 
 
-        public string RefCourt { get; set; } = null!;
+        public AccountProfileReadDTO CommentWriter { get; set; }
+
+        public string RefCourt { get; set; }
 
         public string? Content { get; set; }
 
@@ -22,4 +25,5 @@ namespace Bookington.Infrastructure.DTOs.Comment
 
         public bool? IsActive { get; set; }
     }
+
 }

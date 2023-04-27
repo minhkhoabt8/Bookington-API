@@ -80,7 +80,7 @@ namespace Bookington.Infrastructure.DTOs.Account
 
         public DateTime DateOfBirth { get; set; }
 
-        public ImageFile File { get; set; }
+        public ImageFile? File { get; set; }
     }
 
 }

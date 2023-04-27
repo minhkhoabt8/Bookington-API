@@ -109,6 +109,39 @@ namespace Bookington.Infrastructure.Services.Implementations
             return files;
 
         }
-        
+
+
+        public async Task<ImageFile> GetImageFileAsync(string fileName, bool isAccount)
+        {
+            
+                var path = "";
+                if (isAccount)
+                {
+                    path = Path.Combine(Environment.CurrentDirectory, "..", "Bookington.Infrastructure", "Storages/Accounts", fileName);
+                }
+                else
+                {
+                    path = Path.Combine(Environment.CurrentDirectory, "..", "Bookington.Infrastructure", "Storages/Courts", fileName);
+                }
+
+                // Check if the file exists
+                if (File.Exists(path))
+                {
+                    // Read the file as a byte array
+                    var fileBytes = await File.ReadAllBytesAsync(path);
+
+                    // Create a File object with the file name and byte array
+                    var file = new ImageFile
+                    {
+                        Name = fileName,
+                        Content = fileBytes
+                    };
+                    return file;
+                }
+          
+            return null;
+
+        }
+
     }
 }
