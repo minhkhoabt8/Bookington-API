@@ -197,7 +197,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         }
 
 
-        public async Task UpdateSlot(string subCourtId, IEnumerable<SlotUpdateDTO> slots)
+        public async Task UpdateSlot(string subCourtId, SlotUpdateDTO slot)
         {
             var accountId = _userContextService.AccountID.ToString();
 
@@ -211,14 +211,12 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (subCourt == null) throw new EntityWithIDNotFoundException<SubCourt>(subCourtId);
 
-            foreach (var slot in slots)
-            {
-                var existSlot = await _unitOfWork.SubCourtSlotRepository.FindAsync(slot.Id);
+            var existSlot = await _unitOfWork.SubCourtSlotRepository.FindAsync(slot.Id);
 
-                if (existSlot == null) throw new EntityWithIDNotFoundException<SubCourtSlot>(slot.Id);
+            if (existSlot == null) throw new EntityWithIDNotFoundException<SubCourtSlot>(slot.Id);
 
-                _mapper.Map(slot, existSlot);
-            }
+            _mapper.Map(slot, existSlot);
+
 
             await _unitOfWork.CommitAsync();
 

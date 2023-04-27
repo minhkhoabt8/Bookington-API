@@ -12,7 +12,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         }
         public async Task<AccountOtp?> VerifyAccountAsync(string phoneNumber, string otp)
         {
-            return await _context.AccountOtps.FirstOrDefaultAsync(a=>a.Phone==phoneNumber&& a.OtpCode==otp);
+            return await _context.AccountOtps.FirstOrDefaultAsync(a=>a.Phone==phoneNumber && a.OtpCode==otp && a.IsConfirmed == false);
         }
 
         public async Task<AccountOtp?> FindAccountOtpByPhone(string phone)

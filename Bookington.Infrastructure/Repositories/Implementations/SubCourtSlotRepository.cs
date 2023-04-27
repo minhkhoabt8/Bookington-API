@@ -46,7 +46,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public Task<IEnumerable<SubCourtSlot>> GetScheduleOfASubCourt(string subCourtId)
         {
-            var slots = _context.SubCourtSlots.Include(scs => scs.RefSlotNavigation).ToList();
+            var slots = _context.SubCourtSlots.Include(scs => scs.RefSlotNavigation).Where(c => c.RefSubCourt == subCourtId).ToList();
 
             var result = new List<SubCourtSlot>();
 

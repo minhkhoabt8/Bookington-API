@@ -38,5 +38,9 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task ChangePasswordAsync(ChangePasswordDTO dto);
 
         Task UpdateAccountAvatar(FileUploadDTO dto);
+
+        Task<AccountReadDTO> VerifyPhoneNumber(string phoneNumber);  
+
+        Task<AccountReadDTO> UpdatePassword(string phones, string password);
     }
 }

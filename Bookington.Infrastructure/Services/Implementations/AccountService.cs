@@ -11,6 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Bookington.Infrastructure.DTOs.File;
+using Microsoft.Identity.Client;
+using System.Security.Principal;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -365,7 +367,52 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         }
 
+        public async Task<AccountReadDTO> VerifyPhoneNumber(string phoneNumber)
+        {
+            //Find account with phone number
+            var existAccount = await _unitOfWork.AccountRepository.FindAccountByPhoneNumberAsync(phoneNumber);
 
+            if(existAccount == null) throw new UniqueConstraintException<Account>(nameof(Account.Phone), phoneNumber);
+
+            //Check Phone Number Is Not Verify 
+            if (existAccount.IsActive == false) throw new InvalidActionException("This Phone Is Not Yet Verify");
+
+            if (existAccount.IsDeleted == true) throw new InvalidActionException("This Phone Is Deleted!");
+
+            //create OTP for verify and send sms message
+
+            //generate otp and add to OTP table
+            var otp = OtpDTO.GenerateOTP();
+
+            var accountOtp = _mapper.Map<AccountOtp>(otp);
+            accountOtp.Phone = existAccount.Phone;
+
+            accountOtp.RefAccount = existAccount.Id;
+
+            await _unitOfWork.OtpRepository.AddAsync(accountOtp);
+
+            //Call Send SMS
+            await _smsService.sendSmsAsync(existAccount.Phone, accountOtp.OtpCode);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<AccountReadDTO>(existAccount);
+        }
+
+        public async Task<AccountReadDTO> UpdatePassword(string phoneNumber, string password)
+        {
+            // Find account with phone number
+            var existAccount = await _unitOfWork.AccountRepository.FindAccountByPhoneNumberAsync(phoneNumber);
+
+            if (existAccount == null) throw new UniqueConstraintException<Account>(nameof(Account.Phone), phoneNumber);
+
+            existAccount.Password = password;
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<AccountReadDTO>(existAccount);
+
+        }
     }  
 }
     
