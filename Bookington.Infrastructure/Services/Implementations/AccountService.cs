@@ -319,6 +319,8 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
+            if(existAccount.Password!= dto.OldPassword) throw new InvalidActionException("Old Password Not Correct");
+
             if (dto.NewPassword.Equals(dto.ConfirmPassword))
             {
                 existAccount.Password = dto.NewPassword;

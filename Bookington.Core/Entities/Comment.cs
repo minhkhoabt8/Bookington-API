@@ -17,9 +17,9 @@ public partial class Comment
 
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
 
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
     public virtual Account CommentWriter { get; set; } = null!;
 

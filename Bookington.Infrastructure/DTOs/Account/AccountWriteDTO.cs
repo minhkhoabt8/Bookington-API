@@ -28,6 +28,7 @@ namespace Bookington.Infrastructure.DTOs.Account
     {
         public string? FullName { get; set; }
         public string? DateOfBirth { get; set; } 
+        public string? Description { get; set; }
     }
 
     public class ChangePasswordDTO
