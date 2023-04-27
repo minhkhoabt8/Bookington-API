@@ -64,15 +64,15 @@ namespace Bookington_Api.Controllers
         /// Update New Password
         /// </summary>
         /// <param name="phoneNumber"></param>
-        /// <param name="currentPassword"></param>
+        /// <param name="newPassword"></param>
         /// <returns></returns>
         [HttpPut()]
         [RoleAuthorize(AccountRole.owner, AccountRole.customer, AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> NewPassword([Required] string phoneNumber, [Required] string currentPassword)
+        public async Task<IActionResult> NewPassword([Required] string phoneNumber, [Required] string newPassword)
         {
-            var account = await _accountService.UpdatePassword(phoneNumber, currentPassword);
+            var account = await _accountService.UpdatePassword(phoneNumber, newPassword);
             
             return ResponseFactory.Ok(account);
         }
