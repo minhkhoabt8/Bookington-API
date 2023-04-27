@@ -43,7 +43,11 @@ namespace Bookington.Infrastructure.DTOs.Account
             set { password = EncryptPassword(value); }
         }
         [Required]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword 
+        {
+            get { return password; }
+            set { password = EncryptPassword(value); }
+        }
 
         private string password;
         public static string EncryptPassword(string pass)
