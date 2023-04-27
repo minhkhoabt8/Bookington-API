@@ -42,5 +42,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<AccountReadDTO> VerifyPhoneNumber(string phoneNumber);  
 
         Task<AccountReadDTO> UpdatePassword(string phones, string password);
+
+        Task<PaginatedResponse<AccountReadDTOModel>> QueryAccountsModelAsync(AccountQuery query);
     }
 }

@@ -254,6 +254,31 @@ namespace Bookington.Infrastructure.Services.Implementations
             return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(
                 accounts, query, _mapper);
         }
+
+        //Query Account with Role object
+        public async Task<PaginatedResponse<AccountReadDTOModel>> QueryAccountsModelAsync(AccountQuery query)
+        {
+            var accounts = (await _unitOfWork.AccountRepository.QueryAsync(query)).ToList();
+
+            var currAccountID = _userContextService.AccountID.ToString();
+
+            var currAccount = new Account();
+
+            //filter admin who using this  method
+            foreach (var acc in accounts)
+            {
+                if (acc.Id == currAccountID) currAccount = acc;
+            }
+
+            if (currAccount == null) throw new EntityWithIDNotFoundException<Account>(currAccountID!);
+
+            accounts.Remove(currAccount!);
+
+
+            return PaginatedResponse<AccountReadDTOModel>.FromEnumerableWithMapping(
+                accounts, query, _mapper);
+        }
+
         //TODO: Profile
         public async Task<AccountProfileReadDTO> GetProfileAsync()
         {

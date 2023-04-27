@@ -1,5 +1,6 @@
 ﻿using Bookington.Core.Entities;
 using Bookington.Infrastructure.DTOs.File;
+using Bookington.Infrastructure.DTOs.Role;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,25 @@ namespace Bookington.Infrastructure.DTOs.Account
         public string Phone { get; set; }
 
         public DateTime DateOfBirth { get; set; }        
+
+        public string FullName { get; set; }
+
+        public DateTime CreateAt { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public bool IsDeleted { get; set; }
+    }
+
+    public class AccountReadDTOModel
+    {
+        public string Id { get; set; }
+
+        public RoleReadDTO Role { get; set; }
+
+        public string Phone { get; set; }
+
+        public DateTime DateOfBirth { get; set; }
 
         public string FullName { get; set; }
 

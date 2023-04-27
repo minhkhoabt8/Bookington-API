@@ -171,16 +171,19 @@ namespace Bookington_Api.Controllers
         /// <summary>
         /// Assign Role To Account
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="userId"></param>
+        /// <param name="roleId"></param>
         /// <returns></returns>
         [HttpPut("assignRole")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [RoleAuthorize(AccountRole.admin)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> AssignRoleToUser(string userId, AccountRole role)
+        public async Task<IActionResult> AssignRoleToUser(string userId, AccountRole roleId)
         {
-           throw new NotImplementedException();
+            await _accountService.AssignRoleToUserAsync(userId, ((int)roleId).ToString());
+            return ResponseFactory.NoContent();
+
         }
 
 

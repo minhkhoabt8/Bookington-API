@@ -31,6 +31,8 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Account, AccountReadDTO>()
                 .ForMember(dest => dest.RoleName, options => options.MapFrom(src => src.Role.RoleName));
             CreateMap<Account, AccountProfileReadDTO>();
+            CreateMap<Account, AccountReadDTOModel>()
+                .ForMember(dest => dest.Role, options => options.MapFrom(src => src.Role));
             CreateMap<AccountWriteDTO, Account>();
             CreateMap<AccountUpdateDTO,Account>()
                 .ForMember(dest => dest.DateOfBirth, options => options.MapFrom(src => DateTime.Parse(src.DateOfBirth!.ToString())));            
