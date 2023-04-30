@@ -286,9 +286,7 @@ public partial class BookingtonDbContext : DbContext
                 .HasColumnName("play_date");
             entity.Property(e => e.Price).HasColumnName("price");
             entity.Property(e => e.IsCancel)
-                .IsRequired()
-                .HasColumnName("is_cancel")
-                .HasDefaultValue(false);
+                .HasColumnName("is_cancel");
             entity.Property(e => e.RefOrder)
                 .IsRequired()
                 .HasMaxLength(40)
