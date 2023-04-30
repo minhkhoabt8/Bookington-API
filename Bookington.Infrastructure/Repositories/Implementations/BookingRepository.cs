@@ -109,6 +109,10 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             IQueryable<Booking> dbSet = _context.Set<Booking>();
 
             return await Task.FromResult(dbSet.Where(b => b.RefOrder == orderId)
+                .Include(b => b.RefSlotNavigation)
+                .Include(b => b.RefSubCourtNavigation)
+                .Include(b => b.RefSubCourtNavigation.ParentCourt)
+                .Include(b => b.RefOrderNavigation)
                 .AsEnumerable());
         }
     }

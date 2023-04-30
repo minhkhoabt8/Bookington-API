@@ -32,8 +32,10 @@ namespace Bookington.Infrastructure.DTOs.Order
         public bool IsCanceled { get; set; }
 
         public bool IsRefunded { get; set; }
+        public bool CanBeCanceled { get; set; } = true;
 
         public ICollection<BookingForOrderReadDTO> Bookings { get; set; } = null!;
+        
     }
     public class OrderQuery : PaginatedQuery
     {

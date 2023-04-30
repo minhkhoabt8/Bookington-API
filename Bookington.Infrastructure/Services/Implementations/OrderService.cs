@@ -245,8 +245,20 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             //get all booking of order of user that have Is Cancel status = false
             var bookingsOrder = await _unitOfWork.BookingRepository.GetAllBookingOfOrderAsync(existOder.Id);
+            
+            //check if user still can Cancel The Order
+            foreach(var item in  bookingsOrder)
+            {
+                var slotStartTime = DateTime.Today.Add(item.RefSlotNavigation.StartTime);
+                var playDateTime = item.PlayDate.Add(slotStartTime.TimeOfDay);
+
+                if (playDateTime.CompareTo(DateTime.Now) <= 0)
+                {
+                    throw new InvalidActionException("This Order Can't Be Canceled");
+                }
+            }
             //Update Is Cancel status of these booking to true
-            foreach(var booking in bookingsOrder)
+            foreach (var booking in bookingsOrder)
             {
                 booking.IsCancel = true;
                 _unitOfWork.BookingRepository.Update(booking);
@@ -267,15 +279,15 @@ namespace Bookington.Infrastructure.Services.Implementations
             ownerBalance.Balance -= existOder.TotalPrice;
             _unitOfWork.UserBalanceRepository.Update(ownerBalance);
             //Return Voucher Of Order - GetVoucherByCodeOfCourtAsync(courtId, VoucherCode)
-            var refSubCourtId = bookingsOrder.Select(e=>e.RefSubCourt).FirstOrDefault();
+            var refSubCourtId = bookingsOrder.Select(e => e.RefSubCourt).FirstOrDefault();
 
             var court = await _unitOfWork.CourtRepository.GetCourtFromSubCourtIdAsync(refSubCourtId);
 
             var voucherOfCourt = await _unitOfWork.VoucherRepository.GetVoucherByCodeOfCourtAsync(court.Id, existOder.VoucherCode);
 
-            if(voucherOfCourt != null)
+            if (voucherOfCourt != null)
             {
-                voucherOfCourt.Usages --;
+                voucherOfCourt.Usages--;
                 _unitOfWork.VoucherRepository.Update(voucherOfCourt);
             }
             //Set Order.IsCancel status to true
@@ -305,14 +317,22 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var orders = await _unitOfWork.OrderRepository.GetAllOrderOfUserAsync(query.UserId);
 
-
-
             var result = PaginatedResponse<OrderReadDTO>.FromEnumerableWithMapping(
                 orders, query, _mapper);
 
+            foreach(var order in result)
+            {
+                foreach (var item in order.Bookings)
+                {
+                    var slotStartTime = DateTime.Today.Add(item.StartTime);
+                    var playDateTime = item.PlayDate.Add(slotStartTime.TimeOfDay);
 
-
-
+                    if (playDateTime.CompareTo(DateTime.Now) <= 0)
+                    {
+                        order.CanBeCanceled = false;
+                    }
+                }
+            }
 
             return result;
         }
