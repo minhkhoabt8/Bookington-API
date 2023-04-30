@@ -13,7 +13,6 @@ using Bookington.Infrastructure.DTOs.Report;
 using Bookington.Infrastructure.DTOs.UserBalance;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.DTOs.Order;
-using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.IncomingMatch;
 using Bookington.Infrastructure.DTOs.Notification;
 using Bookington.Infrastructure.DTOs.ReportResponse;
@@ -136,7 +135,9 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<MomoTransaction, MomoTransactionReadDTO>();
             CreateMap<MomoTransactionWriteDTO,MomoTransaction>();
             // Order
-            CreateMap<Order, OrderReadDTO>();
+            CreateMap<Order, OrderReadDTO>()
+                .ForMember(dest => dest.CourtName, opt => opt.MapFrom(src => src.Bookings.First().RefSubCourtNavigation.ParentCourt.Name));
+
             CreateMap<OrderWriteDTO, Order>();            
             // Notification
             CreateMap<Notification, NotificationReadDTO>();                

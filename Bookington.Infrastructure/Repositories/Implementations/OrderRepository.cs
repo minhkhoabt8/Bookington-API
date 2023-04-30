@@ -59,12 +59,14 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Order>> GetAllOrderOfUserAsync(string userId)
         {
-            return await _context.Orders.Where(o=>o.CreateBy == userId)
+            return await _context.Orders.Where(o => o.CreateBy == userId)
                                   .Include(o => o.Transaction)
                                   .Include(o => o.CreateByNavigation)
                                   .Include(o => o.VoucherCodeNavigation)
                                   .Include(o => o.Bookings)
-                                    .ToListAsync();
+                                  .Include(o => o.Bookings).ThenInclude(c => c.RefSlotNavigation)
+                                  .Include(o => o.Bookings).ThenInclude(c => c.RefSubCourtNavigation).ThenInclude(s => s.ParentCourt)
+                                  .ToListAsync();
         }
     }
 }
