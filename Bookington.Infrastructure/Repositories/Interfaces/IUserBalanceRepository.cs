@@ -14,5 +14,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         IFindAsync<UserBalance>
     {
         Task<UserBalance?> FindByAccountIdAsync(string accountId, bool trackChanges = false);
+        Task<UserBalance?> FindAdminAccountBalance();
+        Task<IEnumerable<UserBalance?>> GetUserBalancesOfOwnerToPayout();
     }
 }

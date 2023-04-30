@@ -1,10 +1,13 @@
-﻿using Bookington.Infrastructure.DTOs.Account;
+﻿using Bookington.Core.Enums;
+using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.DTOs.Momo;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.Services.Implementations;
 using Bookington.Infrastructure.Services.Interfaces;
+using Bookington_Api.Authorizers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookington_Api.Controllers
@@ -30,6 +33,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost()]
+        [RoleAuthorize(AccountRole.customer)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MomoResponseDTO))]
         public async Task<IActionResult> TopUp(MomoPaymentInfo info)
         {
@@ -43,6 +47,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("/confirmTopUpWithMomo")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MomoTransactionReadDTO))]
         public async Task<IActionResult> ConfirmTopUp([FromBody] MomoCheckoutResponseDTO dto)
         {

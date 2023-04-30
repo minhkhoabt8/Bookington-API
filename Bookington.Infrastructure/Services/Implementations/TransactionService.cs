@@ -118,7 +118,37 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             return newTrans.Id;
         }
-                
+
+
+        public async Task TransferForAdminAsync(double amount, string refFrom, string courtName, string orderId)
+        {
+            var transferReason = $"Order charged for {orderId} with amount: {amount}, reference from: {refFrom} with court name: {courtName}, from date time:{DateTime.Now}.";
+
+            //get Admin account balance
+
+            var adminBalance = await _unitOfWork.UserBalanceRepository.FindAdminAccountBalance();
+
+            if (adminBalance == null) throw new EntityWithIDNotFoundException<UserBalance>(nameof(adminBalance.Id));
+
+            adminBalance.Balance += amount;
+
+            _unitOfWork.UserBalanceRepository.Update(adminBalance);
+
+            // Proceed to create a transaction history for admin
+            var newTrans = new Transaction()
+            {
+                RefFrom = refFrom,
+                RefTo = adminBalance.RefUser,
+                Amount = amount,
+                Reason = transferReason
+            };
+            await _unitOfWork.TransactionRepository.AddAsync(newTrans);
+
+            await _unitOfWork.CommitAsync();
+            // Other functions will commit to database             
+        }
+
+
         public async Task<PaginatedResponse<TransactionHistoryReadDTO>> GetSelfTransactionHistory(TransactionHistoryQuery query)
         {
             // Check if account is valid

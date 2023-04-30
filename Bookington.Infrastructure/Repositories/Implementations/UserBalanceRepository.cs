@@ -1,5 +1,6 @@
 ﻿using Bookington.Core.Data;
 using Bookington.Core.Entities;
+using Bookington.Core.Enums;
 using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,6 +17,14 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
         }
 
+        public async Task<UserBalance?> FindAdminAccountBalance()
+        {
+            return await _context.UserBalances
+                .Include(b => b.RefUserNavigation)
+                .ThenInclude(u => u.Role)
+                .FirstOrDefaultAsync(b => b.RefUserNavigation.Role.RoleName == AccountRole.admin.ToString());
+        }
+
         public Task<UserBalance?> FindByAccountIdAsync(string accountId, bool trackChanges = false)
         {
             IQueryable<UserBalance> dbSet = _context.Set<UserBalance>();
@@ -25,6 +34,17 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             }
 
             return Task.FromResult(dbSet.FirstOrDefault(ub => ub.RefUser == accountId));
+        }
+
+        public async Task<IEnumerable<UserBalance?>> GetUserBalancesOfOwnerToPayout()
+        {
+            double minMoney = 20000;
+
+            return await _context.UserBalances
+               .Include(b => b.RefUserNavigation)
+               .ThenInclude(u => u.Role)
+               .Where(b => b.RefUserNavigation.Role.RoleName == AccountRole.owner.ToString() && b.Balance >= minMoney)
+               .ToListAsync();
         }
     }
 }

@@ -2,23 +2,14 @@
 using Bookington.Core.Entities;
 using Bookington.Core.Enums;
 using Bookington.Core.Exceptions;
-using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.Notification;
 using Bookington.Infrastructure.DTOs.Order;
-using Bookington.Infrastructure.DTOs.SubCourt;
-using Bookington.Infrastructure.DTOs.UserBalance;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -165,8 +156,14 @@ namespace Bookington.Infrastructure.Services.Implementations
             // Update total price according to voucher discount
             existOrder.TotalPrice = existOrder.TotalPrice * (100 - existVoucher.Discount) / 100;
 
-            // Proceed to complete transaction and commit to database
-            var transId = await _transactionService.TransferAsync(existOrder.TotalPrice, courtOwner.Id, reason);
+            var numberOfMoneyPaidForSystem = existOrder.TotalPrice * 0.05; //take 5% each Order
+
+            // Proceed to complete transaction for owner and commit to database
+            var transId = await _transactionService.TransferAsync(existOrder.TotalPrice - numberOfMoneyPaidForSystem, courtOwner.Id, reason);
+
+            // Proceed to complete transaction for admin and commit to database
+
+            await _transactionService.TransferForAdminAsync(numberOfMoneyPaidForSystem, courtOwner.Id, courtName, existOrder.Id);
 
             // And of course you have to update the order with the transaction and new price if user uses voucher
             existOrder.TransactionId = transId;            
