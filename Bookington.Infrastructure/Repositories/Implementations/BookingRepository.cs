@@ -100,5 +100,14 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return Task.FromResult(dbSet.AsEnumerable());
         }
+
+
+        public async Task<IEnumerable<Booking>> GetAllBookingOfOrderAsync(string orderId)
+        {
+            IQueryable<Booking> dbSet = _context.Set<Booking>();
+
+            return await Task.FromResult(dbSet.Where(b => b.RefOrder == orderId)
+                .AsEnumerable());
+        }
     }
 }

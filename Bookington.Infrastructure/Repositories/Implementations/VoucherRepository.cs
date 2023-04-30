@@ -33,5 +33,12 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return Task.FromResult(vouchers.AsEnumerable());
         }
+
+        public async Task<Voucher?> GetVoucherByCodeOfCourtAsync(string courtId, string voucherCode)
+        {
+            var vouchers = await _context.Vouchers.FirstOrDefaultAsync(v => v.RefCourt == courtId && v.VoucherCode == voucherCode);
+
+            return vouchers;
+        }
     }
 }

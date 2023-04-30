@@ -225,5 +225,72 @@ namespace Bookington.Infrastructure.Services.Implementations
             return true;
 
         }
+
+
+        public async Task<OrderReadDTO> CancelOrderAsync(string orderId)
+        {
+            // Check if account is valid
+            var accountId = _userContextService.AccountID.ToString();
+
+            var existOder = await _unitOfWork.OrderRepository.FindAsync(orderId, include: "Transaction");
+
+            //check if exist Order
+            if (existOder == null) throw new EntityWithIDNotFoundException<Order>(orderId);
+            
+            //check if is user order
+            if(existOder.CreateBy != accountId) throw new ForbiddenException();
+
+            //get all booking of order of user that have Is Cancel status = false
+            var bookingsOrder = await _unitOfWork.BookingRepository.GetAllBookingOfOrderAsync(existOder.Id);
+            //Update Is Cancel status of these booking to true
+            foreach(var booking in bookingsOrder)
+            {
+                booking.IsCancel = true;
+                _unitOfWork.BookingRepository.Update(booking);
+            }
+            //Return Order.TotalPrice to user Balance (minus one of owner) - if not enough cancel false
+            var userBalance = await _unitOfWork.UserBalanceRepository.FindByAccountIdAsync(existOder.Transaction.RefFrom);
+            //Update User balance
+            userBalance.Balance += existOder.TotalPrice;
+            _unitOfWork.UserBalanceRepository.Update(userBalance);
+
+            var ownerBalance = await _unitOfWork.UserBalanceRepository.FindByAccountIdAsync(existOder.Transaction.RefTo);
+            //if not enough cancel fail
+            if (ownerBalance.Balance < existOder.TotalPrice)
+            {
+                throw new InvalidActionException("Owner Balance Is Not Enough, Cancel Booking Fail!!!");
+            }
+            //Update Owner balance
+            ownerBalance.Balance -= existOder.TotalPrice;
+            _unitOfWork.UserBalanceRepository.Update(ownerBalance);
+            //Return Voucher Of Order - GetVoucherByCodeOfCourtAsync(courtId, VoucherCode)
+            var refSubCourtId = bookingsOrder.Select(e=>e.RefSubCourt).FirstOrDefault();
+
+            var court = await _unitOfWork.CourtRepository.GetCourtFromSubCourtIdAsync(refSubCourtId);
+
+            var voucherOfCourt = await _unitOfWork.VoucherRepository.GetVoucherByCodeOfCourtAsync(court.Id, existOder.VoucherCode);
+
+            if(voucherOfCourt != null)
+            {
+                voucherOfCourt.Usages --;
+                _unitOfWork.VoucherRepository.Update(voucherOfCourt);
+            }
+            //Set Order.IsCancel status to true
+            existOder.IsCanceled = true;
+            //Send Notification cancel successful
+            var notification = new NotificationWriteDTO
+            {
+                RefAccount = accountId,
+                Content = NotificationFactory.CancelledOrderNotification(existOder.Id, DateTime.Now.ToString()),
+                IsRead = false
+            };
+
+            await _notificationService.CreateNotificationAsync(notification);
+            //Save change db
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<OrderReadDTO>(existOder);
+        }
     }
 }

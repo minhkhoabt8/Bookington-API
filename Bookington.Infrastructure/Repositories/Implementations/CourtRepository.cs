@@ -79,6 +79,13 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             return courts;
 
         }
-        
+
+        public async Task<Court?> GetCourtFromSubCourtIdAsync(string subCourtId)
+        {
+            return await _context.Courts
+                    .Include(c => c.SubCourts)
+                    .FirstOrDefaultAsync(c => c.SubCourts.Any(sc => sc.Id == subCourtId));
+        }
+
     }
 }

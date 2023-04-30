@@ -18,5 +18,8 @@ namespace Bookington.Infrastructure.DTOs.Notification
             => $"Important update: Your court booking on {date.ToString("yyyy/MM/dd")} at {location} has been changed/cancelled. Please check your account for more information.";
         public static string AccountCreditNotification(decimal amount)
             => $"Your account has been credited with {amount:C} for court bookings. Start booking now!";
+        public static string CancelledOrderNotification(string orderId, string datetime)
+            => $"Important update: Your court booking with Order: {orderId} has been changed/cancelled  on {datetime}. Please check your order history for more information.";
+        
     }
 }

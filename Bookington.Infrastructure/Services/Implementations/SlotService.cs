@@ -217,7 +217,6 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             _mapper.Map(slot, existSlot);
 
-
             await _unitOfWork.CommitAsync();
 
         }

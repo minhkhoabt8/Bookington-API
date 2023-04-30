@@ -40,7 +40,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             bool isSameDayBooking = false;
 
             // Check if play date is valid
-            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your play date is bullshit!");
+            if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) < 0) throw new InvalidActionException("Your play date is not available!");
             else if (playDate.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == 0) isSameDayBooking = true;
 
             var newBookings = _mapper.Map<IEnumerable<Booking>>(dtos);

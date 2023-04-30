@@ -17,5 +17,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         bool IsOrderYours(string accountId, string orderId);
         bool IsOrderFromYourCourts(string accountId, string orderId);
         Order GetOrderDetailsById(string orderId);
+
     }
 }

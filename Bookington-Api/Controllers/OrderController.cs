@@ -70,5 +70,23 @@ namespace Bookington_Api.Controllers
             var result = await _orderService.CheckOutAsync(dto);
             return ResponseFactory.Ok(result, "Check out successfully!");
         }
+
+        /// <summary>
+        /// Cancel Order
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>                
+        [HttpPost("cancel")]
+        [RoleAuthorize(AccountRole.customer)]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderReadDTO))]
+        public async Task<IActionResult> CancelOrder(string orderId)
+        {
+            var result = await _orderService.CancelOrderAsync(orderId);
+
+            return ResponseFactory.Ok(result);
+        }
+
     }
 }

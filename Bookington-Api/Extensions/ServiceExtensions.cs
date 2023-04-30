@@ -235,14 +235,23 @@ namespace Bookington_Api.Extensions
         {
             services.AddQuartz(q =>
             {
-                q.UseMicrosoftDependencyInjectionScopedJobFactory();
-                var jobKey = new JobKey("NotificationCleanupJob");
-                q.AddJob<NotificationCleanupJob>(opts => opts.WithIdentity(jobKey));
+                q.UseMicrosoftDependencyInjectionJobFactory();
 
+                // Register the NotificationCleanupJob
+                var notificationJobKey = new JobKey("NotificationCleanupJob");
+                q.AddJob<NotificationCleanupJob>(opts => opts.WithIdentity(notificationJobKey));
                 q.AddTrigger(opts => opts
-                .ForJob(jobKey)
-                .WithIdentity("NotificationCleanupJob-trigger")
-                .WithCronSchedule("0 0 0 */7 * ? *"));
+                    .ForJob(notificationJobKey)
+                    .WithIdentity("NotificationCleanupJob-trigger")
+                    .WithCronSchedule("0 0 0 */7 * ? *"));
+
+                // Register the AutoGenerateSlotJob
+                //var autoGenerateJobKey = new JobKey("AutoGenerateSlotJob");
+                //q.AddJob<AutoGenerateSlotJob>(opts => opts.WithIdentity(autoGenerateJobKey));
+                //q.AddTrigger(opts => opts
+                //    .ForJob(autoGenerateJobKey)
+                //    .WithIdentity("AutoGenerateSlotJob-trigger")
+                //    .WithCronSchedule("0 0 0 1 * ? *"));
 
             });
 

@@ -16,7 +16,10 @@ namespace Bookington.Infrastructure.BackgroundServices
 
         public async Task Execute(IJobExecutionContext context)
         {
-            
+            //get all subcourt that have slot
+            //generate new slot based on old slot info
+
+
             var notificationsToDelete = await _unitOfWork.NotificationRepository.GetAllOverDateNotification();
             foreach(var notification in notificationsToDelete)
             {

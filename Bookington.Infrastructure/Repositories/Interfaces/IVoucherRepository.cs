@@ -17,5 +17,6 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
     {
         Task<Voucher> FindByCode(string voucherCode, bool trackChanges = false);
         Task<IEnumerable<Voucher>> GetAllVoucherOfACourtAsync(string courtId);
+        Task<Voucher?> GetVoucherByCodeOfCourtAsync(string courtId, string voucherCode);
     }    
 }

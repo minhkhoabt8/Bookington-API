@@ -54,6 +54,8 @@ namespace Bookington.Infrastructure.DTOs.Booking
         public TimeSpan EndTime { get; set; }
 
         public double Price { get; set; }
+
+        public bool IsCancel { get; set; }  
     }
 
 }

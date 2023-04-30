@@ -21,6 +21,8 @@ public partial class Booking
 
     public double Price { get; set; }
 
+    public bool IsCancel { get; set; } = false;
+
     public virtual Account BookByNavigation { get; set; } = null!;
 
     public virtual ICollection<Match> Matches { get; } = new List<Match>();

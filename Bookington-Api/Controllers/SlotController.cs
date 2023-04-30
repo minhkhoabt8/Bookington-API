@@ -96,7 +96,7 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> UpdateAccount([FromQuery] string subCourtId, SlotUpdateDTO dtos)
+        public async Task<IActionResult> UpdateSlot([FromQuery] string subCourtId, SlotUpdateDTO dtos)
         {
             await _slotService.UpdateSlot(subCourtId, dtos);
 

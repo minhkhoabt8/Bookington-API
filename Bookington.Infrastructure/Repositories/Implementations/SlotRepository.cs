@@ -105,7 +105,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             var foundSlot = bookings.FirstOrDefault(b => b.RefSlot == slotId
                                                       && b.RefOrderNavigation.IsPaid && !b.RefOrderNavigation.IsRefunded & !b.RefOrderNavigation.IsCanceled
-                                                      && playDate.CompareTo(playDate) == 0);
+                                                      && playDate.CompareTo(playDate) == 0 && !b.IsCancel);
 
             if (foundSlot == null) return Task.FromResult(false);
 
