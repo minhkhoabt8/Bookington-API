@@ -831,6 +831,10 @@ public partial class BookingtonDbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(1000)
                 .HasColumnName("content");
+            entity.Property(e => e.RequestId)
+                .HasMaxLength(40)
+                .HasColumnName("request_id")
+                .IsRequired();
             entity.Property(e => e.CreateAt)
                 .HasColumnType("datetime")
                 .HasColumnName("create_at");

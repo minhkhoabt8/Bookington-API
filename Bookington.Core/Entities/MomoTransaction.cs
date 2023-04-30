@@ -9,6 +9,8 @@ public partial class MomoTransaction
 
     public string Content { get; set; } = null!;
 
+    public string RequestId { get; set; } = "";
+
     public double Amount { get; set; }
 
     public DateTime CreateAt { get; set; } = DateTime.Now;

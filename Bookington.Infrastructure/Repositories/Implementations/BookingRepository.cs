@@ -76,6 +76,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                          && b.RefOrderNavigation.IsPaid
                          && !b.RefOrderNavigation.IsCanceled
                          && !b.RefOrderNavigation.IsRefunded
+                         && b.IsCancel == false
                          && b.PlayDate.Add(b.RefSlotNavigation.EndTime).CompareTo(DateTime.Now) > 0)
                 .OrderBy(b => b.PlayDate.Date).ThenBy(b => b.RefSlotNavigation.StartTime);
 
@@ -95,6 +96,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                          && b.RefOrderNavigation.IsPaid
                          && !b.RefOrderNavigation.IsCanceled
                          && !b.RefOrderNavigation.IsRefunded
+                         && b.IsCancel == true
                          && b.PlayDate.Add(b.RefSlotNavigation.EndTime).CompareTo(DateTime.Now) <= 0)
                 .OrderByDescending(b => b.PlayDate.Date).ThenByDescending(b => b.RefSlotNavigation.StartTime);
 
