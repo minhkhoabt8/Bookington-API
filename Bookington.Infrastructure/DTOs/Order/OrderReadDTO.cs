@@ -1,4 +1,5 @@
 ﻿using Bookington.Core.Entities;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Booking;
 using System;
 using System.Collections.Generic;
@@ -33,5 +34,9 @@ namespace Bookington.Infrastructure.DTOs.Order
         public bool IsRefunded { get; set; }
 
         public ICollection<BookingForOrderReadDTO> Bookings { get; set; } = null!;
+    }
+    public class OrderQuery : PaginatedQuery
+    {
+        public string UserId { get; set; }
     }
 }

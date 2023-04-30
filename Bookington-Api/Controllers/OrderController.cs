@@ -41,6 +41,21 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
+        /// Get All Orders Of User
+        /// </summary>
+        ///<param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("user")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<OrderReadDTO>))]
+        public async Task<IActionResult> GetAllOrderOfUserAsync([FromQuery] OrderQuery query)
+        {
+            var orders = await _orderService.GetAllOrderOfUserAsync(query);
+            return ResponseFactory.PaginatedOk(orders);
+        }
+
+
+        /// <summary>
         /// Get Order Details By Id
         /// </summary>
         /// <param name="id"></param>

@@ -1,4 +1,5 @@
-﻿using Bookington.Infrastructure.DTOs.CheckOut;
+﻿using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.Order;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<OrderReadDTO> GetByIdAsync(string id);
         Task<CheckOutResponse> CheckOutAsync(CheckOutWriteDTO dto);
         Task<OrderReadDTO> CancelOrderAsync(string orderId);
+        Task<PaginatedResponse<OrderReadDTO>> GetAllOrderOfUserAsync(OrderQuery query);
     }
 }

@@ -55,5 +55,16 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                                   .Include(o => o.Bookings)
                                   .SingleOrDefault(o => o.Id == orderId)!;
         }
+
+
+        public async Task<IEnumerable<Order>> GetAllOrderOfUserAsync(string userId)
+        {
+            return await _context.Orders.Where(o=>o.CreateBy == userId)
+                                  .Include(o => o.Transaction)
+                                  .Include(o => o.CreateByNavigation)
+                                  .Include(o => o.VoucherCodeNavigation)
+                                  .Include(o => o.Bookings)
+                                    .ToListAsync();
+        }
     }
 }

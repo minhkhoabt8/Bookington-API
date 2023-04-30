@@ -2,6 +2,8 @@
 using Bookington.Core.Entities;
 using Bookington.Core.Enums;
 using Bookington.Core.Exceptions;
+using Bookington.Infrastructure.DTOs.Account;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Booking;
 using Bookington.Infrastructure.DTOs.CheckOut;
 using Bookington.Infrastructure.DTOs.Notification;
@@ -16,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -291,6 +294,19 @@ namespace Bookington.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<OrderReadDTO>(existOder);
+        }
+
+        public async Task<PaginatedResponse<OrderReadDTO>> GetAllOrderOfUserAsync(OrderQuery query)
+        {
+
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+            var orders = await _unitOfWork.OrderRepository.GetAllOrderOfUserAsync(query.UserId);
+
+            return PaginatedResponse<OrderReadDTO>.FromEnumerableWithMapping(
+                orders, query, _mapper);
         }
     }
 }
