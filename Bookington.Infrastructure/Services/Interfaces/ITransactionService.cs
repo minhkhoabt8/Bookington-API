@@ -22,6 +22,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<MomoTransactionReadDTO> CreateMomoTransactionAsync(MomoTransactionWriteDTO dto);
         Task<MomoTransactionReadDTO> ConfirmTopUp(MomoCheckoutResponseDTO dto);
 
-        Task TransferForAdminAsync(double amount, string refFrom, string courtName, string orderId);
+        Task TransferForAdminAsync(double amount, string refFrom, string ownerName, string courtName, string orderId);
     }
 }

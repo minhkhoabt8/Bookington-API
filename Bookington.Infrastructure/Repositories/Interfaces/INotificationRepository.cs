@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
     public interface INotificationRepository :
+        IGetAllAsync<Notification>,
         IAddAsync<Notification>,
         IDelete<Notification>,
         IFindAsync<Notification>,

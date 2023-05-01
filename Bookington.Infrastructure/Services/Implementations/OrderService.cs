@@ -163,7 +163,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             // Proceed to complete transaction for admin and commit to database
 
-            await _transactionService.TransferForAdminAsync(numberOfMoneyPaidForSystem, courtOwner.Id, courtName, existOrder.Id);
+            await _transactionService.TransferForAdminAsync(numberOfMoneyPaidForSystem, courtOwner.Id, courtOwner.FullName, courtName, existOrder.Id);
 
             // And of course you have to update the order with the transaction and new price if user uses voucher
             existOrder.TransactionId = transId;            

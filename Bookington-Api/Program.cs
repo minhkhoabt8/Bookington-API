@@ -1,4 +1,5 @@
 
+using Bookington.Infrastructure.Hubs;
 using Bookington_Api.Extensions;
 using Bookington_Api.Hubs;
 using Bookington_Api.Middlewares;
@@ -46,7 +47,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseCors(opt => opt
-    .WithOrigins("https://localhost:7216")
+    .WithOrigins("https://localhost:44360")
     .SetIsOriginAllowedToAllowWildcardSubdomains()
     .AllowAnyMethod()
     .AllowAnyHeader()

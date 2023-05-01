@@ -225,7 +225,7 @@ namespace Bookington_Api.Extensions
         ///</Summary>
         public static void AddSignalRService(this IServiceCollection services)
         {
-            services.AddScoped<INotificationUserHub, NotificationUserHub>();
+            services.AddSingleton<INotificationUserHub, NotificationUserHub>();
         }
 
         ///<Summary>
@@ -244,6 +244,7 @@ namespace Bookington_Api.Extensions
                     .ForJob(notificationJobKey)
                     .WithIdentity("NotificationCleanupJob-trigger")
                     .WithCronSchedule("0 0 0 */7 * ? *"));
+                    //.WithCronSchedule("0 * * * * ?")); // Run every minute
 
                 // Register the AutoGenerateSlotJob
                 //var autoGenerateJobKey = new JobKey("AutoGenerateSlotJob");

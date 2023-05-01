@@ -18,15 +18,13 @@ namespace Bookington.Infrastructure.BackgroundServices
         {
             //get all subcourt that have slot
             //generate new slot based on old slot info
-
-
             var notificationsToDelete = await _unitOfWork.NotificationRepository.GetAllOverDateNotification();
             foreach(var notification in notificationsToDelete)
             {
                 _unitOfWork.NotificationRepository.Delete(notification);
-                await _unitOfWork.CommitAsync();
+                
             }
-            
+            await _unitOfWork.CommitAsync();
         }
     }
 }

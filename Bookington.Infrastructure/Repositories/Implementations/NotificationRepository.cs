@@ -30,7 +30,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Notification>> GetAllOverDateNotification()
         {
-            return _context.Notifications.Where(n => n.CreateAt <= DateTime.Now.AddDays(7));
+            return _context.Notifications.Where(n => n.CreateAt <= DateTime.Now.AddDays(-7));
 
         }
 
