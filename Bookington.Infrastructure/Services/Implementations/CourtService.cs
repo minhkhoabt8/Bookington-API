@@ -126,12 +126,13 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existCourt == null) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id);
 
-            if(existCourt.IsDeleted) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id); ;
+            if(existCourt.IsDeleted) throw new EntityWithIDNotFoundException<Court>(existCourt!.Id);
+
+            //if (!existCourt.IsActive) throw new Exception($"Court with ID: {existCourt.Id} is banned from system"); 
 
             var result = _mapper.Map<CourtReadDTO>(existCourt);
 
             result.NumberOfSubCourt = await _unitOfWork.SubCourtRepository.GetNumberOfSubCourts(existCourt.Id);
-
 
             var owner = await  _unitOfWork.AccountRepository.FindAsync(existCourt.OwnerId);
 

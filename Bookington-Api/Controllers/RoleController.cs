@@ -105,22 +105,6 @@ namespace Bookington_Api.Controllers
 
             return ResponseFactory.NoContent();
         }
-        /// <summary>
-        /// Assign roles to account
-        /// </summary>
-        /// <param name="accountID"></param>
-        /// <param name="roleIDs"></param>
-        /// <returns></returns>
-        [HttpPut("/auth/accounts/{accountID:guid}/roles")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> AssignRolesToAccount(Guid accountID, int roleIDs)
-        {
-            //await _roleService.AssignRolesToAccount(accountID, roleIDs);
-
-            //return ResponseFactory.NoContent();
-            throw new NotImplementedException();
-        }
+        
     }
 }

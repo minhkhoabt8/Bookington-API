@@ -95,6 +95,8 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existAccount.IsDeleted == true) throw new InvalidActionException("Account Is Deleted!");
 
+            if (existAccount.IsActive == false) throw new InvalidActionException("Account Is Banned!");
+
             var role = await _unitOfWork.RoleRepository.FindAsync(existAccount.RoleId);
 
             // Generate new refresh token
@@ -279,7 +281,7 @@ namespace Bookington.Infrastructure.Services.Implementations
                 accounts, query, _mapper);
         }
 
-        //TODO: Profile
+        
         public async Task<AccountProfileReadDTO> GetProfileAsync()
         {
             // JWT token check (TRUE to proceed)
@@ -288,7 +290,6 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
 
-            //TODO: I'll do the avatar thing later
 
             var profile = await _unitOfWork.AccountRepository.FindAsync(accountId);
 
@@ -343,7 +344,8 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
-            if(existAccount.Password!= dto.OldPassword) throw new InvalidActionException("Old Password Not Correct");
+
+            if(existAccount.Password != dto.OldPassword) throw new InvalidActionException("Old Password Not Correct");
 
             if (dto.NewPassword.Equals(dto.ConfirmPassword))
             {

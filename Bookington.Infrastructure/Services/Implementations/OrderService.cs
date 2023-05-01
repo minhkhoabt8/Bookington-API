@@ -324,7 +324,7 @@ namespace Bookington.Infrastructure.Services.Implementations
                     var slotStartTime = DateTime.Today.Add(item.StartTime);
                     var playDateTime = item.PlayDate.Add(slotStartTime.TimeOfDay);
 
-                    if (playDateTime.CompareTo(DateTime.Now) <= 0)
+                    if (playDateTime.CompareTo(DateTime.Now) <= 0 || order.IsPaid == false)
                     {
                         order.CanBeCanceled = false;
                     }

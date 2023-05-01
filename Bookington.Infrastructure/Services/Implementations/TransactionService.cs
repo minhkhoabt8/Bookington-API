@@ -5,6 +5,7 @@ using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Momo;
+using Bookington.Infrastructure.DTOs.Notification;
 using Bookington.Infrastructure.DTOs.TransactionHistory;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
@@ -19,13 +20,15 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserContextService _userContextService;
         private readonly IUserBalanceService _userBalanceService;
+        private readonly INotificationService _notificationService;
 
-        public TransactionService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService, IUserBalanceService userBalanceService)
+        public TransactionService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService, IUserBalanceService userBalanceService, INotificationService notificationService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
             _userBalanceService = userBalanceService;
+            _notificationService = notificationService;
         }
 
         public async Task<TransactionHistoryReadDTO> CreateAsync(TransactionHistoryWriteDTO dto)
@@ -269,7 +272,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<MomoTransactionReadDTO> ConfirmTopUp(MomoCheckoutResponseDTO dto)
         {
-            //1.FindMomoTransaction by dto.OrderId vs Id
+            //1.Find MomoTransaction by dto.OrderId vs Id
             var existMomoTransaction = await _unitOfWork.MomoTransactionRepository.FindAsync(dto.OrderId);
 
             if (existMomoTransaction == null) throw new EntityWithIDNotFoundException<MomoTransaction>(dto.OrderId);
@@ -288,6 +291,7 @@ namespace Bookington.Infrastructure.Services.Implementations
             var selfBalance = await _unitOfWork.UserBalanceRepository.FindByAccountIdAsync(transaction.RefTo);
 
             if (selfBalance == null) throw new EntityWithIDNotFoundException<UserBalance>(transaction.RefTo);
+
             //4.Update Balance
 
             selfBalance.Balance += existMomoTransaction.Amount;
@@ -297,6 +301,17 @@ namespace Bookington.Infrastructure.Services.Implementations
             //5.Save Changes
 
             await _unitOfWork.CommitAsync();
+
+            //6.Send Notification Top Up Finish To User
+
+            var notification = new NotificationWriteDTO
+            {
+                Content = "Confirm TopUp Success",
+                IsRead = false,
+                RefAccount = selfBalance.Id
+            };
+
+            var noti = await _notificationService.CreateNotificationAsync(notification);
 
             return _mapper.Map<MomoTransactionReadDTO>(existMomoTransaction);
         }

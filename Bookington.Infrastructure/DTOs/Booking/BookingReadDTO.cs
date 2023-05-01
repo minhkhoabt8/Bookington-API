@@ -22,6 +22,8 @@ namespace Bookington.Infrastructure.DTOs.Booking
         public DateTime PlayDate { get; set; }
 
         public double Price { get; set; }
+
+        public bool IsCancel { get; set; }
     }
 
     public class CourtBookingHistoryReadDTO

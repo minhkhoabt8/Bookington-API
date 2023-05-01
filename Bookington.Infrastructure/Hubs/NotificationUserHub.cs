@@ -54,6 +54,8 @@ namespace Bookington_Api.Hubs
         /// <returns></returns>
         public async Task SendNotification(string userid, NotificationReadDTO notification)
         {
+            System.Diagnostics.Debug.WriteLine($"Send Notification Hit!!!");
+
             if (_userConnectionMap.ContainsKey(userid))
             {
                 string connectionId = _userConnectionMap[userid];

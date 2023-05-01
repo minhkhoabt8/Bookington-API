@@ -136,6 +136,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IUploadFileService, FileUploadService>();
             services.AddScoped<IMomoPaymentService, MomoPaymentService>();
+            services.AddScoped<IBanServices,BanService>();  
             //Add MomoHelpers
             services.AddScoped<IMomoHelpers, MomoHelpers>();
         }
@@ -215,7 +216,8 @@ namespace Bookington_Api.Extensions
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
-                options.KeepAliveInterval = TimeSpan.FromMinutes(5);
+                options.KeepAliveInterval = TimeSpan.FromMinutes(35);
+                
             });
             
         }
@@ -225,7 +227,7 @@ namespace Bookington_Api.Extensions
         ///</Summary>
         public static void AddSignalRService(this IServiceCollection services)
         {
-            services.AddSingleton<INotificationUserHub, NotificationUserHub>();
+            services.AddScoped<INotificationUserHub, NotificationUserHub>();
         }
 
         ///<Summary>
@@ -243,17 +245,28 @@ namespace Bookington_Api.Extensions
                 q.AddTrigger(opts => opts
                     .ForJob(notificationJobKey)
                     .WithIdentity("NotificationCleanupJob-trigger")
-                    .WithCronSchedule("0 0 0 */7 * ? *"));
-                    //.WithCronSchedule("0 * * * * ?")); // Run every minute
+                    //.WithCronSchedule("0 0 * * 0/7 ?"));
+                    //.WithCronSchedule("0 * * * * ?")); 
+                    .WithCronSchedule("0 0 */10 * * ?")); // Run every 10 hours
 
-                // Register the AutoGenerateSlotJob
-                //var autoGenerateJobKey = new JobKey("AutoGenerateSlotJob");
-                //q.AddJob<AutoGenerateSlotJob>(opts => opts.WithIdentity(autoGenerateJobKey));
-                //q.AddTrigger(opts => opts
-                //    .ForJob(autoGenerateJobKey)
-                //    .WithIdentity("AutoGenerateSlotJob-trigger")
-                //    .WithCronSchedule("0 0 0 1 * ? *"));
-
+                //Register the UnbanCourtJob
+                var unbanCourtJobKey = new JobKey("UnbanCourtJob");
+                q.AddJob<UnbanCourtJob>(opts => opts.WithIdentity(unbanCourtJobKey));
+                q.AddTrigger(opts => opts
+                    .ForJob(unbanCourtJobKey)
+                    .WithIdentity("UnbanCourtJob-trigger")
+                    //.WithCronSchedule("0 0 0/1 * * ?")); // run every 1 hour
+                    //.WithCronSchedule("0 * * * * ?"));
+                    .WithCronSchedule("0 0 */10 * * ?")); // Run every 10 hours
+                //Register the UnbanAccountJob
+                var unbanAccountJobKey = new JobKey("UnbanAccountJob");
+                q.AddJob<UnbanAccountJob>(opts => opts.WithIdentity(unbanAccountJobKey));
+                q.AddTrigger(opts => opts
+                    .ForJob(unbanAccountJobKey)
+                    .WithIdentity("UnbanAccountJob-trigger")
+                    //.WithCronSchedule("0 0 0/1 * * ?")); // run every 1 hour
+                    //.WithCronSchedule("0 * * * * ?"));
+                    .WithCronSchedule("0 0 */10 * * ?")); // Run every 10 hours
             });
 
            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

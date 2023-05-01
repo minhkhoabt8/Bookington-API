@@ -15,12 +15,18 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserContextService _userContextService;
+        private readonly IAccountService _accountService;
+        private readonly ICourtService _courtService;
+        private readonly IBanServices _banServices;
 
-        public ReportService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService)
+        public ReportService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService, IAccountService accountService, ICourtService courtService, IBanServices banServices)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
+            _accountService = accountService;
+            _courtService = courtService;
+            _banServices = banServices;
         }
 
         // COURT REPORTS RELATED FUNCTIONS
@@ -48,7 +54,26 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var courtReports = await _unitOfWork.CourtReportRepository.GetAllAsync();
 
-            return _mapper.Map<IEnumerable<CourtReportReadDTO>>(courtReports);
+            var result = _mapper.Map<IEnumerable<CourtReportReadDTO>>(courtReports);
+
+            foreach (var item in result)
+            {
+                var court = await _courtService.GetByIdAsync(item.RefCourt);
+                item.CourtName = court.Name;
+                var reporter = await _accountService.GetByIdAsync(item.ReporterId);
+                item.ReporterPhone = reporter.Phone;
+                item.ReporterName = reporter.FullName;
+
+                var bannedCourt = await _banServices.FindCourtBanByCourtIdAsync(item.RefCourt);
+
+                if(bannedCourt != null)
+                {
+                    item.IsBan = true;
+                }
+            }
+
+            return result;
+        
         }
 
         public async Task<CourtReportReadDTO> GetCourtReportByIdAsync(string id)
@@ -57,7 +82,26 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             if (existCourtReport == null) throw new EntityWithIDNotFoundException<CourtReport>(id);
 
-            return _mapper.Map<CourtReportReadDTO>(existCourtReport);
+            var result = _mapper.Map<CourtReportReadDTO>(existCourtReport);
+
+            var court = await _courtService.GetByIdAsync(existCourtReport.RefCourt);
+
+            result.CourtName = court.Name;
+
+            var reporter = await _accountService.GetByIdAsync(existCourtReport.ReporterId);
+
+            result.ReporterPhone = reporter.Phone;
+
+            result.ReporterName = reporter.FullName;
+
+            var bannedCourt = await _banServices.FindCourtBanByCourtIdAsync(existCourtReport.RefCourt);
+
+            if (bannedCourt != null)
+            {
+                result.IsBan = true;
+            }
+
+            return result;
         }
 
         public async Task<CourtReportReadDTO> UpdateCourtReportAsync(string id, CourtReportWriteDTO dto)
@@ -170,7 +214,15 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var userReports = await _unitOfWork.UserReportRepository.GetAllAsync();
 
-            return _mapper.Map<IEnumerable<UserReportReadDTO>>(userReports);
+            var result =  _mapper.Map<IEnumerable<UserReportReadDTO>>(userReports);
+
+            foreach(var userReport in result)
+            {
+                var account = await _accountService.GetByIdAsync(userReport.RefUser);
+                userReport.RefUserName = account.FullName;
+            }
+
+            return result;
         }
 
         public async Task<UserReportReadDTO> GetUserReportByIdAsync(string id)
@@ -183,7 +235,13 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             // Proceed returning reports' info
 
-            return _mapper.Map<UserReportReadDTO>(existUserReport);
+            var result = _mapper.Map<UserReportReadDTO>(existUserReport);
+
+            var account = await _accountService.GetByIdAsync(result.RefUser);
+
+            result.RefUserName = account.FullName;
+
+            return result;
         }
 
         public async Task<UserReportReadDTO> UpdateUserReportAsync(string id, UserReportUpdateDTO dto)

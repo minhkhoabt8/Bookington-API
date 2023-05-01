@@ -9,18 +9,20 @@ namespace Bookington.Infrastructure.DTOs.Report
 {
     public class CourtReportReadDTO
     {
-        public string Id { get; set; } = null!;
+        public string Id { get; set; }
 
-        public string RefCourt { get; set; } = null!;
+        public string RefCourt { get; set; } 
 
-        public string CourtName { get; set; } = null!;
+        public string CourtName { get; set; } //
 
-        public string ReporterId { get; set; } = null!;
+        public string ReporterId { get; set; } 
 
-        public string ReporterPhone { get; set; } = null!;
+        public string ReporterPhone { get; set; } // 
 
-        public string ReporterName { get; set; } = null!;
+        public string ReporterName { get; set; } //
 
-        public string Content { get; set; } = null!;
+        public string Content { get; set; }
+
+        public bool IsBan { get; set; } = false;
     }
 }

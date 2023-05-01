@@ -36,7 +36,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                 .Include(c=>c.Comments)
                 .Include(c=>c.District.Province)
                 .Include(c=>c.CourtImages)
-                .Where(c=>c.IsDeleted == false);
+                .Where(c=>c.IsDeleted == false && c.IsActive == true);
             
             if (!trackChanges)
             {
@@ -76,6 +76,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                 }
                
             }
+
             return courts;
 
         }

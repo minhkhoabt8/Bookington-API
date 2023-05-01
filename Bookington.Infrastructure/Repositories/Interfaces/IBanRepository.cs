@@ -7,11 +7,20 @@ using System.Threading.Tasks;
 
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
-    public interface IBanRepository :        
+    public interface IBanRepository :    
+        IGetAllAsync<Ban>,
         IAddAsync<Ban>,
         IUpdate<Ban>,
         IFindAsync<Ban>,
         IDelete<Ban>
     {
+
+        Task<Ban?> FindCourtBanByCourtIdAsync(string courtId);
+        Task<Ban?> FindUserBanByUserIdAsync(string userId);
+
+        Task<IEnumerable<Ban?>> GetAllExpiredCourtBanAsync();
+
+        Task<IEnumerable<Ban?>> GetAllExpiredUserBanAsync();
+
     }
 }

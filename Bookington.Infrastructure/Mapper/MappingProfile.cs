@@ -19,6 +19,7 @@ using Bookington.Infrastructure.DTOs.ReportResponse;
 using Bookington.Infrastructure.DTOs.SubCourtSlot;
 using Bookington.Infrastructure.DTOs.IncomingBooking;
 using Bookington.Infrastructure.DTOs.Comment;
+using Bookington.Infrastructure.DTOs.Ban;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -50,6 +51,9 @@ namespace Bookington.Infrastructure.Mapper
                 .ForMember(dest => dest.NumberOfSubCourt, options => options.MapFrom(src => src.SubCourts.Count()))
                 //.ForMember(dest => dest.RatingStar, options => options.MapFrom(src => src.Comments.Sum(a => a.Rating) / src.Comments.Where(c=>c.Id == src.Id).Count()))
                 .ForMember(des => des.CourtPictures, act => act.MapFrom(src => src.CourtImages.Where(c=>c.Id==src.Id)));
+            //Ban
+            CreateMap<Ban, BanReadDTO>();
+            
             // Sub Court
             CreateMap<SubCourt, SubCourtReadDTO>();
             CreateMap<SubCourtWriteDTO, SubCourt>();
