@@ -88,7 +88,7 @@ namespace Bookington_Api.Controllers
         /// <param name="courtId"></param>
         /// <returns></returns>
         [HttpGet("court")]
-        [RoleAuthorize(AccountRole.customer)]
+        [RoleAuthorize(AccountRole.customer, AccountRole.owner)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> GetAllVoucherOfACourtAsync([FromQuery]string courtId)
         {
