@@ -71,7 +71,6 @@ namespace Bookington_Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-
         [RoleAuthorize(AccountRole.owner)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
@@ -82,7 +81,6 @@ namespace Bookington_Api.Controllers
 
             return ResponseFactory.NoContent();
         }
-
 
         /// <summary>
         /// Get All Voucher Of a Court

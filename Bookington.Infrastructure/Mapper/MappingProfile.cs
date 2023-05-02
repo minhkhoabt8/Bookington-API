@@ -48,6 +48,7 @@ namespace Bookington.Infrastructure.Mapper
                 .ForMember(dest => dest.OpenAt,options => options.MapFrom(src => TimeSpan.Parse(src.OpenAt.ToString())))
                 .ForMember(dest => dest.CloseAt, options => options.MapFrom(src => TimeSpan.Parse(src.CloseAt.ToString())));
             CreateMap<Court, CourtQueryResponse>()
+                .ForMember(dest => dest.Phone, options => options.MapFrom(src => src.Owner.Phone))
                 .ForMember(dest => dest.DistrictName, options => options.MapFrom(src=>src.District.DistrictName))
                 .ForMember(dest => dest.ProvinceName, options => options.MapFrom(src => src.District.Province.ProvinceName))
                 .ForMember(dest => dest.NumberOfSubCourt, options => options.MapFrom(src => src.SubCourts.Count()))
@@ -77,7 +78,7 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<Booking, BookingForOrderReadDTO>()
                 .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.Name))
                 .ForMember(des => des.StartTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime))
-                .ForMember(des => des.EndTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime));
+                .ForMember(des => des.EndTime, act => act.MapFrom(src => src.RefSlotNavigation.EndTime));
             CreateMap<Booking, IncomingBookingReadDTO>()
                 .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.Name))
                 .ForMember(des => des.CourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.ParentCourt.Name))

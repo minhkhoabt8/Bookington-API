@@ -32,6 +32,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         public async Task<IEnumerable<Court>> QueryAsync(CourtItemQuery query, bool trackChanges = false)
         {
             IQueryable<Court> courts = _context.Courts
+                .Include(c => c.Owner)
                 .Include(c => c.District)
                 .Include(c=>c.SubCourts)
                 .Include(c=>c.Comments)
@@ -81,10 +82,15 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             {
                 // Get all courts with active and non-deleted sub-courts
                 var availableCourts = _context.Courts
+                        .Include(c => c.Owner)
+                        .Include(c => c.District)
                         .Include(c => c.SubCourts)
-                        .ThenInclude(sc => sc.SubCourtSlots)
-                        .ThenInclude(scs => scs.RefSlotNavigation)
-                        .ThenInclude(r => r.Bookings)
+                            .ThenInclude(sc => sc.SubCourtSlots)
+                            .ThenInclude(scs => scs.RefSlotNavigation)
+                            .ThenInclude(r => r.Bookings)
+                        .Include(c => c.Comments)
+                        .Include(c => c.District.Province)
+                        .Include(c => c.CourtImages)
                         .Where(c => c.IsActive && !c.IsDeleted && c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted));
 
                 TimeSpan startTime = TimeSpan.Parse(query.PlayTime);
@@ -94,7 +100,31 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                         .Where(c => c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted &&
                         sc.SubCourtSlots.Any(scs => scs.IsActive &&
                         scs.RefSlotNavigation.StartTime >= startTime && scs.RefSlotNavigation.Bookings.All(b => b.PlayDate != playDate))));
+            }else if(!query.PlayDate.IsNullOrEmpty() && !query.PlayTime.IsNullOrEmpty() && !query.SearchText.IsNullOrEmpty())
+            {
+                // Get all courts with active and non-deleted sub-courts
+                var availableCourts = _context.Courts
+                        .Include(c => c.Owner)
+                        .Include(c => c.District)
+                        .Include(c => c.SubCourts)
+                            .ThenInclude(sc => sc.SubCourtSlots)
+                            .ThenInclude(scs => scs.RefSlotNavigation)
+                            .ThenInclude(r => r.Bookings)
+                        .Include(c => c.Comments)
+                        .Include(c => c.District.Province)
+                        .Include(c => c.CourtImages)
+                        .Where(c => c.IsActive && !c.IsDeleted && c.Name.Contains(query.SearchText) && c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted));
+
+                TimeSpan startTime = TimeSpan.Parse(query.PlayTime);
+                DateTime playDate = DateTime.Parse(query.PlayDate);
+                // Filter out courts that have no available sub-courts with at least one unbooked slot
+                courts = availableCourts
+                        .Where(c => c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted &&
+                        sc.SubCourtSlots.Any(scs => scs.IsActive &&
+                        scs.RefSlotNavigation.StartTime >= startTime && scs.RefSlotNavigation.Bookings.All(b => b.PlayDate != playDate))));
             }
+
+
             return courts;
 
         }
@@ -110,10 +140,15 @@ namespace Bookington.Infrastructure.Repositories.Implementations
         {
             // Get all courts with active and non-deleted sub-courts
             var courts = await _context.Courts
+             
+                .Include(c => c.District)
                 .Include(c => c.SubCourts)
                 .ThenInclude(sc => sc.SubCourtSlots)
                 .ThenInclude(scs => scs.RefSlotNavigation)
                 .ThenInclude(r => r.Bookings)
+                .Include(c => c.Comments)
+                .Include(c => c.District.Province)
+                .Include(c => c.CourtImages)
                 .Where(c => c.IsActive && !c.IsDeleted && c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted))
                 .ToListAsync();
 
