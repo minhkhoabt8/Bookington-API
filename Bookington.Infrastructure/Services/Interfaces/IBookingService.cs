@@ -21,5 +21,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<CourtBookingHistoryReadDTO>> GetBookingsOfCourt(BookingHistoryQuery query);
         Task<PaginatedResponse<IncomingBookingReadDTO>> GetIncomingBookingsOfCustomer(IncomingBookingQuery query);
         Task<PaginatedResponse<FinishedBookingReadDTO>> GetFinishedBookingsOfCustomer(FinishedBookingQuery query);
+        Task<PaginatedResponse<CourtBookingHistoryReadDTO>> GetBookingsOfASubCourtAsync(GetBookingsOfSubCourtPaginatedQuery query);
     }
 }

@@ -2,6 +2,7 @@
 using Bookington.Core.Entities;
 using Bookington.Infrastructure.DTOs.Court;
 using Bookington.Infrastructure.Repositories.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,7 +16,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public Task<IEnumerable<Court>> GetAllCourtsByOwnerIdAsync(string ownerId)
         {
-            return Task.FromResult(_context.Courts.Where(c => c.OwnerId == ownerId && c.IsDeleted == false).Include(c => c.District).AsEnumerable());
+            return Task.FromResult(_context.Courts.Where(c => c.OwnerId == ownerId && c.IsDeleted == false).Include(c => c.District).ThenInclude(c=>c.Province).AsEnumerable());
         }
 
         public Task<Court?> GetCourtFromTransactionId(string transactionId)
@@ -88,5 +89,26 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                     .FirstOrDefaultAsync(c => c.SubCourts.Any(sc => sc.Id == subCourtId));
         }
 
+        public async Task<IEnumerable<Court?>> GetCourtsWithAvailableSlots(CourtQueryByDateAndTime query)
+        {
+            // Get all courts with active and non-deleted sub-courts
+            var courts = await _context.Courts
+                .Include(c => c.SubCourts)
+                .ThenInclude(sc => sc.SubCourtSlots)
+                .ThenInclude(scs => scs.RefSlotNavigation)
+                .ThenInclude(r => r.Bookings)
+                .Where(c => c.IsActive && !c.IsDeleted && c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted))
+                .ToListAsync();
+
+            TimeSpan startTime = TimeSpan.Parse(query.PlayTime);
+            DateTime playDate = DateTime.Parse(query.PlayDate);
+            // Filter out courts that have no available sub-courts with at least one unbooked slot
+            var filteredCourts = courts
+                .Where(c => c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted &&
+                    sc.SubCourtSlots.Any(scs => scs.IsActive &&
+                    scs.RefSlotNavigation.StartTime >= startTime && scs.RefSlotNavigation.Bookings.All(b => b.PlayDate != playDate))));
+
+            return filteredCourts;
+        }
     }
 }

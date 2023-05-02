@@ -41,7 +41,9 @@ namespace Bookington.Infrastructure.Mapper
 
             // Court
             CreateMap<Court, CourtReadDTO>()
-                .ForMember(dest => dest.DistrictName, options => options.MapFrom(src => src.District.DistrictName));
+                .ForMember(dest => dest.DistrictName, options => options.MapFrom(src => src.District.DistrictName))
+                .ForMember(dest => dest.ProvinceName, options => options.MapFrom(src => src.District.Province.ProvinceName))
+                .ForMember(dest => dest.Phone, options => options.MapFrom(src => src.Owner.Phone));
             CreateMap<CourtWriteDTO, Court>()
                 .ForMember(dest => dest.OpenAt,options => options.MapFrom(src => TimeSpan.Parse(src.OpenAt.ToString())))
                 .ForMember(dest => dest.CloseAt, options => options.MapFrom(src => TimeSpan.Parse(src.CloseAt.ToString())));

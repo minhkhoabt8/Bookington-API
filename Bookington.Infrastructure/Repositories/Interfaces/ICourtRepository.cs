@@ -16,5 +16,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         Task<Court?> GetCourtFromTransactionId(string transactionId);
 
         Task<Court?> GetCourtFromSubCourtIdAsync(string subCourtId);
+
+        Task<IEnumerable<Court?>> GetCourtsWithAvailableSlots(CourtQueryByDateAndTime query);
     }
 }

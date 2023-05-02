@@ -45,6 +45,29 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             return Task.FromResult(result.AsEnumerable());
         }
 
+        public async Task<IEnumerable<Booking>> GetBookingsOfASubCourtAsync(string subCourtId, bool trackChanges = false)
+        {
+            IQueryable<Booking> dbSet = _context.Set<Booking>();
+            if (!trackChanges)
+            {
+                dbSet = dbSet.AsNoTracking();
+            }
+
+            var result = await dbSet.Include(b => b.RefSlotNavigation)
+                                     .Include(b => b.RefSubCourtNavigation)
+                                     .Include(b => b.BookByNavigation)
+                                     .Include(b => b.RefOrderNavigation)
+                                     .Where(b => !b.RefOrderNavigation.IsCanceled
+                                              && !b.RefOrderNavigation.IsRefunded
+                                              && b.RefOrderNavigation.IsPaid
+                                              && subCourtId.Contains(b.RefSubCourt))
+                                     .OrderByDescending(b => b.BookAt)
+                                     .ToListAsync();
+
+            return result.AsEnumerable();
+        }
+
+
         public Task<IEnumerable<Booking>> GetBookingsOfOrder(string orderId, bool trackChanges = false)
         {
             IQueryable<Booking> dbSet = _context.Set<Booking>();

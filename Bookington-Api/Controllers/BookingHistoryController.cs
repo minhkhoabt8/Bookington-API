@@ -38,6 +38,22 @@ namespace Bookington_Api.Controllers
         }
 
         /// <summary>
+        /// Get Booking History Of A SubCourt
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("sub-courts")]
+        [RoleAuthorize(AccountRole.owner)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtBookingHistoryReadDTO>))]
+        public async Task<IActionResult> GetBookingHistoryOfCourt([FromQuery] GetBookingsOfSubCourtPaginatedQuery query)
+        {
+            var bookings = await _bookingService.GetBookingsOfASubCourtAsync(query);
+
+            return ResponseFactory.PaginatedOk(bookings);
+        }
+
+
+        /// <summary>
         /// Get Incoming Bookings Of A Customer
         /// </summary>
         /// <param name="query"></param>

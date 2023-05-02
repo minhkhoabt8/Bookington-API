@@ -120,6 +120,20 @@ namespace Bookington_Api.Controllers
             var courts = await _courtService.QueryCourtsAsync(query);
 
             return ResponseFactory.PaginatedOk(courts);
-        }        
+        }
+
+        /// <summary>
+        /// Get Courts With Available Slots
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("available-slot")]
+        [RoleAuthorize(AccountRole.owner, AccountRole.customer)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<CourtQueryResponse>))]
+        public async Task<IActionResult> GetCourtsWithAvailableSlots([FromQuery] CourtQueryByDateAndTime query)
+        {
+            var courts = await _courtService.GetCourtsWithAvailableSlots(query);
+
+            return ResponseFactory.PaginatedOk(courts);
+        }
     }
 }

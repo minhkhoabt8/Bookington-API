@@ -205,6 +205,26 @@ namespace Bookington.Infrastructure.Services.Implementations
                 bookings, query, _mapper);
         }
 
+        public async Task<PaginatedResponse<CourtBookingHistoryReadDTO>> GetBookingsOfASubCourtAsync(GetBookingsOfSubCourtPaginatedQuery query)
+        {
+            // Check if account is valid
+            var accountId = _userContextService.AccountID.ToString();
+
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+
+
+            var existSubCourt = await _unitOfWork.SubCourtRepository.FindAsync(query.SubCourtId);
+
+            if (existSubCourt == null) throw new EntityWithIDNotFoundException<SubCourt>(query.SubCourtId);
+
+
+            var bookings = await _unitOfWork.BookingRepository.GetBookingsOfASubCourtAsync(existSubCourt.Id);
+
+            return PaginatedResponse<CourtBookingHistoryReadDTO>.FromEnumerableWithMapping(
+                bookings, query, _mapper);
+
+        }
+
         public async Task<PaginatedResponse<IncomingBookingReadDTO>> GetIncomingBookingsOfCustomer(IncomingBookingQuery query)
         {
             // Check if account is valid

@@ -4,6 +4,7 @@ using Bookington.Core.Exceptions;
 using Bookington.Infrastructure.DTOs.Account;
 using Bookington.Infrastructure.DTOs.ApiResponse;
 using Bookington.Infrastructure.DTOs.Court;
+using Bookington.Infrastructure.DTOs.SubCourt;
 using Bookington.Infrastructure.Services.Interfaces;
 using Bookington.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
@@ -23,14 +24,16 @@ namespace Bookington.Infrastructure.Services.Implementations
         private readonly IUserContextService _userContextService;
         private readonly IUploadFileService _uploadFileService;
         private readonly ICommentService _commentService;
+        private readonly ISubCourtService _subCourtService;
 
-        public CourtService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService, IUploadFileService uploadFileService, ICommentService commentService)
+        public CourtService(IMapper mapper, IUnitOfWork unitOfWork, IUserContextService userContextService, IUploadFileService uploadFileService, ICommentService commentService, ISubCourtService subCourtService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userContextService = userContextService;
             _uploadFileService = uploadFileService;
             _commentService = commentService;
+            _subCourtService = subCourtService;
         }
 
         public async Task<CourtReadDTO> CreateAsync(CourtWriteDTO dto, IEnumerable<IFormFile> courtImages)
@@ -244,6 +247,43 @@ namespace Bookington.Infrastructure.Services.Implementations
             }
 
             return result;
+        }
+
+
+        public async Task<PaginatedResponse<CourtReadDTO>> GetCourtsWithAvailableSlots(CourtQueryByDateAndTime query)
+        {
+            var courts = await _unitOfWork.CourtRepository.GetCourtsWithAvailableSlots(query);
+
+            var courtReads = PaginatedResponse<CourtReadDTO>.FromEnumerableWithMapping(
+               courts, query, _mapper);
+
+            var listImages = new List<string>();
+
+            foreach (var court in courtReads)
+            {
+
+                court.NumberOfSubCourt = await _unitOfWork.SubCourtRepository.GetNumberOfSubCourts(court.Id);
+
+                court.RatingStar = await _commentService.GetAverageRatingOfCommentsOfACourtAsync(court.Id);
+
+                court.NumOfReview = await _commentService.GetReviewsNumberOfCourt(court.Id);
+
+                court.MoneyPerHour = await _unitOfWork.SlotRepository.GetTheLowestSlotPriceOfACourt(court.Id);
+
+                //Add  image to court
+                var images = await _unitOfWork.CourtImageRepository.GetImagesOfCourtByIdAsync(court.Id);
+
+                foreach (var item in images)
+                {
+                    listImages.Add(item.RefImage);
+                }
+
+                court.CourtPictures = await _uploadFileService.GetImageFilesAsync(listImages, false);
+            }
+
+
+            return courtReads;
+
         }
 
     }
