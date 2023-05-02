@@ -77,7 +77,24 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                 }
                
             }
+            if(!query.PlayDate.IsNullOrEmpty() && !query.PlayTime.IsNullOrEmpty())
+            {
+                // Get all courts with active and non-deleted sub-courts
+                var availableCourts = _context.Courts
+                        .Include(c => c.SubCourts)
+                        .ThenInclude(sc => sc.SubCourtSlots)
+                        .ThenInclude(scs => scs.RefSlotNavigation)
+                        .ThenInclude(r => r.Bookings)
+                        .Where(c => c.IsActive && !c.IsDeleted && c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted));
 
+                TimeSpan startTime = TimeSpan.Parse(query.PlayTime);
+                DateTime playDate = DateTime.Parse(query.PlayDate);
+                // Filter out courts that have no available sub-courts with at least one unbooked slot
+                courts = availableCourts
+                        .Where(c => c.SubCourts.Any(sc => sc.IsActive && !sc.IsDeleted &&
+                        sc.SubCourtSlots.Any(scs => scs.IsActive &&
+                        scs.RefSlotNavigation.StartTime >= startTime && scs.RefSlotNavigation.Bookings.All(b => b.PlayDate != playDate))));
+            }
             return courts;
 
         }

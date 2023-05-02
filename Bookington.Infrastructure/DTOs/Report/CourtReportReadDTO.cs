@@ -23,6 +23,8 @@ namespace Bookington.Infrastructure.DTOs.Report
 
         public string Content { get; set; }
 
+        public bool IsResponded { get; set; }
+
         public bool IsBan { get; set; } = false;
     }
 }

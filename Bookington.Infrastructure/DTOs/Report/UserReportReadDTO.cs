@@ -10,14 +10,18 @@ namespace Bookington.Infrastructure.DTOs.Report
     {
         public string Id { get; set; }
 
-        public string RefUser { get; set; } 
+        public string RefUser { get; set; }
 
-        public string RefUserName { get; set; }    //
+        public string RefUserName { get; set; }
 
-        public string ReporterId { get; set; } 
+        public string ReporterId { get; set; }
 
         public string ReporterCourtName { get; set; }
 
         public string Content { get; set; }
+
+        public bool IsResponded { get; set; }
+
+        public bool IsBan { get; set; }
     }
 }

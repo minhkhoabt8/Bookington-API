@@ -117,7 +117,8 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<CourtReportResponse, CourtReportResponseReadDTO>();
             CreateMap<CourtReportResponseWriteDTO, CourtReportResponse>();           
             // User Report
-            CreateMap<UserReport, UserReportReadDTO>();
+            CreateMap<UserReport, UserReportReadDTO>()
+                .ForMember(des => des.ReporterCourtName, act => act.MapFrom(src => src.Reporter.FullName));
             CreateMap<UserReportCreateDTO, UserReport>();
             CreateMap<UserReportUpdateDTO, UserReport>();
             // User Report Response

@@ -220,6 +220,13 @@ namespace Bookington.Infrastructure.Services.Implementations
             {
                 var account = await _accountService.GetByIdAsync(userReport.RefUser);
                 userReport.RefUserName = account.FullName;
+                var owner = await _accountService.GetByIdAsync(userReport.ReporterId);
+                userReport.ReporterCourtName = owner.FullName;
+                var bannedUser = await _banServices.FindUserBanByUserIdAsync(userReport.RefUser);
+                if(bannedUser != null)
+                {
+                    userReport.IsBan = true;
+                }
             }
 
             return result;
@@ -229,7 +236,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             // Check if the report exists or not (TRUE to proceed)
 
-            var existUserReport = await _unitOfWork.UserReportRepository.FindAsync(id);
+            var existUserReport = await _unitOfWork.UserReportRepository.FindAsync(id, include: "Reporter");
 
             if (existUserReport == null) throw new EntityWithIDNotFoundException<UserReport>(id);
 
@@ -241,6 +248,13 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             result.RefUserName = account.FullName;
 
+            var bannedUser = await _banServices.FindUserBanByUserIdAsync(result.RefUser);
+
+            if (bannedUser != null)
+            {
+                result.IsBan = true;
+            }
+
             return result;
         }
 
@@ -248,7 +262,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             // Check if the report exists or not (TRUE to proceed)
 
-            var existUserReport = await _unitOfWork.CourtReportRepository.FindAsync(id);
+            var existUserReport = await _unitOfWork.CourtReportRepository.FindAsync(id, include: "Reporter");
             
             if (existUserReport == null) throw new EntityWithIDNotFoundException<UserReport>(id);
 

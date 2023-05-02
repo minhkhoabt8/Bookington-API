@@ -340,12 +340,14 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var existAccount = await _unitOfWork.AccountRepository.FindAsync(dto.UserId);
 
+            
             if (existAccount == null) throw new EntityWithIDNotFoundException<Account>(dto.UserId);
 
             else if (existAccount?.Id != _userContextService.AccountID.ToString()) throw new ForbiddenException();
 
+            bool verify = BCrypt.Net.BCrypt.Verify(dto.OldPassword, existAccount.Password);
 
-            if(existAccount.Password != dto.OldPassword) throw new InvalidActionException("Old Password Not Correct");
+            if (!verify) throw new Exception("Old Password Not Match");
 
             if (dto.NewPassword.Equals(dto.ConfirmPassword))
             {
@@ -353,7 +355,12 @@ namespace Bookington.Infrastructure.Services.Implementations
 
                 await _unitOfWork.CommitAsync();
             }
-            else throw new Exception("Confirm Password Not Match");
+            else
+            {
+                throw new Exception("Confirm Password Not Match");
+            }
+            
+              
         }
 
         public async Task AssignRoleToUserAsync(string userId, string roleId)

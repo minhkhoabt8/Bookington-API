@@ -20,6 +20,8 @@ namespace Bookington.Infrastructure.DTOs.Court
         public string? Province { get; set; }
         public string? OpenAt { get; set; }
         public string? CloseAt { get; set; }
+        public string? PlayDate { get; set; }
+        public string? PlayTime { get; set;}
     }
 
     public class CourtOfOwnerQuery : PaginatedQuery
