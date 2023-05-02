@@ -137,6 +137,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IUploadFileService, FileUploadService>();
             services.AddScoped<IMomoPaymentService, MomoPaymentService>();
             services.AddScoped<IBanServices,BanService>();  
+            services.AddScoped<IDashBoardService,DashBoardService>();
             //Add MomoHelpers
             services.AddScoped<IMomoHelpers, MomoHelpers>();
         }

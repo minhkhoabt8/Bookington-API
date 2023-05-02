@@ -9,22 +9,19 @@ namespace Bookington.Infrastructure.DTOs.DashBoard
 {
     public class AdminDashBoardDTO
     {
-        public float TotalIncomeInSystem { get; set; }
+        public int TotalOrders { get; set; }//an integer value that represents the total number of orders.
 
-        public float TotalBookinInSystemg { get; set; }
-        
-        public float TotalSuccessfulBookingInSystem { get; set; }
+        public int PaidOrders { get; set; }//an integer value that represents the number of orders that have been paid.
 
-        public float TotalCancelBookingInSystem { get; set; }
+        public int CanceledOrders { get; set; }// can integer value that represents the number of orders that have been canceled.
 
-        public float NumberOfReport { get; set; }
+        public int RefundedOrders { get; set; }// an integer value that represents the number of orders that have been refunded.
 
-        public float NumberOfUnhandleReport { get; set; }   
+        public double TotalSales { get; set; }//a decimal value that represents the total sales generated from all the orders.
 
-        public float NumberOfHandleReport { get; set; }
+        public double AverageSale { get; set; } // a decimal value that represents the average sales per order. It is calculated by dividing the TotalSales by the TotalOrders.
 
-        public string PopularBookingTimeSlotsInSystem { get; set; } 
+        public double CommissionEarned { get; set; }  // new field for commission earned by admin for get money from Total Price Of Order
 
-        public string PopularBookingCourtInSystem { get; set; }
     }
 }

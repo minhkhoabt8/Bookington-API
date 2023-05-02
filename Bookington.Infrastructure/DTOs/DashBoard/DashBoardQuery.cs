@@ -8,9 +8,9 @@ namespace Bookington.Infrastructure.DTOs.DashBoard
 {
     public class DashBoardQuery
     {
-        public DateOnly StartTime { get; set; }
+        public string StartTime { get; set; }
 
-        public DateOnly EndTime { get; set; }
+        public string EndTime { get; set; }
 
     }
 }

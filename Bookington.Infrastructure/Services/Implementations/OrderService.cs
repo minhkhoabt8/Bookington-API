@@ -81,7 +81,13 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var orders = await _unitOfWork.OrderRepository.GetAllAsync();
 
-            return _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
+            var result = _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
+
+            foreach(var item in result)
+            {
+                item.CourtName = await _unitOfWork.SubCourtRepository.GetCourtNameBySubCourtId(item.Bookings.First().Id!);
+            }
+            return result;
         }
               
         public async Task<CheckOutResponse> CheckOutAsync(CheckOutWriteDTO dto)

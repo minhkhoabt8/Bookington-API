@@ -11,15 +11,14 @@ namespace Bookington.Infrastructure.DTOs.Order
 {
     public class OrderReadDTO
     {
-        public string Id { get; set; } = null!;
+        public string Id { get; set; }
 
-        public string CreateBy { get; set; } = null!;
-
+        public string CreateBy { get; set; } 
         public string TransactionId { get; set; } = string.Empty;
 
-        public string CourtName { get; set; } = null!;
+        public string CourtName { get; set; } 
 
-        public string VoucherCode { get; set; } = null!;
+        public string VoucherCode { get; set; } 
 
         public DateTime OrderAt { get; set; }
 
