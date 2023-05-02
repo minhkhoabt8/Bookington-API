@@ -12,5 +12,6 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<AdminDashBoardDTO> GetAdminDashBoard(DashBoardQuery query);
 
         Task<OwnerDashBoardDTO> GetOwnerDashBoard(string ownerId, DashBoardQuery query);
+
     }
 }

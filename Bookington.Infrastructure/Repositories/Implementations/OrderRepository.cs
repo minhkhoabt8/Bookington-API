@@ -68,5 +68,29 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                                   .Include(o => o.Bookings).ThenInclude(c => c.RefSubCourtNavigation).ThenInclude(s => s.ParentCourt)
                                   .ToListAsync();
         }
+
+
+        public async Task<IEnumerable<Order>> GetAllOrderForStatistic()
+        {
+            return await _context.Orders
+                                  .Include(o => o.Transaction)
+                                  .Include(o => o.CreateByNavigation)
+                                  .Include(o => o.Bookings).ThenInclude(c => c.RefSubCourtNavigation).ThenInclude(s => s.ParentCourt)
+                                  .ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<Order>> GetAllOrderOfOwnerForStatistic(string ownerId)
+        {
+           return  await _context.Orders
+
+                                  .Include(o => o.Transaction)
+                                  .Include(o => o.CreateByNavigation)
+                                  .Include(o => o.Bookings)
+                                        .ThenInclude(c => c.RefSubCourtNavigation)
+                                            .ThenInclude(s => s.ParentCourt)
+                                  .Where(c=>c.Bookings.Any(c=>c.RefSubCourtNavigation.ParentCourt.OwnerId == ownerId))
+                                  .ToListAsync();
+        }
     }
 }

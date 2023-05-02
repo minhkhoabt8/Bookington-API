@@ -50,22 +50,33 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<OwnerDashBoardDTO> GetOwnerDashBoard(string ownerId, DashBoardQuery query)
         {
-            //// Get all orders of the owner
-            //var orders = await _context.Orders
-            //    .Where(o => o.CreateBy == ownerId)
-            //    .Include(o => o.Bookings)
-            //        .ThenInclude(b => b.RefSubCourtNavigation)
-            //            .ThenInclude(sc => sc.ParentCourt)
-            //    .ToListAsync();
+            // Get all orders of the owner
+            var orders = await _orderService.GetOwnerStatisticAsync(ownerId);
 
 
-            //if (query.StartTime != null && query.EndTime != null)
-            //{
-            //    DateTime startTime = DateTime.Parse(query.StartTime);
-            //    DateTime endTime = DateTime.Parse(query.EndTime);
-            //    orders = orders.Where(o => o.OrderAt >= startTime && o.OrderAt <= endTime);
-            //}
-            throw new NotImplementedException();
+            if (query.StartTime != null && query.EndTime != null)
+            {
+                DateTime startTime = DateTime.Parse(query.StartTime);
+                DateTime endTime = DateTime.Parse(query.EndTime);
+                orders = orders.Where(o => o.OrderAt >= startTime && o.OrderAt <= endTime);
+            }
+
+            return new OwnerDashBoardDTO
+            {
+                TotalOrders = orders.Count(),
+                ApprovedOrders = orders.Count(o => o.IsPaid),
+                RejectedOrders = orders.Count(o => o.IsCanceled),
+                RefundedOrders = orders.Count(o => o.IsRefunded),
+                TotalIncomes = orders.Where(o => o.IsPaid).Sum(o => o.TotalPrice),
+                AverageEarnings = orders.Where(o => o.IsPaid).Average(o => o.TotalPrice),
+                CommissionPaid = orders.Where(o => o.IsPaid).Sum(o => o.TotalPrice * 0.05),
+                TotalEarnings = orders.Where(o => o.IsPaid).Sum(o => o.TotalPrice - o.TotalPrice * 0.05),
+                TotalBookings = orders.Sum(o => o.Bookings.Count()),
+                TotalRevenue = orders.Where(o => o.IsPaid).Sum(o => o.TotalPrice),
+                AverageRevenue = orders.Where(o => o.IsPaid).Average(o => o.TotalPrice),
+                RefundRevenue = orders.Where(o => o.IsRefunded && o.IsPaid).Sum(o => o.TotalPrice)
+            };
+
         }
     }
 }

@@ -18,5 +18,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         bool IsOrderFromYourCourts(string accountId, string orderId);
         Order GetOrderDetailsById(string orderId);
         Task<IEnumerable<Order>> GetAllOrderOfUserAsync(string userId);
+        Task<IEnumerable<Order>> GetAllOrderForStatistic();
+        Task<IEnumerable<Order>> GetAllOrderOfOwnerForStatistic(string ownerId);
     }
 }

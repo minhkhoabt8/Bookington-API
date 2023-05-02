@@ -81,13 +81,8 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var orders = await _unitOfWork.OrderRepository.GetAllAsync();
 
-            var result = _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
+            return _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
 
-            foreach(var item in result)
-            {
-                item.CourtName = await _unitOfWork.SubCourtRepository.GetCourtNameBySubCourtId(item.Bookings.First().Id!);
-            }
-            return result;
         }
               
         public async Task<CheckOutResponse> CheckOutAsync(CheckOutWriteDTO dto)
@@ -338,6 +333,21 @@ namespace Bookington.Infrastructure.Services.Implementations
             }
 
             return result;
+        }
+
+        public async Task<IEnumerable<OrderReadDTO>> GetAdminStatisticAsync()
+        {
+            var orders = await _unitOfWork.OrderRepository.GetAllOrderForStatistic();
+
+            return _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
+        }
+
+        public async Task<IEnumerable<OrderReadDTO>> GetOwnerStatisticAsync(string ownerId)
+        {
+
+            var orders = await _unitOfWork.OrderRepository.GetAllOrderOfOwnerForStatistic(ownerId);
+
+            return _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
         }
     }
 }

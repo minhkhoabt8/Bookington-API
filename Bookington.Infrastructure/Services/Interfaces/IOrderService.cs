@@ -16,5 +16,9 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<CheckOutResponse> CheckOutAsync(CheckOutWriteDTO dto);
         Task<OrderReadDTO> CancelOrderAsync(string orderId);
         Task<PaginatedResponse<OrderReadDTO>> GetAllOrderOfUserAsync(OrderQuery query);
+
+        Task<IEnumerable<OrderReadDTO>> GetAdminStatisticAsync();
+
+        Task<IEnumerable<OrderReadDTO>> GetOwnerStatisticAsync(string ownerId);
     }
 }

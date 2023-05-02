@@ -37,5 +37,20 @@ namespace Bookington_Api.Controllers
             var dashboardInfo = await _dashboardService.GetAdminDashBoard(query);
             return ResponseFactory.Ok(dashboardInfo);
         }
+
+        /// <summary>
+        /// Owner Dash Board
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("owner")]
+        [RoleAuthorize(AccountRole.owner)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> GetOwnerDashBoard([FromQuery] string ownerId,[FromQuery] DashBoardQuery query)
+        {
+            var dashboardInfo = await _dashboardService.GetOwnerDashBoard(ownerId,query);
+            return ResponseFactory.Ok(dashboardInfo);
+        }
     }
 }
