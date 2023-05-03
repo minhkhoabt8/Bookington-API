@@ -58,11 +58,11 @@ namespace Bookington.Infrastructure.Services.Implementations
 
                     noti.IsRead = true;
 
-                    _mapper.Map(notification, noti);
+                    _unitOfWork.NotificationRepository.Update(noti);
 
-                    await _unitOfWork.CommitAsync();
                 }
             }
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<PaginatedResponse<NotificationReadDTO>> QueryNotificationOfUserAsync(NotificationQuerry query)
