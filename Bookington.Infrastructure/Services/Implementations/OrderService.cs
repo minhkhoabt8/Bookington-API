@@ -79,7 +79,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task<IEnumerable<OrderReadDTO>> GetAllAsync()
         {
-            var orders = await _unitOfWork.OrderRepository.GetAllAsync();
+            var orders = await _unitOfWork.OrderRepository.GetAllOrderAsync();
 
             return _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
 

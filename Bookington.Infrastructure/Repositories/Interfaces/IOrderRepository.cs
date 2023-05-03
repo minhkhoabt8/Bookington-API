@@ -20,5 +20,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<Order>> GetAllOrderOfUserAsync(string userId);
         Task<IEnumerable<Order>> GetAllOrderForStatistic();
         Task<IEnumerable<Order>> GetAllOrderOfOwnerForStatistic(string ownerId);
+
+        Task<IEnumerable<Order>> GetAllOrderAsync();
     }
 }

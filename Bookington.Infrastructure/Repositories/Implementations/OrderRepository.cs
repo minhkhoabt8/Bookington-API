@@ -92,5 +92,14 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                                   .Where(c=>c.Bookings.Any(c=>c.RefSubCourtNavigation.ParentCourt.OwnerId == ownerId))
                                   .ToListAsync();
         }
+
+        public async Task<IEnumerable<Order>> GetAllOrderAsync()
+        {
+            return await _context.Orders
+                                  .Include(o => o.Transaction)
+                                  .Include(o => o.CreateByNavigation)
+                                  .Include(o => o.Bookings).ThenInclude(c => c.RefSubCourtNavigation).ThenInclude(s => s.ParentCourt)
+                                  .ToListAsync();
+        }
     }
 }
