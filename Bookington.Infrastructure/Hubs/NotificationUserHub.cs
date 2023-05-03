@@ -27,25 +27,23 @@ namespace Bookington_Api.Hubs
         /// <param name="userId"></param>
         /// <param name="connectionId"></param>
 
-        public void RegisterUserConnection(string userId, string connectionId)
+        public void RegisterUserConnection(string userId)
         {
+            var conn = GetConnectionId();
+
             lock (_userConnectionMap)
             {
                 if (!_userConnectionMap.ContainsKey(userId))
                 {
-                    _userConnectionMap.Add(userId, connectionId);
+                    
+                    _userConnectionMap.Add(userId, conn);
                 }
                 else
                 {
-                    _userConnectionMap[userId] = connectionId;
+                    _userConnectionMap[userId] = conn;
                 }
 
-                System.Diagnostics.Debug.WriteLine("User Connection Map:");
-
-                foreach (var pair in _userConnectionMap)
-                {
-                    System.Diagnostics.Debug.WriteLine($"User ID: {pair.Key}, Connection ID: {pair.Value}");
-                }
+               
             }
         }
 
@@ -96,6 +94,7 @@ namespace Bookington_Api.Hubs
             if (!string.IsNullOrEmpty(user))
             {
                 _userConnectionMap.Remove(user);
+                System.Diagnostics.Debug.WriteLine($"User with ID {user} disconnected and was removed from the connection map.");
             }
             return base.OnDisconnectedAsync(exception);
         }

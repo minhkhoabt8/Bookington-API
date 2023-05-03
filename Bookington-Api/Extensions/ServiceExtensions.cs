@@ -202,6 +202,7 @@ namespace Bookington_Api.Extensions
         {
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
         }
+
         ///<Summary>
         ///Add Service Filter
         ///</Summary>
@@ -209,6 +210,7 @@ namespace Bookington_Api.Extensions
         {
             services.AddScoped<AutoValidateModelState>();
         }
+
         ///<Summary>
         ///Add SignalR Config
         ///</Summary>
@@ -216,13 +218,11 @@ namespace Bookington_Api.Extensions
         {
             services.AddSignalR(options =>
             {
-                options.EnableDetailedErrors = true;
-                options.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
-                options.KeepAliveInterval = TimeSpan.FromMinutes(10);
-                
 
+                options.EnableDetailedErrors = true;
+                //options.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
+                //options.KeepAliveInterval = TimeSpan.FromMinutes(10);
             });
-            
         }
 
         ///<Summary>
