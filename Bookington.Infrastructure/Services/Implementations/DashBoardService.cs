@@ -26,7 +26,7 @@ namespace Bookington.Infrastructure.Services.Implementations
         public async Task<AdminDashBoardDTO> GetAdminDashBoard(DashBoardQuery query)
         {
 
-            var orders = await _orderService.GetAllAsync();
+            var orders = await _orderService.GetAdminStatisticAsync();
 
             if (query.StartTime != null && query.EndTime != null)
             {
