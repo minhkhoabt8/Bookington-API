@@ -87,6 +87,8 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             userBalance.RefUser = account.Id;
 
+            userBalance.Balance = 200000;
+
             await _userBalanceService.CreateAsync(userBalance);
 
             await _unitOfWork.CommitAsync();
