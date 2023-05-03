@@ -49,7 +49,9 @@ namespace Bookington.Infrastructure.Services.Implementations
             //check account phone exist
             var existAccount = await _unitOfWork.AccountRepository.FindAccountByPhoneNumberAsync(dto.Phone);
             if (existAccount != null) throw new UniqueConstraintException<Account>(nameof(Account.Phone), dto.Phone);
-            
+
+            if (!existAccount.IsVerified) throw new Exception("Account Is Not Verify");
+
             //add account
             var account = _mapper.Map<Account>(dto);
 

@@ -180,8 +180,9 @@ namespace Bookington.Infrastructure.Services.Implementations
             var notification = new NotificationWriteDTO
             {
                 RefAccount = accountId,
-                Content = NotificationFactory.SuccessBooking(),
-                IsRead = false
+                Content = NotificationFactory.SuccessBooking(existOrder.Id),
+                IsRead = false,
+                StatusCode = 0
             };
 
             await _notificationService.CreateNotificationAsync(notification);
@@ -295,7 +296,8 @@ namespace Bookington.Infrastructure.Services.Implementations
             {
                 RefAccount = accountId,
                 Content = NotificationFactory.CancelledOrderNotification(existOder.Id, DateTime.Now.ToString()),
-                IsRead = false
+                IsRead = false,
+                StatusCode = 0
             };
 
             await _notificationService.CreateNotificationAsync(notification);

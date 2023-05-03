@@ -21,7 +21,8 @@ namespace Bookington_Test.Service.Notification
             {
                 RefAccount = "account",
                 Content = "test",
-                IsRead = false
+                IsRead = false,
+                StatusCode = 0
             };
             var notificationReadDto = new NotificationReadDTO
             {

@@ -13,5 +13,7 @@ namespace Bookington.Infrastructure.DTOs.Notification
         public string Content { get; set; }
 
         public bool IsRead { get; set; }
+
+        public int StatusCode { get; set; } = 0;
     }
 }

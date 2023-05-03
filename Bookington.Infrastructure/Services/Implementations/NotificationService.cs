@@ -34,15 +34,14 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             //call the hub to send notification to specific user by userId
 
-            var userId = _userContextService.AccountID.ToString();
 
-            if (!string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrEmpty(dto.RefAccount))
             {
                 var message = _mapper.Map<NotificationReadDTO>(notification);
 
                 message.Content = dto.Content;
 
-               await _hubContext.SendNotification(userId, message);
+               await _hubContext.SendNotification(dto.RefAccount, message);
             }
 
             return _mapper.Map<NotificationReadDTO>(notification);

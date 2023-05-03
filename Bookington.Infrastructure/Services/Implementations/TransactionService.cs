@@ -306,9 +306,10 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             var notification = new NotificationWriteDTO
             {
-                Content = "Confirm TopUp Success",
+                Content = NotificationFactory.AccountCreditNotification(existMomoTransaction.Amount),
                 IsRead = false,
-                RefAccount = selfBalance.Id
+                RefAccount = selfBalance.RefUser,
+                StatusCode = 0
             };
 
             var noti = await _notificationService.CreateNotificationAsync(notification);

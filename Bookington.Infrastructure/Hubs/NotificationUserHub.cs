@@ -25,7 +25,6 @@ namespace Bookington_Api.Hubs
         /// Map Conenction Id And user Id  
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="connectionId"></param>
 
         public void RegisterUserConnection(string userId)
         {
@@ -43,7 +42,6 @@ namespace Bookington_Api.Hubs
                     _userConnectionMap[userId] = conn;
                 }
 
-               
             }
         }
 
