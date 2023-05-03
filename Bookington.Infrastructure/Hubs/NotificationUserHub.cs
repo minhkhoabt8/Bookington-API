@@ -1,7 +1,9 @@
 ﻿
+using Bookington.Core.Entities;
 using Bookington.Infrastructure.DTOs.Notification;
 using Bookington.Infrastructure.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace Bookington_Api.Hubs
@@ -10,12 +12,13 @@ namespace Bookington_Api.Hubs
     {
         private readonly IHubContext<NotificationUserHub> _hubContext;
 
-        public NotificationUserHub(IHubContext<NotificationUserHub> hubContext)
+        public NotificationUserHub(IHubContext<NotificationUserHub> hubContext, Dictionary<string, string> userConnectionMap)
         {
             _hubContext = hubContext;
+            _userConnectionMap = userConnectionMap;
         }
 
-        private readonly Dictionary<string, string> _userConnectionMap = new();
+        private readonly Dictionary<string, string> _userConnectionMap;
 
 
         /// <summary>
@@ -54,12 +57,12 @@ namespace Bookington_Api.Hubs
         /// <returns></returns>
         public async Task SendNotification(string userid, NotificationReadDTO notification)
         {
-            System.Diagnostics.Debug.WriteLine($"Send Notification Hit!!!");
-
             if (_userConnectionMap.ContainsKey(userid))
             {
                 string connectionId = _userConnectionMap[userid];
-                await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveMessage", userid, notification);
+                string messageJson = JsonConvert.SerializeObject(notification);
+                System.Diagnostics.Debug.WriteLine("Connection ID: " + connectionId + "UserId: " + userid);
+                await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveMessage", userid, messageJson);
             }
         }
 
@@ -70,9 +73,10 @@ namespace Bookington_Api.Hubs
         /// <param name="receiverConnectionId"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public async Task SendToUser(string user, string receiverConnectionId, string message)
+        public async Task SendToUser(string user, string receiverConnectionId, NotificationReadDTO message)
         {
-            await _hubContext.Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", user, message);
+            string messageJson = JsonConvert.SerializeObject(message);
+            await _hubContext.Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", user, messageJson);
         }
 
 

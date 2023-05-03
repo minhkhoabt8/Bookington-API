@@ -47,7 +47,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseCors(opt => opt
-    .WithOrigins("https://localhost:44360")
+    .WithOrigins("https://localhost:44361")
     .SetIsOriginAllowedToAllowWildcardSubdomains()
     .AllowAnyMethod()
     .AllowAnyHeader()

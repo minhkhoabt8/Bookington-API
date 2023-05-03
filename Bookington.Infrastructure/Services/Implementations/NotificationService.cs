@@ -93,6 +93,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
         public async Task SendNotificationToAUser(string userId)
         {
+            
             var noti = new NotificationReadDTO
             {
                 Content = "This should send to user: " + userId,
@@ -103,5 +104,21 @@ namespace Bookington.Infrastructure.Services.Implementations
             };
             await _hubContext.SendNotification(userId, noti);
         }
+
+
+        public async Task SendNotificationToAUser(string userId, string connectionId)
+        {
+
+            var noti = new NotificationReadDTO
+            {
+                Content = "This should send to user: " + userId,
+                CreateAt = DateTime.Now,
+                Id = Guid.NewGuid().ToString(),
+                IsRead = true,
+                RefAccount = userId,
+            };
+            await _hubContext.SendToUser(userId, connectionId, noti);
+        }
+
     }
 }

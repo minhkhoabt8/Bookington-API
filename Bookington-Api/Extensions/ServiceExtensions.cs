@@ -34,7 +34,7 @@ namespace Bookington_Api.Extensions
 
             services.AddDbContext<BookingtonDbContext>(opt =>
             {
-                opt.UseSqlServer(configuration.GetConnectionString("BookintonDB"),
+                opt.UseSqlServer(configuration.GetConnectionString("BookingtonDB"),
                     b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
                 );
             });
@@ -217,8 +217,10 @@ namespace Bookington_Api.Extensions
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
-                options.KeepAliveInterval = TimeSpan.FromMinutes(35);
+                options.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
+                options.KeepAliveInterval = TimeSpan.FromMinutes(10);
                 
+
             });
             
         }
@@ -228,7 +230,8 @@ namespace Bookington_Api.Extensions
         ///</Summary>
         public static void AddSignalRService(this IServiceCollection services)
         {
-            services.AddScoped<INotificationUserHub, NotificationUserHub>();
+            services.AddSingleton<INotificationUserHub, NotificationUserHub>();
+            services.AddSingleton<Dictionary<string, string>>();
         }
 
         ///<Summary>

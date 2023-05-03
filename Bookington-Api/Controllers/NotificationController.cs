@@ -78,6 +78,22 @@ namespace Bookington_Api.Controllers
 
             return ResponseFactory.NoContent();
         }
+
+        /// <summary>
+        /// Push notification to A User With userId and connectionId (Test)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("userID={userId}/connectionId={connectionId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> SendNotificationToUserWithConnectionId(string userId, string connectionId)
+        {
+
+            await _notificationService.SendNotificationToAUser(userId, connectionId);
+            return ResponseFactory.NoContent();
+        }
+
         /// <summary>
         /// Pushy notifications to A User (Test)
         /// </summary>
@@ -86,8 +102,9 @@ namespace Bookington_Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> SendNotificationToAUser(string userId)
+        public async Task<IActionResult> SendNotificationToUser(string userId)
         {
+
             await _notificationService.SendNotificationToAUser(userId);
             return ResponseFactory.NoContent();
         }
