@@ -51,7 +51,7 @@ namespace Bookington.Infrastructure.Services.Implementations
            
             if(existAccount != null)
             {
-                if (!existAccount.IsVerified) throw new Exception("Account Is Not Verify");
+                if (!existAccount.IsVerified) throw new InvalidActionException("Account Is Not Verify");
 
                 else
                 {
