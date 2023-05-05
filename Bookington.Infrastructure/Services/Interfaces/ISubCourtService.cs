@@ -16,7 +16,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<SubCourtReadDTO> UpdateAsync(string id, SubCourtWriteDTO dto);
         Task DeleteAsync(string id);
         Task<SubCourtReadDTO> GetByIdAsync(string id);
-        Task<PaginatedResponse<SubCourtReadDTO>> GetSubCourtsOfACourt(SubCourtQuery query);
+        public Task<IEnumerable<SubCourtReadDTO>> GetSubCourtsOfACourt(string courtId);
         Task<IEnumerable<SubCourtForBookingReadDTO>> GetSubCourtsForBooking(SubCourtQueryForBooking dto);
         Task<IEnumerable<SubCourtReadDTO>> CreateSubCourtFromListAsync(List<SubCourtWriteDTO> dto);
     }

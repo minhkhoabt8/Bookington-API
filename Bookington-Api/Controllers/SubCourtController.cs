@@ -83,11 +83,11 @@ namespace Bookington_Api.Controllers
         /// Get Sub Courts By Court Id
         /// </summary>
         /// <returns></returns>
-        [HttpGet("query")]
+        [HttpGet("{courtId}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> GetSubCourtsOfACourt([FromQuery] SubCourtQuery query)
+        public async Task<IActionResult> GetSubCourtsOfACourt(string courtId)
         {
-            var profile = await _subCourtService.GetSubCourtsOfACourt(query);
+            var profile = await _subCourtService.GetSubCourtsOfACourt(courtId);
             return ResponseFactory.Ok(profile);
         }
     }

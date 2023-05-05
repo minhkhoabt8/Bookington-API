@@ -95,12 +95,11 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<SubCourtReadDTO>>(list);
         }
 
-        public async Task<PaginatedResponse<SubCourtReadDTO>> GetSubCourtsOfACourt(SubCourtQuery query)
+        public async Task<IEnumerable<SubCourtReadDTO>> GetSubCourtsOfACourt(string courtId)
         {
-            var subCourts = await _unitOfWork.SubCourtRepository.QuerySubCourtOfCourt(query);
+            var subCourts = await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(courtId);
 
-            return PaginatedResponse<SubCourtReadDTO>.FromEnumerableWithMapping(
-                subCourts, query, _mapper);
+            return _mapper.Map<IEnumerable<SubCourtReadDTO>>(subCourts);
         }
 
         public async Task<IEnumerable<SubCourtForBookingReadDTO>> GetSubCourtsForBooking(SubCourtQueryForBooking dto)
