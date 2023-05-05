@@ -9,6 +9,7 @@ using Bookington.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Bookington.Infrastructure.DTOs.SubCourt;
 using System.Xml.Serialization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
@@ -133,6 +134,32 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             }
 
             return Task.FromResult(subCourtsOfOwner.AsEnumerable());
+        }
+
+        public Task<IEnumerable<SubCourt>> QuerySubCourtOfCourt(SubCourtQuery query, bool trackChanges = false)
+        {
+            IQueryable<SubCourt> dbSet = _context.Set<SubCourt>()
+                .Include(sc => sc.CourtType)
+                .Where(sc => sc.IsActive == true
+                && sc.IsDeleted == false
+                && sc.ParentCourtId == query.CourtId);
+
+            if (trackChanges == false)
+            {
+                dbSet = dbSet.AsNoTracking();
+            }
+
+            if(!query.Search.IsNullOrEmpty())
+            {
+                dbSet = dbSet.Where(c => c.Name.Contains(query.Search));
+            }
+
+            return Task.FromResult(dbSet.AsEnumerable());
+        }
+
+        public Task<IEnumerable<SubCourt>> QueryAsync(SubCourtQuery query, bool trackChanges = false)
+        {
+            throw new NotImplementedException();
         }
     }
 }

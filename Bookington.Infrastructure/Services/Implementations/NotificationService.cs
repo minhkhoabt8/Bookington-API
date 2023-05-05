@@ -47,11 +47,12 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<NotificationReadDTO>(notification);
         }
 
-        public async Task MarkAsReadAsync(List<NotificationReadDTO> notifications)
+        public async Task MarkAsReadAsync(List<string> notificationIds)
         {
-            foreach (var notification in notifications)
+           
+            foreach (var id in notificationIds)
             {
-                var noti = await _unitOfWork.NotificationRepository.FindAsync(notification.Id);
+                var noti = await _unitOfWork.NotificationRepository.FindAsync(id);
 
                 if (noti != null)
                 {

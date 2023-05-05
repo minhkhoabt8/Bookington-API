@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace Bookington.Infrastructure.Repositories.Interfaces
 {
     public interface ISubCourtRepository :
+        IQueryAsync<SubCourt,SubCourtQuery>,
         IGetAllAsync<SubCourt>,
         IAddAsync<SubCourt>,
         IUpdate<SubCourt>,        
@@ -20,5 +21,7 @@ namespace Bookington.Infrastructure.Repositories.Interfaces
         Task<Account> GetCourtOwnerBySubCourtId(string subCourtId);
         Task<string> GetCourtNameBySubCourtId(string subCourtId);
         Task<IEnumerable<SubCourt>> GetSubCourtsOfOwner(string ownerId);
+
+        Task<IEnumerable<SubCourt>> QuerySubCourtOfCourt(SubCourtQuery query, bool trackChanges = false);
     }
 }

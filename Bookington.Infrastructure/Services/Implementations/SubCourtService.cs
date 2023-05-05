@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bookington.Infrastructure.DTOs.ApiResponse;
+using Bookington.Infrastructure.DTOs.Court;
 
 namespace Bookington.Infrastructure.Services.Implementations
 {
@@ -93,11 +95,12 @@ namespace Bookington.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<SubCourtReadDTO>>(list);
         }
 
-        public async Task<IEnumerable<SubCourtReadDTO>> GetSubCourtsOfACourt(string courtId)
+        public async Task<PaginatedResponse<SubCourtReadDTO>> GetSubCourtsOfACourt(SubCourtQuery query)
         {
-            var subCourts = await _unitOfWork.SubCourtRepository.GetAvailableSubCourtsByCourtId(courtId);
+            var subCourts = await _unitOfWork.SubCourtRepository.QuerySubCourtOfCourt(query);
 
-            return _mapper.Map<IEnumerable<SubCourtReadDTO>>(subCourts);
+            return PaginatedResponse<SubCourtReadDTO>.FromEnumerableWithMapping(
+                subCourts, query, _mapper);
         }
 
         public async Task<IEnumerable<SubCourtForBookingReadDTO>> GetSubCourtsForBooking(SubCourtQueryForBooking dto)

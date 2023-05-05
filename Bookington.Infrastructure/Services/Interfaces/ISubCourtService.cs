@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bookington.Infrastructure.DTOs.SubCourt;
+using Bookington.Infrastructure.DTOs.ApiResponse;
 
 namespace Bookington.Infrastructure.Services.Interfaces
 {
@@ -15,7 +16,7 @@ namespace Bookington.Infrastructure.Services.Interfaces
         Task<SubCourtReadDTO> UpdateAsync(string id, SubCourtWriteDTO dto);
         Task DeleteAsync(string id);
         Task<SubCourtReadDTO> GetByIdAsync(string id);
-        Task<IEnumerable<SubCourtReadDTO>> GetSubCourtsOfACourt(string courtId);
+        Task<PaginatedResponse<SubCourtReadDTO>> GetSubCourtsOfACourt(SubCourtQuery query);
         Task<IEnumerable<SubCourtForBookingReadDTO>> GetSubCourtsForBooking(SubCourtQueryForBooking dto);
         Task<IEnumerable<SubCourtReadDTO>> CreateSubCourtFromListAsync(List<SubCourtWriteDTO> dto);
     }

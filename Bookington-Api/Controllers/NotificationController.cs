@@ -57,9 +57,9 @@ namespace Bookington_Api.Controllers
         [HttpPut("/markAllAsRead")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(List<NotificationReadDTO>))]
-        public async Task<IActionResult> MarkAsReadAsync(List<NotificationReadDTO> notifications)
+        public async Task<IActionResult> MarkAsReadAsync(List<string> notificationIds)
         {
-            await _notificationService.MarkAsReadAsync(notifications);
+            await _notificationService.MarkAsReadAsync(notificationIds);
 
             return ResponseFactory.NoContent();
         }
