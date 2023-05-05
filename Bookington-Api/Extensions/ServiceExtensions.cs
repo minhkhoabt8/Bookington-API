@@ -262,7 +262,8 @@ namespace Bookington_Api.Extensions
                     .WithIdentity("UnbanCourtJob-trigger")
                 //.WithCronSchedule("0 0 0/1 * * ?")); // run every 1 hour
                 //.WithCronSchedule("0 * * * * ?"));
-                    .WithCronSchedule("0 0 * ? * *")); //Fire every hours every days
+                    //.WithCronSchedule("0 0 * ? * *")); //Fire every hours every days
+                    .WithCronSchedule("0 0 0 */7 * ?")); 
                 //Register the UnbanAccountJob
                 var unbanAccountJobKey = new JobKey("UnbanAccountJob");
                 q.AddJob<UnbanAccountJob>(opts => opts.WithIdentity(unbanAccountJobKey));
@@ -271,7 +272,8 @@ namespace Bookington_Api.Extensions
                     .WithIdentity("UnbanAccountJob-trigger")
                     //.WithCronSchedule("0 0 0/1 * * ?")); // run every 1 hour
                     //.WithCronSchedule("0 * * * * ?"));
-                    .WithCronSchedule("0 0 * ? * *")); //Fire every hours every days
+                    //.WithCronSchedule("0 0 * ? * *")); //Fire every hours every days
+                    .WithCronSchedule("0 0 0 */7 * ?"));
             });
 
            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
