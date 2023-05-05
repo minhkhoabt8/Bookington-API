@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using Quartz;
 using System.Reflection;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Bookington_Api.Extensions
 {
@@ -251,7 +252,7 @@ namespace Bookington_Api.Extensions
                     .WithIdentity("NotificationCleanupJob-trigger")
                     //.WithCronSchedule("0 0 * * 0/7 ?"));
                     //.WithCronSchedule("0 * * * * ?")); 
-                    .WithCronSchedule("0 0 */10 * * ?")); // Run every 10 hours
+                    .WithCronSchedule("0 0 0 */7 * ?")); // Run every 7 days
 
                 //Register the UnbanCourtJob
                 var unbanCourtJobKey = new JobKey("UnbanCourtJob");
@@ -259,9 +260,9 @@ namespace Bookington_Api.Extensions
                 q.AddTrigger(opts => opts
                     .ForJob(unbanCourtJobKey)
                     .WithIdentity("UnbanCourtJob-trigger")
-                    //.WithCronSchedule("0 0 0/1 * * ?")); // run every 1 hour
-                    //.WithCronSchedule("0 * * * * ?"));
-                    .WithCronSchedule("0 0 */10 * * ?")); // Run every 10 hours
+                //.WithCronSchedule("0 0 0/1 * * ?")); // run every 1 hour
+                //.WithCronSchedule("0 * * * * ?"));
+                    .WithCronSchedule("0 0 * ? * *")); //Fire every hours every days
                 //Register the UnbanAccountJob
                 var unbanAccountJobKey = new JobKey("UnbanAccountJob");
                 q.AddJob<UnbanAccountJob>(opts => opts.WithIdentity(unbanAccountJobKey));
@@ -270,7 +271,7 @@ namespace Bookington_Api.Extensions
                     .WithIdentity("UnbanAccountJob-trigger")
                     //.WithCronSchedule("0 0 0/1 * * ?")); // run every 1 hour
                     //.WithCronSchedule("0 * * * * ?"));
-                    .WithCronSchedule("0 0 */10 * * ?")); // Run every 10 hours
+                    .WithCronSchedule("0 0 * ? * *")); //Fire every hours every days
             });
 
            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
