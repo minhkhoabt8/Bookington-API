@@ -70,6 +70,7 @@ namespace Bookington.Infrastructure.Services.Implementations
                 {
                     item.IsBan = true;
                 }
+                
             }
 
             return result;

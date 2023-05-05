@@ -15,8 +15,8 @@ namespace Bookington.Infrastructure.DTOs.Report
 
         public string CourtName { get; set; } //
 
-        public string ReporterId { get; set; } 
-
+        public string ReporterId { get; set; }
+        public string RefResponse { get; set; }
         public string ReporterPhone { get; set; } // 
 
         public string ReporterName { get; set; } //
