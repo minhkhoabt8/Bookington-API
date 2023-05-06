@@ -76,6 +76,8 @@ namespace Bookington.Infrastructure.Services.Implementations
         {
             var files = new List<ImageFile>();
 
+
+
             foreach (var fileName in fileNames)
             {
                 var path = "";

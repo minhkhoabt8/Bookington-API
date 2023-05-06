@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Bookington.Infrastructure.DTOs.SubCourt;
 using Bookington.Infrastructure.DTOs.Slot;
 using Microsoft.IdentityModel.Tokens;
+using Bookington.Infrastructure.Helpers;
 
 namespace Bookington.Infrastructure.Repositories.Implementations
 {
@@ -78,7 +79,11 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                 // Slot before current time will be marked as false as well
                 // Check if slot is before current time of today
                 var slotStartTime = new DateTime(dto.PlayDate.Year, dto.PlayDate.Month, dto.PlayDate.Day, slot.RefSlotNavigation.StartTime.Hours, slot.RefSlotNavigation.StartTime.Minutes, slot.RefSlotNavigation.StartTime.Seconds);
-                var currentDateTime = DateTime.Now;
+                
+                var deployerDateTime = DateTime.Now;
+                // Convert to UTC+7
+                var currentDateTime = TimeZoneHelper.convertToCurrentTimeZone(deployerDateTime);
+
                 var currentTimeOfDay = currentDateTime.TimeOfDay;
                 if (slotStartTime.Date == currentDateTime.Date && slotStartTime.TimeOfDay.CompareTo(currentTimeOfDay) <= 0)
                 {
