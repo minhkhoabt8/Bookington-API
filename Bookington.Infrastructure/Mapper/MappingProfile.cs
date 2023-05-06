@@ -76,6 +76,7 @@ namespace Bookington.Infrastructure.Mapper
                 .ForMember(des => des.Phone, act => act.MapFrom(src => src.BookByNavigation.Phone))
                 .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.Name));
             CreateMap<Booking, BookingForOrderReadDTO>()
+                .ForMember(des => des.SubCourtId, act => act.MapFrom(src => src.RefSubCourtNavigation.Id))
                 .ForMember(des => des.SubCourtName, act => act.MapFrom(src => src.RefSubCourtNavigation.Name))
                 .ForMember(des => des.StartTime, act => act.MapFrom(src => src.RefSlotNavigation.StartTime))
                 .ForMember(des => des.EndTime, act => act.MapFrom(src => src.RefSlotNavigation.EndTime));
@@ -143,8 +144,8 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<MomoTransaction, MomoTransactionReadDTO>();
             CreateMap<MomoTransactionWriteDTO,MomoTransaction>();
             // Order
-            CreateMap<Order, OrderReadDTO>()
-                .ForMember(dest => dest.CourtName, opt => opt.MapFrom(src => src.Bookings.Select(c=>c.RefSubCourtNavigation.ParentCourt.Name)));
+            CreateMap<Order, OrderReadDTO>();
+                //.ForMember(dest => dest.CourtName, opt => opt.MapFrom(src => src.Bookings.First().RefSubCourtNavigation.ParentCourt.Name));
 
             CreateMap<OrderWriteDTO, Order>();            
             // Notification

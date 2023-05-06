@@ -322,6 +322,8 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             foreach(var order in result)
             {
+                order.CourtName = await _unitOfWork.SubCourtRepository.GetCourtNameBySubCourtId(order.Bookings.First().SubCourtId!);
+
                 foreach (var item in order.Bookings)
                 {
                     var slotStartTime = DateTime.Today.Add(item.StartTime);

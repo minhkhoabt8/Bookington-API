@@ -49,6 +49,9 @@ namespace Bookington.Infrastructure.DTOs.Booking
 
         public string? SubCourtName { get; set; }
 
+        public string? SubCourtId { get; set; }
+
+
         public DateTime PlayDate { get; set; }
 
         public TimeSpan StartTime { get; set; }
