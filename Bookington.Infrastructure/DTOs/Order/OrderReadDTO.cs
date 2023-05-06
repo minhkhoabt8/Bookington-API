@@ -14,9 +14,10 @@ namespace Bookington.Infrastructure.DTOs.Order
         public string Id { get; set; }
 
         public string CreateBy { get; set; } 
-        public string TransactionId { get; set; } = string.Empty;
 
-        public string CourtName { get; set; } 
+        public string TransactionId { get; set; }
+
+        public string? CourtName { get; set; } 
 
         public string VoucherCode { get; set; } 
 
@@ -26,11 +27,12 @@ namespace Bookington.Infrastructure.DTOs.Order
 
         public double TotalPrice { get; set; }
 
-        public bool IsPaid { get; set; }
+        public bool IsPaid { get; set; } 
 
-        public bool IsCanceled { get; set; }
+        public bool IsCanceled { get; set; } 
 
-        public bool IsRefunded { get; set; }
+        public bool IsRefunded { get; set; } 
+
         public bool CanBeCanceled { get; set; } = true;
 
         public ICollection<BookingForOrderReadDTO> Bookings { get; set; } = null!;

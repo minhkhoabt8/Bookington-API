@@ -59,7 +59,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Order>> GetAllOrderOfUserAsync(string userId)
         {
-            return await _context.Orders.Where(o => o.CreateBy == userId)
+            return await _context.Orders.Where(o => o.CreateBy == userId && o.Transaction != null)
                                   .Include(o => o.Transaction)
                                   .Include(o => o.CreateByNavigation)
                                   .Include(o => o.VoucherCodeNavigation)
@@ -72,7 +72,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Order>> GetAllOrderForStatistic()
         {
-            return await _context.Orders
+            return await _context.Orders.Where(o =>o.Transaction != null)
                                   .Include(o => o.Transaction)
                                   .Include(o => o.CreateByNavigation)
                                   .Include(o => o.Bookings).ThenInclude(c => c.RefSubCourtNavigation).ThenInclude(s => s.ParentCourt)
@@ -82,20 +82,21 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Order>> GetAllOrderOfOwnerForStatistic(string ownerId)
         {
-           return  await _context.Orders
+            return await _context.Orders
+                                    .Where(o => o.Transaction != null)
+                                   .Include(o => o.Transaction)
+                                   .Include(o => o.CreateByNavigation)
+                                   .Include(o => o.Bookings)
+                                         .ThenInclude(c => c.RefSubCourtNavigation)
+                                             .ThenInclude(s => s.ParentCourt)
+                                   .Where(c => c.Bookings.Any(c => c.RefSubCourtNavigation.ParentCourt.OwnerId == ownerId))
+                                   .ToListAsync();
 
-                                  .Include(o => o.Transaction)
-                                  .Include(o => o.CreateByNavigation)
-                                  .Include(o => o.Bookings)
-                                        .ThenInclude(c => c.RefSubCourtNavigation)
-                                            .ThenInclude(s => s.ParentCourt)
-                                  .Where(c=>c.Bookings.Any(c=>c.RefSubCourtNavigation.ParentCourt.OwnerId == ownerId))
-                                  .ToListAsync();
         }
 
         public async Task<IEnumerable<Order>> GetAllOrderAsync()
         {
-            return await _context.Orders
+            return await _context.Orders.Where(o => o.Transaction != null)
                                   .Include(o => o.Transaction)
                                   .Include(o => o.CreateByNavigation)
                                   .Include(o => o.Bookings).ThenInclude(c => c.RefSubCourtNavigation).ThenInclude(s => s.ParentCourt)
