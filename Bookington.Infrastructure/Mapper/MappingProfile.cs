@@ -144,7 +144,7 @@ namespace Bookington.Infrastructure.Mapper
             CreateMap<MomoTransactionWriteDTO,MomoTransaction>();
             // Order
             CreateMap<Order, OrderReadDTO>()
-                .ForMember(dest => dest.CourtName, opt => opt.MapFrom(src => src.Bookings.First().RefSubCourtNavigation.ParentCourt.Name));
+                .ForMember(dest => dest.CourtName, opt => opt.MapFrom(src => src.Bookings.Select(c=>c.RefSubCourtNavigation.ParentCourt.Name)));
 
             CreateMap<OrderWriteDTO, Order>();            
             // Notification
