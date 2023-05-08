@@ -15,7 +15,7 @@ public partial class CourtReport
 
     public string Content { get; set; } = null!;
 
-    public bool IsResponded { get; set; }
+    public bool IsResponded { get; set; } = false;
 
     public virtual Court RefCourtNavigation { get; set; } = null!;
 
