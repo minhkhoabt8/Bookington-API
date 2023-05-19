@@ -40,5 +40,14 @@ namespace Bookington.Infrastructure.Repositories.Implementations
 
             return vouchers;
         }
+
+
+        public async Task<IEnumerable<Voucher?>> GetAllVoucherOfACourtByOwnerIdAsync(string ownerId)
+        {
+            var vouchers = _context.Vouchers.Include(c=>c.RefCourtNavigation).ThenInclude(c => c.OwnerId == ownerId);
+
+            return vouchers;
+        }
+
     }
 }

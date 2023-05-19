@@ -20,6 +20,7 @@ using Bookington.Infrastructure.DTOs.SubCourtSlot;
 using Bookington.Infrastructure.DTOs.IncomingBooking;
 using Bookington.Infrastructure.DTOs.Comment;
 using Bookington.Infrastructure.DTOs.Ban;
+using Bookington.Infrastructure.DTOs.ChatRoom;
 
 namespace Bookington.Infrastructure.Mapper
 {
@@ -154,7 +155,10 @@ namespace Bookington.Infrastructure.Mapper
             //Comment
             CreateMap<Comment, CommentReadDTO>()
                  .ForMember(des => des.CommentWriter, act => act.MapFrom(src => src.CommentWriter));
-            CreateMap<CommentWriteDTO,Comment>();   
+            CreateMap<CommentWriteDTO,Comment>();
+            //Chat Room
+            CreateMap<ChatRoom, ChatRoomReadDTO>();
+            CreateMap<ChatRoomWriteDTO, ChatRoom>();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Bookington_Api.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("signUp")]
+        [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<NotificationReadDTO>))]
         public async Task<IActionResult> CreateAsync(NotificationWriteDTO dto)

@@ -58,6 +58,10 @@ namespace Bookington.Infrastructure.UOW
 
         public IMomoTransactionRepository MomoTransactionRepository { get; }
 
+        public IChatMessageRepository ChatMessageRepository { get; }
+
+        public IChatRoomRepository ChatRoomRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

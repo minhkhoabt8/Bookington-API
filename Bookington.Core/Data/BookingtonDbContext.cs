@@ -355,6 +355,12 @@ public partial class BookingtonDbContext : DbContext
                 .HasColumnName("ref_user");
             entity.Property(e => e.SequenceOrder).HasColumnName("sequence_order");
 
+            entity.Property(e => e.ChatContent)
+                .IsRequired()
+                .HasMaxLength(256)
+                .IsUnicode(false)    
+                .HasColumnName("chat_content");
+
             entity.HasOne(d => d.RefChatroomNavigation).WithMany(p => p.ChatMessages)
                 .HasForeignKey(d => d.RefChatroom)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -615,7 +621,9 @@ public partial class BookingtonDbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(1000)
                 .HasColumnName("content");
+
             entity.Property(e => e.IsResponded).HasColumnName("is_responded");
+
             entity.Property(e => e.RefCourt)
                 .IsRequired()
                 .HasMaxLength(40)

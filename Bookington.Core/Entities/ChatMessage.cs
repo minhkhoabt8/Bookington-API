@@ -17,6 +17,8 @@ public partial class ChatMessage
 
     public int SequenceOrder { get; set; }
 
+    public string ChatContent { get; set; } = null!;
+
     public bool IsDeleted { get; set; } = false;
 
     public virtual ChatRoom RefChatroomNavigation { get; set; } = null!;

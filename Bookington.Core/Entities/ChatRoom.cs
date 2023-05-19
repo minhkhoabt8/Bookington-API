@@ -11,7 +11,8 @@ public partial class ChatRoom
 
     public string RefUser { get; set; } = null!;
 
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
+
 
     public virtual ICollection<ChatMessage> ChatMessages { get; } = new List<ChatMessage>();
 

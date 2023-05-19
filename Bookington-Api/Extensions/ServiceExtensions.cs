@@ -139,6 +139,7 @@ namespace Bookington_Api.Extensions
             services.AddScoped<IMomoPaymentService, MomoPaymentService>();
             services.AddScoped<IBanServices,BanService>();  
             services.AddScoped<IDashBoardService,DashBoardService>();
+            services.AddScoped<IChatRoomService, ChatRoomService>();
             //Add MomoHelpers
             services.AddScoped<IMomoHelpers, MomoHelpers>();
         }
@@ -174,6 +175,8 @@ namespace Bookington_Api.Extensions
             services.AddScoped<ISubCourtSlotRepository, SubCourtSlotRepository>();
             services.AddScoped<ICourtImageRepository, CourtImageRepository>();
             services.AddScoped<IMomoTransactionRepository, MomoTransactionRepository>();
+            services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
+            services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
         }
         ///<Summary>
         ///Register Unit Of Work
@@ -232,6 +235,7 @@ namespace Bookington_Api.Extensions
         public static void AddSignalRService(this IServiceCollection services)
         {
             services.AddSingleton<INotificationUserHub, NotificationUserHub>();
+            services.AddSingleton<IChatHub, ChatHub>();
             services.AddSingleton<Dictionary<string, string>>();
         }
 
