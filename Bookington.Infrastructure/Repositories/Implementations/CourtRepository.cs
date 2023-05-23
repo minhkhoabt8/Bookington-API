@@ -54,7 +54,7 @@ namespace Bookington.Infrastructure.Repositories.Implementations
             }
             if (!query.Province.IsNullOrEmpty())
             {
-                courts = courts.Where(c => c.District.Province.ProvinceName.Contains(query.District));
+                courts = courts.Where(c => c.District.Province.ProvinceName.Contains(query.Province));
             }
             if (!query.OpenAt.IsNullOrEmpty() && query.CloseAt.IsNullOrEmpty())
             {
