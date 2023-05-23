@@ -262,5 +262,15 @@ namespace Bookington.Infrastructure.Services.Implementations
             return PaginatedResponse<FinishedBookingReadDTO>.FromEnumerableWithMapping(
                 incomingBookings, query, _mapper);
         }
+
+        public async Task<bool> CheckUserCanReportOrComment(string userId, string courtId)
+        {
+            var accountId = _userContextService.AccountID.ToString();
+            if (accountId.IsNullOrEmpty()) throw new ForbiddenException();
+            var isValid = await _unitOfWork.BookingRepository.GetBookingOfUserByCourtId(userId, courtId);
+            if (isValid == null) return false;
+            return true;
+
+        }
     }
 }

@@ -7,6 +7,7 @@ using Bookington.Infrastructure.Services.Interfaces;
 using Bookington_Api.Authorizers;
 using Bookington_Api.Filters;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bookington_Api.Controllers
 {
@@ -124,5 +125,20 @@ namespace Bookington_Api.Controllers
             var result = await _slotService.GetAvailableSlotsForBooking(dto);
             return ResponseFactory.Ok(result);
         }
+
+        /// <summary>
+        /// Check User Can Report Or Comment Of A Court
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="courtId"></param>
+        /// <returns></returns>
+        [HttpGet("isAvailable")]
+        [RoleAuthorize(AccountRole.customer)]
+        public async Task<IActionResult> CheckUserCanReportOrComment([Required]string userId,[Required] string courtId)
+        {
+            var result = await _bookingService.CheckUserCanReportOrComment(userId, courtId);
+            return ResponseFactory.Ok(result);
+        }
+
     }
 }

@@ -138,5 +138,14 @@ namespace Bookington.Infrastructure.Repositories.Implementations
                 .Include(b => b.RefOrderNavigation)
                 .AsEnumerable());
         }
+
+
+        public async Task<Booking?> GetBookingOfUserByCourtId(string userId, string courtId)
+        {
+            return await _context.Bookings.Include(c => c.BookByNavigation.Id)
+                .Include(c=>c.RefSubCourtNavigation)
+                .ThenInclude(c=>c.ParentCourtId)
+                .FirstOrDefaultAsync( c => c.BookByNavigation.Id == userId && c.RefSubCourtNavigation.ParentCourtId == courtId);
+        }
     }
 }
