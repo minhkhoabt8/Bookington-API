@@ -81,7 +81,7 @@ namespace Bookington.Infrastructure.Services.Implementations
 
             //Call Send SMS
 
-            //await _smsService.sendSmsAsync(dto.Phone, accountOtp.OtpCode);
+            await _smsService.sendSmsAsync(dto.Phone, accountOtp.OtpCode);
 
             // Create A Balance For The New User
             var userBalance = new UserBalanceWriteDTO();
